@@ -1,0 +1,1196 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0F1525">
+<title>Ludo Yaari – Dosto ke saath Ludo + Video Call</title>
+<meta name="description" content="Online Ludo game with friends – room code, chat, voice and video call.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0F1525; --surface:#1A2236; --surface2:#222C44; --line:#2E3A57;
+  --text:#EEF1F7; --muted:#9AA4B8;
+  --red:#E5484D; --green:#30A46C; --yellow:#F5C518; --blue:#3E7BFA;
+  --danger:#D93036;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;-webkit-tap-highlight-color:transparent}
+button{font-family:inherit}
+.hidden{display:none!important}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.muted{color:var(--muted);font-size:13px;margin:8px 0 0}
+svg{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* ---------- lobby ---------- */
+#lobby{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px 16px}
+.lobby-card{width:100%;max-width:400px;background:var(--surface);border-radius:20px;padding:28px 22px;display:flex;flex-direction:column;gap:10px}
+.logo{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:40px;line-height:1;margin:0;color:#fff}
+.logo.small{font-size:22px}
+.tag{margin:0 0 10px;color:var(--muted);font-size:14px;line-height:1.45}
+.fld-label{font-size:13px;font-weight:600;color:var(--muted);margin-top:6px}
+.fld{width:100%;height:46px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--text);padding:0 14px;font-size:16px;font-family:inherit}
+.fld:focus{outline:2px solid var(--blue);outline-offset:1px}
+.fld.code{text-transform:uppercase;letter-spacing:.15em;font-weight:700}
+.row{display:flex;gap:8px;align-items:center}
+.row.center{justify-content:center;flex-wrap:wrap}
+.btn{height:48px;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;padding:0 18px;color:#fff}
+.btn:disabled{opacity:.55;cursor:default}
+.btn-primary{background:var(--blue)}
+.btn-secondary{background:var(--surface2);border:1px solid var(--line);white-space:nowrap}
+.btn-green{background:#1F8A55}
+.btn-small{height:40px;font-size:14px;padding:0 14px}
+.or{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:13px;margin:6px 0}
+.or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
+.lobby-msg{min-height:20px;margin:4px 0 0;color:#FF9EA2;font-size:14px}
+.hint{margin:0;color:var(--muted);font-size:12px;line-height:1.5}
+
+/* ---------- game ---------- */
+#game{min-height:100vh;display:flex;flex-direction:column;padding:12px 12px calc(84px + env(safe-area-inset-bottom))}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;max-width:1100px;width:100%;margin:0 auto 10px}
+.room-line{font-size:12px;color:var(--muted);margin-top:2px}
+.room-line strong{color:var(--text);letter-spacing:.08em}
+.link-btn{background:none;border:none;color:#9EC1FF;font-size:12px;cursor:pointer;padding:4px 6px;text-decoration:underline}
+.online-pill{display:flex;align-items:center;gap:6px;background:var(--surface);padding:8px 12px;border-radius:999px;font-size:13px;font-weight:600}
+.online-pill svg{width:16px;height:16px;color:var(--muted)}
+
+.layout{display:flex;flex-wrap:wrap;gap:12px;max-width:1100px;width:100%;margin:0 auto;align-items:flex-start}
+.play{flex:1 1 360px;max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:10px;min-width:0}
+.chat{flex:1 1 300px;max-width:560px;margin:0 auto;width:100%;background:var(--surface);border-radius:14px;display:flex;flex-direction:column;min-height:180px;max-height:300px}
+@media (min-width:920px){.chat{max-height:none;height:calc(100vh - 170px);position:sticky;top:12px;max-width:360px}}
+
+.tiles{display:flex;gap:10px}
+.tile{position:relative;flex:1 1 0;height:110px;border-radius:14px;overflow:hidden;background:var(--surface2);border:2px solid var(--line);transition:box-shadow .15s}
+@media (min-width:600px){.tile{height:150px}}
+.tile.empty{border-style:dashed;opacity:.5}
+.tile.speaking{box-shadow:0 0 0 3px var(--green)}
+.tile.turn{outline:3px solid #fff;outline-offset:-6px}
+.tile video{width:100%;height:100%;object-fit:cover;display:block;background:#11182A}
+.tile video.mirror{transform:scaleX(-1)}
+.tile .avatar{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.tile .avatar span{width:54px;height:54px;border-radius:27px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:22px;color:#0F1525}
+.tile .label{position:absolute;left:6px;bottom:6px;display:flex;align-items:center;gap:5px;background:rgba(15,21,37,.8);padding:3px 7px;border-radius:6px;font-size:12px;font-weight:600;max-width:calc(100% - 12px)}
+.tile .label .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tile .label .cdot{width:8px;height:8px;border-radius:4px;flex:none}
+.tile .label svg{width:14px;height:14px;flex:none}
+.tile .label svg.off{color:#FF8A8F}
+.tile .badge{position:absolute;top:6px;right:6px;background:rgba(15,21,37,.8);padding:2px 6px;border-radius:6px;font-size:10px;color:var(--muted)}
+.tile .empty-txt{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--muted)}
+
+.board-wrap{display:flex;justify-content:center}
+.board-box{position:relative;width:100%;max-width:520px;aspect-ratio:1;background:var(--surface);border-radius:16px;padding:8px}
+#board{width:100%;height:100%;display:block}
+.token{transition:transform .35s ease;cursor:default}
+.token.can{cursor:pointer}
+.token.can .ring{animation:pulse 0.9s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.25}50%{opacity:1}}
+
+.overlay-card{position:absolute;inset:8px;border-radius:12px;background:rgba(15,21,37,.94);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:16px;text-align:center;overflow:auto}
+.overlay-card h2{margin:0;font-family:'Baloo 2',sans-serif;font-size:26px}
+.overlay-card p{margin:0}
+.big-code{font-size:24px;letter-spacing:.15em;color:#fff;display:block;margin-top:4px}
+.wait-players,.ranking{list-style:none;padding:0;margin:4px 0;display:flex;flex-direction:column;gap:6px;width:100%;max-width:260px}
+.wait-players li,.ranking li{display:flex;align-items:center;gap:8px;background:var(--surface);padding:8px 10px;border-radius:10px;font-size:14px;text-align:left}
+.wait-players .cdot,.ranking .cdot{width:12px;height:12px;border-radius:6px;flex:none}
+
+.turnbar{display:flex;align-items:center;justify-content:space-between;background:var(--surface);border-radius:14px;padding:10px 12px;gap:10px}
+.turn-info{display:flex;align-items:center;gap:10px;min-width:0}
+.dot{width:14px;height:14px;border-radius:7px;background:var(--muted);flex:none}
+.turn-text{font-weight:700;font-size:15px}
+.turn-sub{font-size:12px;color:var(--muted);margin-top:2px}
+.dice{width:58px;height:58px;border-radius:14px;border:none;background:#fff;cursor:pointer;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);padding:10px;gap:3px;box-shadow:0 4px 0 #C9CED8;flex:none}
+.dice:disabled{cursor:default;opacity:.6;box-shadow:none}
+.dice.ready{box-shadow:0 4px 0 #C9CED8,0 0 0 4px var(--green)}
+.dice i{display:block;border-radius:50%;background:transparent;margin:auto;width:9px;height:9px}
+.dice i.on{background:#0F1525}
+.dice.rolling{animation:shake .45s}
+@keyframes shake{0%{transform:rotate(0)}25%{transform:rotate(-18deg)}50%{transform:rotate(14deg)}75%{transform:rotate(-8deg)}100%{transform:rotate(0)}}
+
+.chat-head{padding:10px 12px 6px;font-weight:700;font-size:14px;border-bottom:1px solid var(--line)}
+.chat-list{flex:1;overflow-y:auto;padding:8px 12px;display:flex;flex-direction:column;gap:6px;font-size:14px;line-height:1.4}
+.chat-list .msg strong{margin-right:4px}
+.chat-list .sys{color:var(--muted);font-size:12px;font-style:italic}
+.chat-form{display:flex;gap:8px;padding:8px 10px 10px}
+.chat-form .fld{height:42px;font-size:15px}
+.send{width:46px;height:42px;border-radius:10px;border:none;background:var(--blue);color:#fff;cursor:pointer;flex:none;display:flex;align-items:center;justify-content:center}
+.send svg{width:18px;height:18px}
+
+.controls{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:center;gap:12px;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:rgba(15,21,37,.96);border-top:1px solid var(--line);z-index:5}
+.ctl{width:52px;height:52px;border-radius:26px;border:none;background:#2A3550;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center}
+.ctl svg{width:22px;height:22px}
+.ctl.off{background:var(--danger)}
+.ctl-end{width:66px;background:var(--danger)}
+
+.toast{position:fixed;left:50%;top:16px;transform:translate(-50%,-150%);background:#fff;color:#0F1525;padding:10px 16px;border-radius:12px;font-size:14px;font-weight:600;z-index:20;transition:transform .25s;max-width:90vw;text-align:center;box-shadow:0 6px 24px rgba(0,0,0,.35)}
+.toast.show{transform:translate(-50%,0)}
+.toast button{margin-left:8px;border:none;background:var(--blue);color:#fff;border-radius:8px;padding:6px 10px;font-weight:700;cursor:pointer}
+.overlay-card > *{flex:none}
+
+</style>
+</head>
+<body>
+
+<!-- ============ LOBBY ============ -->
+<main id="lobby" class="screen">
+  <div class="lobby-card">
+    <h1 class="logo">Ludo Yaari</h1>
+    <p class="tag">Dosto ke saath online Ludo — chat, voice aur video call ke saath</p>
+
+    <label class="fld-label" for="nameInput">Tumhara naam</label>
+    <input id="nameInput" class="fld" maxlength="14" placeholder="Jaise: Vipin" autocomplete="nickname">
+
+    <button id="createBtn" class="btn btn-primary">Naya room banao</button>
+
+    <div class="or"><span>ya</span></div>
+
+    <label class="fld-label" for="codeInput">Dost ka room code</label>
+    <div class="row">
+      <input id="codeInput" class="fld code" maxlength="6" placeholder="ABC123" autocapitalize="characters" autocomplete="off">
+      <button id="joinBtn" class="btn btn-secondary">Join karo</button>
+    </div>
+
+    <p id="lobbyMsg" class="lobby-msg" role="status"></p>
+    <p class="hint">Room bante hi browser mic aur camera ki permission maangega — "Allow" dabana. 2 se 4 log khel sakte hain.</p>
+  </div>
+</main>
+
+<!-- ============ GAME ============ -->
+<div id="game" class="screen hidden">
+  <header class="topbar">
+    <div>
+      <div class="logo small">Ludo Yaari</div>
+      <div class="room-line">Room code: <strong id="roomCode">------</strong>
+        <button id="copyBtn" class="link-btn" aria-label="Room link copy karo">Link copy</button>
+      </div>
+    </div>
+    <div class="online-pill"><svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7"/><path d="M18 14a6.5 6.5 0 0 1 3.5 6"/></svg><span id="onlineCount">1</span> online</div>
+  </header>
+
+  <div class="layout">
+    <section class="play">
+      <div class="tiles" id="tilesTop"></div>
+
+      <div class="board-wrap">
+        <div class="board-box">
+          <svg id="board" viewBox="0 0 15 15" role="img" aria-label="Ludo board"></svg>
+
+          <div id="waitCard" class="overlay-card hidden">
+            <h2>Doston ka intezaar…</h2>
+            <p>Yeh code bhejo: <strong id="waitCode" class="big-code">------</strong></p>
+            <div class="row center">
+              <button id="shareBtn" class="btn btn-small btn-green">WhatsApp pe bhejo</button>
+              <button id="copyBtn2" class="btn btn-small btn-secondary">Link copy</button>
+            </div>
+            <ul id="waitPlayers" class="wait-players"></ul>
+            <button id="startBtn" class="btn btn-primary hidden">Game shuru karo</button>
+            <p id="waitHint" class="muted"></p>
+          </div>
+
+          <div id="overCard" class="overlay-card hidden">
+            <h2>Game khatam!</h2>
+            <ol id="ranking" class="ranking"></ol>
+            <button id="againBtn" class="btn btn-primary hidden">Phir se khelo</button>
+            <p id="againHint" class="muted"></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tiles" id="tilesBottom"></div>
+
+      <div class="turnbar">
+        <div class="turn-info">
+          <span id="turnDot" class="dot"></span>
+          <div>
+            <div id="turnText" class="turn-text">Game shuru nahi hua</div>
+            <div id="turnSub" class="turn-sub"></div>
+          </div>
+        </div>
+        <button id="diceBtn" class="dice" aria-label="Dice roll karo" disabled></button>
+      </div>
+    </section>
+
+    <aside class="chat">
+      <div class="chat-head">Chat</div>
+      <div id="chatList" class="chat-list" aria-live="polite"></div>
+      <form id="chatForm" class="chat-form">
+        <label for="chatInput" class="sr-only">Message</label>
+        <input id="chatInput" class="fld" maxlength="200" placeholder="Message likho…" autocomplete="off">
+        <button class="send" aria-label="Message bhejo"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 12l16-8-6 16-2-6z"/></svg></button>
+      </form>
+    </aside>
+  </div>
+
+  <nav class="controls" aria-label="Call controls">
+    <button id="micBtn" class="ctl" aria-label="Mic on/off"></button>
+    <button id="camBtn" class="ctl" aria-label="Camera on/off"></button>
+    <button id="spkBtn" class="ctl" aria-label="Speaker on/off"></button>
+    <button id="flipBtn" class="ctl" aria-label="Camera palto (front/back)"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M20 7h-3l-2-3H9L7 7H4a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1z"/><path d="M9 13a3 3 0 0 1 5-2.2M15 13a3 3 0 0 1-5 2.2"/><path d="M14 9v2h-2M10 17v-2h2"/></svg></button>
+    <button id="leaveBtn" class="ctl ctl-end" aria-label="Game aur call chhodo"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M3 15c5-5 13-5 18 0l-2 3-4-1v-3a10 10 0 0 0-6 0v3l-4 1z"/></svg></button>
+  </nav>
+</div>
+
+<div id="toast" class="toast" role="status"></div>
+
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script>
+/* Optional settings. Leave empty to use the free public PeerJS server + its TURN relay.
+   To use your own TURN server (better for Jio/Airtel mobile data), uncomment and fill:
+window.LY_PEER_OPTS = {
+  config: { iceServers: [
+    { urls: 'stun:stun.l.google.com:19302' },
+    { urls: 'turn:YOUR-TURN-HOST:3478', username: 'USER', credential: 'PASS' }
+  ] }
+};
+*/
+
+</script>
+<script>
+/* Ludo Yaari - game rules (pure functions, no DOM) */
+(function (root) {
+  const COLORS = ['red', 'green', 'yellow', 'blue'];
+  const START = { red: 0, green: 13, yellow: 26, blue: 39 };
+  const SAFE = [0, 8, 13, 21, 26, 34, 39, 47];
+  const FINISH = 56; // 0..50 track, 51..55 home column, 56 = home
+
+  // 52 track cells as [col,row] on a 15x15 grid, starting at red's start cell
+  const TRACK = (() => {
+    const p = [];
+    for (let c = 1; c <= 5; c++) p.push([c, 6]);
+    for (let r = 5; r >= 0; r--) p.push([6, r]);
+    p.push([7, 0]); p.push([8, 0]);
+    for (let r = 1; r <= 5; r++) p.push([8, r]);
+    for (let c = 9; c <= 14; c++) p.push([c, 6]);
+    p.push([14, 7]); p.push([14, 8]);
+    for (let c = 13; c >= 9; c--) p.push([c, 8]);
+    for (let r = 9; r <= 14; r++) p.push([8, r]);
+    p.push([7, 14]); p.push([6, 14]);
+    for (let r = 13; r >= 9; r--) p.push([6, r]);
+    for (let c = 5; c >= 0; c--) p.push([c, 8]);
+    p.push([0, 7]); p.push([0, 6]);
+    return p;
+  })();
+
+  const HOME_COL = {
+    red: [[1, 7], [2, 7], [3, 7], [4, 7], [5, 7]],
+    green: [[7, 1], [7, 2], [7, 3], [7, 4], [7, 5]],
+    yellow: [[13, 7], [12, 7], [11, 7], [10, 7], [9, 7]],
+    blue: [[7, 13], [7, 12], [7, 11], [7, 10], [7, 9]],
+  };
+  const BASE_ORIGIN = { red: [0, 0], green: [9, 0], yellow: [9, 9], blue: [0, 9] };
+  const BASE_SLOTS = [[2, 2], [4, 2], [2, 4], [4, 4]];
+  const CENTER = { red: [6.9, 7.5], green: [7.5, 6.9], yellow: [8.1, 7.5], blue: [7.5, 8.1] };
+
+  function globalIndex(color, progress) {
+    return (START[color] + progress) % 52;
+  }
+
+  // Board coordinates (centre of cell, in grid units) for a token
+  function tokenXY(color, progress, slot) {
+    if (progress < 0) {
+      const o = BASE_ORIGIN[color], s = BASE_SLOTS[slot];
+      return [o[0] + s[0], o[1] + s[1]];
+    }
+    if (progress <= 50) {
+      const c = TRACK[globalIndex(color, progress)];
+      return [c[0] + 0.5, c[1] + 0.5];
+    }
+    if (progress < FINISH) {
+      const c = HOME_COL[color][progress - 51];
+      return [c[0] + 0.5, c[1] + 0.5];
+    }
+    return CENTER[color];
+  }
+
+  function newGame(colors) {
+    const tokens = {};
+    colors.forEach(c => { tokens[c] = [-1, -1, -1, -1]; });
+    return {
+      colors: colors.slice(), tokens, turn: 0, dice: null, rolled: false,
+      sixes: 0, winners: [], over: false, last: null, rollId: 0,
+    };
+  }
+
+  function currentColor(g) { return g.colors[g.turn]; }
+
+  function canMove(g, color, i, d) {
+    const p = g.tokens[color][i];
+    if (p === FINISH) return false;
+    if (p < 0) return d === 6;
+    return p + d <= FINISH;
+  }
+
+  function movable(g, color, d) {
+    const r = [];
+    for (let i = 0; i < 4; i++) if (canMove(g, color, i, d)) r.push(i);
+    return r;
+  }
+
+  function nextTurn(g) {
+    if (g.over) return;
+    let n = g.turn;
+    for (let k = 0; k < g.colors.length; k++) {
+      n = (n + 1) % g.colors.length;
+      if (!g.winners.includes(g.colors[n])) break;
+    }
+    g.turn = n; g.dice = null; g.rolled = false; g.sixes = 0;
+  }
+
+  // Returns {moves:[...]} ; if no move possible the turn passes automatically
+  function roll(g, value) {
+    if (g.over || g.rolled) return null;
+    const color = currentColor(g);
+    const d = value || (1 + Math.floor(Math.random() * 6));
+    g.dice = d; g.rollId++;
+    if (d === 6) g.sixes++;
+    if (g.sixes === 3) {
+      g.last = { type: 'three6', color };
+      g.rolled = true;
+      return { moves: [], pass: true };
+    }
+    const moves = movable(g, color, d);
+    g.rolled = true;
+    g.last = { type: 'roll', color, dice: d };
+    return { moves, pass: moves.length === 0 };
+  }
+
+  // After a roll with no moves (or three sixes) the UI calls this after a short pause
+  function passIfStuck(g) {
+    if (!g.rolled) return;
+    const color = currentColor(g);
+    if (g.sixes === 3 || movable(g, color, g.dice).length === 0) {
+      if (g.dice === 6 && g.sixes < 3) { g.rolled = false; g.dice = null; return; }
+      nextTurn(g);
+    }
+  }
+
+  function move(g, color, i) {
+    if (g.over || !g.rolled || color !== currentColor(g)) return false;
+    const d = g.dice;
+    if (!canMove(g, color, i, d)) return false;
+    const toks = g.tokens[color];
+    toks[i] = toks[i] < 0 ? 0 : toks[i] + d;
+    let bonus = d === 6;
+    const ev = { type: 'move', color, i, captured: [] };
+
+    if (toks[i] <= 50) {
+      const gi = globalIndex(color, toks[i]);
+      if (!SAFE.includes(gi)) {
+        g.colors.forEach(oc => {
+          if (oc === color) return;
+          g.tokens[oc].forEach((op, j) => {
+            if (op >= 0 && op <= 50 && globalIndex(oc, op) === gi) {
+              g.tokens[oc][j] = -1;
+              ev.captured.push(oc);
+              bonus = true;
+            }
+          });
+        });
+      }
+    }
+    if (toks[i] === FINISH) {
+      ev.home = true;
+      bonus = true;
+      if (toks.every(p => p === FINISH)) {
+        g.winners.push(color);
+        bonus = false;
+        const left = g.colors.filter(c => !g.winners.includes(c));
+        if (left.length <= 1) { g.over = true; if (left.length) g.winners.push(left[0]); }
+      }
+    }
+    g.last = ev;
+    if (g.over) { g.rolled = false; return true; }
+    if (bonus) { g.rolled = false; g.dice = null; if (d !== 6) g.sixes = 0; }
+    else nextTurn(g);
+    return true;
+  }
+
+  const api = { COLORS, START, SAFE, FINISH, TRACK, HOME_COL, BASE_ORIGIN, BASE_SLOTS,
+    globalIndex, tokenXY, newGame, currentColor, canMove, movable, roll, move, passIfStuck, nextTurn };
+  if (typeof module !== 'undefined' && module.exports) module.exports = api;
+  else root.Ludo = api;
+})(this);
+
+</script>
+<script>
+/* Ludo Yaari - UI, online rooms (PeerJS/WebRTC), chat, voice & video */
+(() => {
+  'use strict';
+  const L = window.Ludo;
+  const $ = id => document.getElementById(id);
+
+  const HEX = { red: '#E5484D', green: '#30A46C', yellow: '#F5C518', blue: '#3E7BFA' };
+  const ASSIGN = ['red', 'yellow', 'green', 'blue']; // 2 players sit opposite each other
+  const PREFIX = 'ludoyaari-v1-';
+  const MAX_CHAT = 60;
+
+  const ICON = {
+    mic: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3z"/><path d="M19 11a7 7 0 0 1-14 0"/><path d="M12 18v3"/></svg>',
+    micOff: '<svg viewBox="0 0 24 24" aria-hidden="true" class="off"><path d="M3 3l18 18"/><path d="M9 9v3a3 3 0 0 0 5.1 2.1"/><path d="M15 9.3V6a3 3 0 0 0-5.7-1.3"/><path d="M19 11a7 7 0 0 1-1.2 3.9"/><path d="M5 11a7 7 0 0 0 10.7 5.9"/><path d="M12 18v3"/></svg>',
+    cam: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10l5-3v10l-5-3"/></svg>',
+    camOff: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3l18 18"/><path d="M16 16v1a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h2"/><path d="M10 6h5a1 1 0 0 1 1 1v3l5-3v10"/></svg>',
+    spk: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M17 9a4 4 0 0 1 0 6"/><path d="M19.5 6.5a8 8 0 0 1 0 11"/></svg>',
+    spkOff: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M17 9l5 6M22 9l-5 6"/></svg>',
+  };
+
+  // ---------------- state ----------------
+  let peer = null, myId = null, isHost = false, hostConn = null, room = null;
+  const conns = new Map();          // host only: peerId -> DataConnection
+  const calls = new Map();          // peerId -> MediaConnection
+  const remoteStreams = new Map();  // peerId -> MediaStream
+  const meters = new Map();         // peerId -> analyser info
+  let localStream = null, realAudio = false, realVideo = false;
+  let mic = true, cam = true, speakerOn = true, facing = 'user';
+  let audioCtx = null, meterTimer = null, hostTimer = null;
+  let leaving = false, inGame = false, rollPending = false;
+  let lastRollId = -1, lastChatLen = -1, lastChatKey = '', wasMyTurn = false;
+
+  // ---------------- helpers ----------------
+  function toast(text, actionLabel, action) {
+    const t = $('toast');
+    t.textContent = text;
+    if (actionLabel) {
+      const b = document.createElement('button');
+      b.textContent = actionLabel;
+      b.onclick = () => { action(); t.classList.remove('show'); };
+      t.appendChild(b);
+    }
+    t.classList.add('show');
+    clearTimeout(toast._t);
+    toast._t = setTimeout(() => t.classList.remove('show'), actionLabel ? 8000 : 2600);
+  }
+  function genCode() {
+    const a = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let s = '';
+    for (let i = 0; i < 6; i++) s += a[Math.floor(Math.random() * a.length)];
+    return s;
+  }
+  const cleanName = n => (String(n || '').replace(/\s+/g, ' ').trim().slice(0, 14) || 'Player');
+  const me = () => room && room.players.find(p => p.id === myId);
+  const byColor = c => room && room.players.find(p => p.color === c);
+  const roomLink = () => location.origin + location.pathname + '?room=' + room.code;
+
+  // ---------------- lobby ----------------
+  const nameInput = $('nameInput'), codeInput = $('codeInput');
+  try { nameInput.value = localStorage.getItem('ly_name') || ''; } catch (e) {}
+  const urlRoom = new URLSearchParams(location.search).get('room');
+  if (urlRoom) { codeInput.value = urlRoom.toUpperCase().slice(0, 6); }
+
+  function lobbyMsg(t) { $('lobbyMsg').textContent = t || ''; }
+  function lobbyBusy(b) { $('createBtn').disabled = b; $('joinBtn').disabled = b; }
+  function readName() {
+    const n = cleanName(nameInput.value);
+    if (!nameInput.value.trim()) { lobbyMsg('Pehle apna naam likho.'); nameInput.focus(); return null; }
+    try { localStorage.setItem('ly_name', n); } catch (e) {}
+    return n;
+  }
+
+  $('createBtn').onclick = async () => {
+    const name = readName(); if (!name) return;
+    lobbyBusy(true); lobbyMsg('Mic/camera chalu ho raha hai…');
+    await setupMedia();
+    lobbyMsg('Room ban raha hai…');
+    createRoom(name);
+  };
+  $('joinBtn').onclick = async () => {
+    const name = readName(); if (!name) return;
+    const code = codeInput.value.trim().toUpperCase();
+    if (code.length !== 6) { lobbyMsg('Room code 6 akshar ka hota hai.'); codeInput.focus(); return; }
+    lobbyBusy(true); lobbyMsg('Mic/camera chalu ho raha hai…');
+    await setupMedia();
+    lobbyMsg('Room se jud rahe hain…');
+    joinRoom(name, code);
+  };
+  codeInput.addEventListener('keydown', e => { if (e.key === 'Enter') $('joinBtn').click(); });
+
+  // ---------------- media ----------------
+  async function setupMedia() {
+    try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { audioCtx = null; }
+    let stream = null;
+    const vid = { facingMode: 'user', width: { ideal: 320 }, height: { ideal: 240 }, frameRate: { ideal: 15 } };
+    const aud = { echoCancellation: true, noiseSuppression: true, autoGainControl: true };
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      try { stream = await navigator.mediaDevices.getUserMedia({ audio: aud, video: vid }); }
+      catch (e) {
+        try { stream = await navigator.mediaDevices.getUserMedia({ audio: aud }); toast('Camera nahi mila — sirf awaaz chalegi'); }
+        catch (e2) { toast('Mic/camera ki permission nahi mili — game aur chat phir bhi chalega'); }
+      }
+    }
+    stream = stream || new MediaStream();
+    realAudio = stream.getAudioTracks().length > 0;
+    realVideo = stream.getVideoTracks().length > 0;
+    // Make sure every stream has 1 audio + 1 video track so calls always negotiate both
+    if (!realAudio && audioCtx) {
+      const dest = audioCtx.createMediaStreamDestination();
+      stream.addTrack(dest.stream.getAudioTracks()[0]);
+    }
+    if (!realVideo) {
+      const cv = document.createElement('canvas'); cv.width = 160; cv.height = 120;
+      const cx = cv.getContext('2d'); cx.fillStyle = '#11182A'; cx.fillRect(0, 0, 160, 120);
+      if (cv.captureStream) stream.addTrack(cv.captureStream(1).getVideoTracks()[0]);
+    }
+    localStream = stream;
+    mic = realAudio; cam = realVideo;
+    applyLocalTracks();
+  }
+  function applyLocalTracks() {
+    if (!localStream) return;
+    localStream.getAudioTracks().forEach(t => { t.enabled = mic; });
+    localStream.getVideoTracks().forEach(t => { t.enabled = cam; });
+    renderControls();
+  }
+  function stopMedia() {
+    if (localStream) localStream.getTracks().forEach(t => t.stop());
+    localStream = null;
+    if (audioCtx) { try { audioCtx.close(); } catch (e) {} audioCtx = null; }
+    meters.clear();
+  }
+
+  function attachMeter(id, stream) {
+    if (!audioCtx || !stream.getAudioTracks().length) return;
+    try {
+      const src = audioCtx.createMediaStreamSource(stream);
+      const an = audioCtx.createAnalyser(); an.fftSize = 512;
+      src.connect(an);
+      meters.set(id, { an, buf: new Uint8Array(an.fftSize) });
+    } catch (e) {}
+  }
+  function startMeters() {
+    clearInterval(meterTimer);
+    meterTimer = setInterval(() => {
+      if (!room) return;
+      room.players.forEach(p => {
+        const el = tileEls[p.color]; if (!el) return;
+        const m = meters.get(p.id);
+        let speaking = false;
+        if (m && p.mic) {
+          m.an.getByteTimeDomainData(m.buf);
+          let sum = 0;
+          for (let i = 0; i < m.buf.length; i++) { const v = (m.buf[i] - 128) / 128; sum += v * v; }
+          speaking = Math.sqrt(sum / m.buf.length) > 0.035;
+        }
+        el.root.classList.toggle('speaking', speaking);
+      });
+    }, 200);
+  }
+
+  // ---------------- networking: host ----------------
+  function createRoom(name) {
+    const code = genCode();
+    peer = new Peer(PREFIX + code, Object.assign({ debug: 0 }, window.LY_PEER_OPTS || {}));
+    peer.on('open', id => {
+      myId = id; isHost = true;
+      room = { code, hostId: id, started: false, chat: [], game: null,
+        players: [{ id, name, color: 'red', mic, cam, online: true }] };
+      sys(`${name} ne room banaya`);
+      enterGame();
+      broadcast();
+    });
+    peer.on('error', err => {
+      if (err.type === 'unavailable-id' && !room) { peer.destroy(); createRoom(name); return; }
+      onPeerError(err);
+    });
+    peer.on('connection', hostAccept);
+    peer.on('call', answerCall);
+    peer.on('disconnected', () => { if (!leaving && peer && !peer.destroyed) peer.reconnect(); });
+  }
+
+  function hostAccept(conn) {
+    conn.on('data', msg => {
+      if (!msg || typeof msg !== 'object') return;
+      if (msg.t === 'hello') {
+        if (room.started) { conn.send({ t: 'started' }); setTimeout(() => conn.close(), 500); return; }
+        if (room.players.length >= 4) { conn.send({ t: 'full' }); setTimeout(() => conn.close(), 500); return; }
+        const used = room.players.map(p => p.color);
+        const color = ASSIGN.find(c => !used.includes(c));
+        const name = cleanName(msg.name);
+        room.players.push({ id: conn.peer, name, color, mic: !!msg.mic, cam: !!msg.cam, online: true });
+        conns.set(conn.peer, conn);
+        sys(`${name} aa gaya`);
+        broadcast();
+        return;
+      }
+      if (conns.get(conn.peer) === conn) hostAction(conn.peer, msg);
+    });
+    conn.on('close', () => hostDrop(conn));
+    conn.on('error', () => hostDrop(conn));
+  }
+
+  function hostDrop(conn) {
+    if (conns.get(conn.peer) !== conn) return;
+    conns.delete(conn.peer);
+    const p = room.players.find(x => x.id === conn.peer);
+    if (p) {
+      if (!room.started) room.players = room.players.filter(x => x !== p);
+      else p.online = false;
+      sys(`${p.name} chala gaya`);
+    }
+    dropCall(conn.peer);
+    afterChange();
+  }
+
+  function sys(text) { room.chat.push({ s: text }); trimChat(); }
+  function trimChat() { if (room.chat.length > MAX_CHAT) room.chat.splice(0, room.chat.length - MAX_CHAT); }
+
+  function broadcast() {
+    if (!isHost || !room) return;
+    const msg = { t: 'state', room };
+    conns.forEach(c => { if (c.open) { try { c.send(msg); } catch (e) {} } });
+    render();
+    syncCalls();
+  }
+  function afterChange() { broadcast(); scheduleAuto(); }
+  function hostLater(fn, ms) {
+    clearTimeout(hostTimer);
+    hostTimer = setTimeout(() => { hostTimer = null; fn(); afterChange(); }, ms);
+  }
+
+  function hostAction(from, msg) {
+    const p = room.players.find(x => x.id === from);
+    if (!p) return;
+    const g = room.game;
+    switch (msg.t) {
+      case 'chat': {
+        const x = String(msg.text || '').trim().slice(0, 200);
+        if (!x) return;
+        room.chat.push({ n: p.name, c: p.color, x }); trimChat(); broadcast();
+        break;
+      }
+      case 'media': p.mic = !!msg.mic; p.cam = !!msg.cam; broadcast(); break;
+      case 'start':
+        if (from !== myId || room.started || room.players.length < 2) return;
+        startGame(); break;
+      case 'again':
+        if (from !== myId || !g || !g.over) return;
+        startGame(); break;
+      case 'roll': {
+        if (!g || g.over || g.rolled || L.currentColor(g) !== p.color) return;
+        const r = L.roll(g);
+        if (g.last && g.last.type === 'three6') sys(`${p.name} ke teen baar 6 — baari gayi`);
+        broadcast();
+        if (r.pass) hostLater(() => L.passIfStuck(g), 1300);
+        else if (r.moves.length === 1) hostLater(() => doMove(p, r.moves[0], true), 800);
+        break;
+      }
+      case 'move': doMove(p, Number(msg.i)); break;
+    }
+  }
+
+  function doMove(p, i, fromTimer) {
+    const g = room.game;
+    if (!g || !(i >= 0 && i < 4)) return;
+    if (!L.move(g, p.color, i)) return;
+    if (!fromTimer) clearTimeout(hostTimer);
+    const ev = g.last;
+    if (ev && ev.captured && ev.captured.length) {
+      ev.captured.forEach(c => { const v = byColor(c); sys(`${p.name} ne ${v ? v.name : c} ki goti kaat di!`); });
+    }
+    if (ev && ev.home) sys(`${p.name} ki ek goti ghar pahunch gayi`);
+    if (g.winners.includes(p.color) && !announced.has(p.color)) {
+      announced.add(p.color);
+      const pos = g.winners.indexOf(p.color) + 1;
+      sys(pos === 1 ? `${p.name} jeet gaya! Pehla number` : `${p.name} ki saari gotiyan ghar — position ${pos}`);
+    }
+    if (!fromTimer) afterChange();
+  }
+  const announced = new Set();
+
+  function startGame() {
+    clearTimeout(hostTimer);
+    room.players = room.players.filter(p => p.online);
+    const colors = L.COLORS.filter(c => room.players.some(p => p.color === c));
+    room.game = L.newGame(colors);
+    room.started = true;
+    announced.clear();
+    sys('Game shuru! Laal se pehle baari, phir clockwise.');
+    afterChange();
+  }
+
+  // Offline player's turn is played automatically so the game never gets stuck
+  function scheduleAuto() {
+    if (!isHost || !room || !room.game || room.game.over || hostTimer) return;
+    const g = room.game, cur = byColor(L.currentColor(g));
+    if (cur && cur.online) return;
+    hostLater(() => {
+      const c = L.currentColor(g);
+      if (!g.rolled) { L.roll(g); return; }
+      const mv = L.movable(g, c, g.dice);
+      if (g.sixes === 3 || !mv.length) { L.passIfStuck(g); return; }
+      L.move(g, c, mv[mv.length - 1]);
+    }, 1400);
+  }
+
+  // ---------------- networking: guest ----------------
+  function joinRoom(name, code) {
+    peer = new Peer(Object.assign({ debug: 0 }, window.LY_PEER_OPTS || {}));
+    let opened = false;
+    peer.on('open', id => {
+      myId = id;
+      hostConn = peer.connect(PREFIX + code, { reliable: true });
+      const t = setTimeout(() => { if (!opened) failJoin('Room nahi mila. Code check karo.'); }, 15000);
+      hostConn.on('open', () => { opened = true; clearTimeout(t); hostConn.send({ t: 'hello', name, mic, cam }); });
+      hostConn.on('data', onHostMsg);
+      hostConn.on('close', () => {
+        if (leaving) return;
+        if (inGame) { toast('Host ne room band kar diya'); endSession(); }
+      });
+    });
+    peer.on('error', err => {
+      if (err.type === 'peer-unavailable' && !inGame) { failJoin('Room nahi mila. Code check karo.'); return; }
+      onPeerError(err);
+    });
+    peer.on('call', answerCall);
+    peer.on('disconnected', () => { if (!leaving && peer && !peer.destroyed) peer.reconnect(); });
+  }
+
+  function onHostMsg(msg) {
+    if (!msg || typeof msg !== 'object') return;
+    if (msg.t === 'full') return failJoin('Room full hai (4 log already hain).');
+    if (msg.t === 'started') return failJoin('Is room mein game shuru ho chuka hai.');
+    if (msg.t === 'state') {
+      room = msg.room;
+      if (!inGame) enterGame();
+      render();
+      syncCalls();
+    }
+  }
+
+  function failJoin(text) { endSession(); lobbyMsg(text); }
+
+  function onPeerError(err) {
+    const type = err && err.type;
+    if (type === 'peer-unavailable') return; // a call target left; harmless
+    if (!inGame) { endSession(); lobbyMsg('Connection nahi ho paya (' + (type || 'error') + '). Internet check karke dobara try karo.'); }
+    else if (type === 'network' || type === 'server-error') toast('Internet connection mein dikkat…');
+  }
+
+  function send(msg) {
+    if (isHost) hostAction(myId, msg);
+    else if (hostConn && hostConn.open) hostConn.send(msg);
+  }
+
+  // ---------------- calls (audio/video mesh) ----------------
+  function syncCalls() {
+    if (!room || !peer || !localStream) return;
+    const ids = new Set(room.players.filter(p => p.online && p.id !== myId).map(p => p.id));
+    calls.forEach((c, id) => { if (!ids.has(id)) dropCall(id); });
+    ids.forEach(id => { if (!calls.has(id) && myId < id) callPeer(id); });
+  }
+  function callPeer(id) {
+    const call = peer.call(id, localStream);
+    if (!call) return;
+    setupCall(call);
+    setTimeout(() => {
+      if (calls.get(id) === call && !remoteStreams.has(id)) { dropCall(id); syncCalls(); }
+    }, 15000);
+  }
+  function answerCall(call) {
+    call.answer(localStream || undefined);
+    setupCall(call);
+  }
+  function setupCall(call) {
+    const id = call.peer;
+    const old = calls.get(id);
+    calls.set(id, call);
+    if (old && old !== call) { try { old.close(); } catch (e) {} }
+    call.on('stream', s => {
+      if (calls.get(id) !== call) return;
+      remoteStreams.set(id, s);
+      attachMeter(id, s);
+      renderTiles();
+    });
+    const gone = () => { if (calls.get(id) === call) { calls.delete(id); remoteStreams.delete(id); meters.delete(id); renderTiles(); } };
+    call.on('close', gone);
+    call.on('error', gone);
+  }
+  function dropCall(id) {
+    const c = calls.get(id);
+    calls.delete(id); remoteStreams.delete(id); meters.delete(id);
+    if (c) { try { c.close(); } catch (e) {} }
+  }
+
+  // ---------------- screens ----------------
+  function enterGame() {
+    inGame = true;
+    lobbyBusy(false); lobbyMsg('');
+    $('lobby').classList.add('hidden');
+    $('game').classList.remove('hidden');
+    $('roomCode').textContent = room.code;
+    $('waitCode').textContent = room.code;
+    history.replaceState(null, '', location.pathname + '?room=' + room.code);
+    attachMeter(myId, localStream);
+    startMeters();
+    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+  }
+
+  function endSession() {
+    leaving = true;
+    clearTimeout(hostTimer); hostTimer = null;
+    clearInterval(meterTimer);
+    calls.forEach((c, id) => dropCall(id));
+    conns.forEach(c => { try { c.close(); } catch (e) {} }); conns.clear();
+    if (hostConn) { try { hostConn.close(); } catch (e) {} hostConn = null; }
+    if (peer) { try { peer.destroy(); } catch (e) {} peer = null; }
+    stopMedia();
+    Object.values(tileEls).forEach(el => { el.video.srcObject = null; });
+    room = null; myId = null; isHost = false; inGame = false; rollPending = false;
+    lastRollId = -1; lastChatLen = -1; lastChatKey = ''; wasMyTurn = false;
+    tokenEls.clear(); $('tokens') && ($('tokens').innerHTML = '');
+    $('game').classList.add('hidden');
+    $('lobby').classList.remove('hidden');
+    lobbyBusy(false);
+    history.replaceState(null, '', location.pathname);
+    leaving = false;
+  }
+  window.addEventListener('pagehide', () => { if (peer) { leaving = true; peer.destroy(); } });
+
+  // ---------------- board ----------------
+  const SVGNS = 'http://www.w3.org/2000/svg';
+  function el(tag, attrs, parent) {
+    const e = document.createElementNS(SVGNS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function drawBoard() {
+    const b = $('board');
+    b.innerHTML = '';
+    b.style.fill = ''; b.style.stroke = '';
+    el('rect', { x: 0, y: 0, width: 15, height: 15, rx: 0.3, fill: '#FFFFFF', stroke: 'none' }, b);
+    const homes = [[0, 0, 'red'], [9, 0, 'green'], [9, 9, 'yellow'], [0, 9, 'blue']];
+    homes.forEach(([x, y, c]) => {
+      el('rect', { x, y, width: 6, height: 6, fill: HEX[c], stroke: 'none' }, b);
+      el('rect', { x: x + 1, y: y + 1, width: 4, height: 4, rx: 0.4, fill: '#FFFFFF', stroke: 'none' }, b);
+      L.BASE_SLOTS.forEach(([dx, dy]) => el('circle', { cx: x + dx, cy: y + dy, r: 0.62, fill: 'none', stroke: HEX[c], 'stroke-width': 0.12 }, b));
+    });
+    const startCells = { '1,6': 'red', '8,1': 'green', '13,8': 'yellow', '6,13': 'blue' };
+    for (let r = 0; r < 15; r++) for (let c = 0; c < 15; c++) {
+      const cross = (r >= 6 && r <= 8) || (c >= 6 && c <= 8);
+      if (!cross || (r >= 6 && r <= 8 && c >= 6 && c <= 8)) continue;
+      let f = '#FFFFFF';
+      if (r === 7 && c >= 1 && c <= 5) f = HEX.red;
+      if (c === 7 && r >= 1 && r <= 5) f = HEX.green;
+      if (r === 7 && c >= 9 && c <= 13) f = HEX.yellow;
+      if (c === 7 && r >= 9 && r <= 13) f = HEX.blue;
+      if (startCells[c + ',' + r]) f = HEX[startCells[c + ',' + r]];
+      el('rect', { x: c, y: r, width: 1, height: 1, fill: f, stroke: '#C9CED8', 'stroke-width': 0.04 }, b);
+    }
+    [8, 21, 34, 47].forEach(gi => {
+      const [c, r] = L.TRACK[gi]; const cx = c + 0.5, cy = r + 0.5;
+      const pts = [];
+      for (let k = 0; k < 10; k++) {
+        const a = -Math.PI / 2 + k * Math.PI / 5, rad = k % 2 ? 0.14 : 0.34;
+        pts.push((cx + rad * Math.cos(a)).toFixed(3) + ',' + (cy + rad * Math.sin(a)).toFixed(3));
+      }
+      el('polygon', { points: pts.join(' '), fill: '#9AA4B8', stroke: 'none' }, b);
+    });
+    el('polygon', { points: '6,6 7.5,7.5 6,9', fill: HEX.red, stroke: 'none' }, b);
+    el('polygon', { points: '6,6 9,6 7.5,7.5', fill: HEX.green, stroke: 'none' }, b);
+    el('polygon', { points: '9,6 9,9 7.5,7.5', fill: HEX.yellow, stroke: 'none' }, b);
+    el('polygon', { points: '6,9 9,9 7.5,7.5', fill: HEX.blue, stroke: 'none' }, b);
+    el('g', { id: 'tokens' }, b);
+  }
+
+  const tokenEls = new Map();
+  function tokenEl(color, i) {
+    const key = color + i;
+    if (tokenEls.has(key)) return tokenEls.get(key);
+    const g = el('g', { class: 'token' }, $('tokens'));
+    el('circle', { class: 'ring', r: 0.6, fill: 'none', stroke: '#0F1525', 'stroke-width': 0.1, 'stroke-dasharray': '0.2 0.12' }, g);
+    el('circle', { cy: 0.07, r: 0.4, fill: '#000', opacity: 0.25, stroke: 'none' }, g);
+    el('circle', { class: 'body', r: 0.4, fill: HEX[color], stroke: '#FFFFFF', 'stroke-width': 0.12 }, g);
+    el('circle', { r: 0.14, fill: '#FFFFFF', opacity: 0.55, stroke: 'none' }, g);
+    el('circle', { r: 0.7, fill: 'transparent', stroke: 'none' }, g); // bigger tap area
+    g.addEventListener('click', () => {
+      if (g.classList.contains('can')) { send({ t: 'move', i }); g.classList.remove('can'); }
+    });
+    tokenEls.set(key, g);
+    return g;
+  }
+
+  function renderTokens() {
+    const g = room.game;
+    const colors = g ? g.colors : room.players.map(p => p.color);
+    // remove tokens of colors no longer present
+    tokenEls.forEach((e, k) => { if (!colors.some(c => k.startsWith(c))) { e.remove(); tokenEls.delete(k); } });
+    const myColor = me() && me().color;
+    const canSet = new Set();
+    if (g && !g.over && g.rolled && L.currentColor(g) === myColor && g.sixes < 3) {
+      L.movable(g, myColor, g.dice).forEach(i => canSet.add(i));
+    }
+    const groups = {};
+    colors.forEach(c => {
+      const toks = g ? g.tokens[c] : [-1, -1, -1, -1];
+      toks.forEach((p, i) => {
+        const [x, y] = L.tokenXY(c, p, i);
+        const key = x.toFixed(2) + ',' + y.toFixed(2);
+        (groups[key] = groups[key] || []).push({ c, i, x, y });
+      });
+    });
+    Object.values(groups).forEach(list => {
+      const n = list.length;
+      list.forEach((t, k) => {
+        let dx = 0, dy = 0, s = 1;
+        if (n > 1) { s = n > 2 ? 0.6 : 0.72; const a = (k / n) * Math.PI * 2; dx = Math.cos(a) * 0.22; dy = Math.sin(a) * 0.22; }
+        const e = tokenEl(t.c, t.i);
+        e.style.transform = `translate(${t.x + dx}px, ${t.y + dy}px) scale(${s})`;
+        const can = t.c === myColor && canSet.has(t.i);
+        e.classList.toggle('can', can);
+        e.querySelector('.ring').setAttribute('opacity', can ? 1 : 0);
+        if (can) $('tokens').appendChild(e); // keep movable tokens on top
+      });
+    });
+  }
+
+  // ---------------- tiles ----------------
+  const tileEls = {};
+  function buildTiles() {
+    const layout = { tilesTop: ['red', 'green'], tilesBottom: ['blue', 'yellow'] };
+    Object.entries(layout).forEach(([box, cols]) => {
+      cols.forEach(c => {
+        const root = document.createElement('div');
+        root.className = 'tile';
+        root.style.borderColor = HEX[c];
+        root.innerHTML = '<video autoplay playsinline></video><div class="avatar"><span></span></div><div class="empty-txt">Khaali jagah</div><div class="badge"></div><div class="label"><span class="cdot"></span><span class="nm"></span><span class="mi"></span></div>';
+        root.querySelector('.cdot').style.background = HEX[c];
+        root.querySelector('.avatar span').style.background = HEX[c];
+        $(box).appendChild(root);
+        tileEls[c] = { root, video: root.querySelector('video'), avatar: root.querySelector('.avatar'),
+          initial: root.querySelector('.avatar span'), empty: root.querySelector('.empty-txt'),
+          badge: root.querySelector('.badge'), label: root.querySelector('.label'),
+          nm: root.querySelector('.nm'), mi: root.querySelector('.mi') };
+      });
+    });
+  }
+
+  function renderTiles() {
+    if (!room) return;
+    const g = room.game;
+    const cur = g && !g.over ? L.currentColor(g) : null;
+    L.COLORS.forEach(c => {
+      const t = tileEls[c], p = byColor(c);
+      t.root.classList.toggle('empty', !p);
+      t.empty.style.display = p ? 'none' : '';
+      t.label.style.display = p ? '' : 'none';
+      t.root.classList.toggle('turn', !!p && cur === c);
+      if (!p) { t.video.srcObject = null; t.avatar.style.display = 'none'; t.badge.style.display = 'none'; return; }
+      const isMe = p.id === myId;
+      const stream = isMe ? localStream : remoteStreams.get(p.id);
+      if (t.video.srcObject !== (stream || null)) {
+        t.video.srcObject = stream || null;
+        if (stream) {
+          const pr = t.video.play();
+          if (pr && pr.catch) pr.catch(() => toast('Dosto ki awaaz sunne ke liye tap karo', 'Awaaz chalu', playAll));
+        }
+      }
+      t.video.muted = isMe || !speakerOn;
+      t.video.classList.toggle('mirror', isMe && facing === 'user');
+      const showVideo = stream && p.cam && p.online;
+      t.video.style.visibility = showVideo ? 'visible' : 'hidden';
+      t.avatar.style.display = showVideo ? 'none' : 'flex';
+      t.initial.textContent = p.name.charAt(0).toUpperCase();
+      t.nm.textContent = isMe ? p.name + ' (Tum)' : p.name;
+      t.mi.innerHTML = p.mic ? ICON.mic : ICON.micOff;
+      let badge = '';
+      if (!p.online) badge = 'Offline';
+      else if (!isMe && !stream) badge = 'Video jud raha…';
+      else if (!p.cam) badge = 'Camera off';
+      t.badge.textContent = badge;
+      t.badge.style.display = badge ? '' : 'none';
+    });
+  }
+  function playAll() { Object.values(tileEls).forEach(t => { if (t.video.srcObject) t.video.play().catch(() => {}); }); if (audioCtx) audioCtx.resume(); }
+
+  // ---------------- dice / turn ----------------
+  const PIPS = { 1: [4], 2: [0, 8], 3: [0, 4, 8], 4: [0, 2, 6, 8], 5: [0, 2, 4, 6, 8], 6: [0, 2, 3, 5, 6, 8] };
+  const diceBtn = $('diceBtn');
+  for (let i = 0; i < 9; i++) diceBtn.appendChild(document.createElement('i'));
+  function showDice(v) {
+    const on = PIPS[v] || [];
+    [...diceBtn.children].forEach((p, i) => p.classList.toggle('on', on.includes(i)));
+  }
+  diceBtn.onclick = () => {
+    if (diceBtn.disabled) return;
+    rollPending = true; diceBtn.disabled = true; diceBtn.classList.remove('ready');
+    diceBtn.classList.add('rolling');
+    send({ t: 'roll' });
+  };
+
+  function renderTurn() {
+    const g = room.game, mine = me();
+    const dot = $('turnDot'), tt = $('turnText'), ts = $('turnSub');
+    let myTurn = false;
+    if (!room.started || !g) {
+      dot.style.background = '#9AA4B8';
+      tt.textContent = 'Game shuru nahi hua';
+      ts.textContent = room.players.length < 2 ? 'Kam se kam 2 log chahiye' : (isHost ? 'Start dabao jab sab aa jaayein' : 'Host start karega');
+      showDice(6);
+    } else if (g.over) {
+      dot.style.background = '#9AA4B8';
+      tt.textContent = 'Game khatam';
+      ts.textContent = '';
+    } else {
+      const c = L.currentColor(g), p = byColor(c);
+      myTurn = mine && mine.color === c;
+      dot.style.background = HEX[c];
+      if (myTurn) {
+        if (!g.rolled) tt.textContent = 'Tumhari baari! Dice dabao';
+        else if (L.movable(g, c, g.dice).length && g.sixes < 3) tt.textContent = 'Chamakti goti chuno';
+        else tt.textContent = 'Koi chaal nahi bachi';
+      } else tt.textContent = (p ? p.name : c) + ' ki baari' + (p && !p.online ? ' (auto)' : '');
+      if (g.dice) {
+        ts.textContent = 'Dice aaya: ' + g.dice + (g.sixes === 3 ? ' — teen 6, baari gayi' : g.dice === 6 ? ' — ek aur chance' : '');
+        showDice(g.dice);
+      } else ts.textContent = g.last && g.last.type === 'move' && g.last.color === c && (g.last.captured.length || g.last.home) ? 'Bonus chance mila!' : '';
+      if (g.rollId !== lastRollId) {
+        lastRollId = g.rollId;
+        diceBtn.classList.remove('rolling'); void diceBtn.offsetWidth; diceBtn.classList.add('rolling');
+      }
+    }
+    const canRoll = myTurn && !g.rolled && !rollPending;
+    diceBtn.disabled = !canRoll;
+    diceBtn.classList.toggle('ready', !!canRoll);
+    if (canRoll && !wasMyTurn && navigator.vibrate) navigator.vibrate(120);
+    wasMyTurn = !!canRoll;
+  }
+
+  // ---------------- overlays ----------------
+  function renderOverlays() {
+    const g = room.game;
+    const wait = $('waitCard'), over = $('overCard');
+    wait.classList.toggle('hidden', room.started);
+    over.classList.toggle('hidden', !(g && g.over));
+    if (!room.started) {
+      const ul = $('waitPlayers'); ul.innerHTML = '';
+      room.players.forEach(p => {
+        const li = document.createElement('li');
+        const d = document.createElement('span'); d.className = 'cdot'; d.style.background = HEX[p.color];
+        li.appendChild(d);
+        li.appendChild(document.createTextNode(p.name + (p.id === room.hostId ? ' (host)' : '') + (p.id === myId ? ' — tum' : '')));
+        ul.appendChild(li);
+      });
+      const canStart = isHost && room.players.length >= 2;
+      $('startBtn').classList.toggle('hidden', !canStart);
+      $('waitHint').textContent = room.players.length < 2 ? 'Kam se kam 1 dost aur chahiye (max 4).'
+        : isHost ? `${room.players.length} log aa gaye. Start dabao!` : 'Host game shuru karega…';
+    }
+    if (g && g.over) {
+      const ol = $('ranking'); ol.innerHTML = '';
+      g.winners.forEach((c, k) => {
+        const p = byColor(c);
+        const li = document.createElement('li');
+        const d = document.createElement('span'); d.className = 'cdot'; d.style.background = HEX[c];
+        li.appendChild(d);
+        li.appendChild(document.createTextNode(`${k + 1}. ${p ? p.name : c}`));
+        ol.appendChild(li);
+      });
+      $('againBtn').classList.toggle('hidden', !isHost);
+      $('againHint').textContent = isHost ? '' : 'Host dobara game shuru kar sakta hai';
+    }
+  }
+  $('startBtn').onclick = () => send({ t: 'start' });
+  $('againBtn').onclick = () => send({ t: 'again' });
+
+  // ---------------- chat ----------------
+  function renderChat() {
+    const last = room.chat[room.chat.length - 1];
+    const key = room.chat.length + '|' + (last ? (last.x || last.s) : '');
+    if (key === lastChatKey) return;
+    lastChatKey = key;
+    const list = $('chatList');
+    list.innerHTML = '';
+    room.chat.forEach(m => {
+      const d = document.createElement('div');
+      if (m.s) { d.className = 'sys'; d.textContent = m.s; }
+      else {
+        d.className = 'msg';
+        const b = document.createElement('strong');
+        b.style.color = HEX[m.c]; b.textContent = m.n + ':';
+        d.appendChild(b); d.appendChild(document.createTextNode(m.x));
+      }
+      list.appendChild(d);
+    });
+    list.scrollTop = list.scrollHeight;
+  }
+  $('chatForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const inp = $('chatInput'); const text = inp.value.trim();
+    if (!text) return;
+    send({ t: 'chat', text }); inp.value = '';
+  });
+
+  // ---------------- controls ----------------
+  function renderControls() {
+    const mb = $('micBtn'), cb = $('camBtn'), sb = $('spkBtn');
+    mb.innerHTML = mic ? ICON.mic : ICON.micOff.replace(' class="off"', '');
+    mb.classList.toggle('off', !mic);
+    cb.innerHTML = cam ? ICON.cam : ICON.camOff;
+    cb.classList.toggle('off', !cam);
+    sb.innerHTML = speakerOn ? ICON.spk : ICON.spkOff;
+    sb.classList.toggle('off', !speakerOn);
+    $('flipBtn').style.display = realVideo ? '' : 'none';
+  }
+  function pushMedia() { send({ t: 'media', mic, cam }); }
+  $('micBtn').onclick = () => {
+    if (!realAudio) return toast('Mic ki permission nahi mili. Browser settings mein allow karke page reload karo.');
+    mic = !mic; applyLocalTracks(); pushMedia();
+  };
+  $('camBtn').onclick = () => {
+    if (!realVideo) return toast('Camera ki permission nahi mili. Browser settings mein allow karke page reload karo.');
+    cam = !cam; applyLocalTracks(); pushMedia(); renderTiles();
+  };
+  $('spkBtn').onclick = () => { speakerOn = !speakerOn; renderControls(); renderTiles(); };
+  $('flipBtn').onclick = async () => {
+    if (!realVideo) return;
+    const want = facing === 'user' ? 'environment' : 'user';
+    try {
+      const s = await navigator.mediaDevices.getUserMedia({ video: { facingMode: want, width: { ideal: 320 }, height: { ideal: 240 }, frameRate: { ideal: 15 } } });
+      const nt = s.getVideoTracks()[0];
+      const old = localStream.getVideoTracks()[0];
+      calls.forEach(c => {
+        const pc = c.peerConnection; if (!pc) return;
+        const sender = pc.getSenders().find(x => x.track && x.track.kind === 'video');
+        if (sender) sender.replaceTrack(nt);
+      });
+      if (old) { localStream.removeTrack(old); old.stop(); }
+      localStream.addTrack(nt);
+      nt.enabled = cam; facing = want;
+      tileEls[me().color].video.srcObject = null; renderTiles();
+    } catch (e) { toast('Doosra camera nahi mila'); }
+  };
+  $('leaveBtn').onclick = () => { if (confirm('Game aur call chhodna hai?')) endSession(); };
+
+  async function copyLink() {
+    const link = roomLink();
+    try { await navigator.clipboard.writeText(link); toast('Link copy ho gaya — dosto ko bhejo'); }
+    catch (e) { toast('Link: ' + link); }
+  }
+  $('copyBtn').onclick = copyLink;
+  $('copyBtn2').onclick = copyLink;
+  $('shareBtn').onclick = () => {
+    const text = `Ludo khelne aaja! Room code: ${room.code}\n${roomLink()}`;
+    window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank', 'noopener');
+  };
+
+  // ---------------- main render ----------------
+  function render() {
+    if (!room || !inGame) return;
+    rollPending = false;
+    $('onlineCount').textContent = room.players.filter(p => p.online).length;
+    renderTokens();
+    renderTiles();
+    renderTurn();
+    renderOverlays();
+    renderChat();
+    renderControls();
+  }
+
+  drawBoard();
+  buildTiles();
+  renderControls();
+})();
+
+</script>
+</body>
+</html>
