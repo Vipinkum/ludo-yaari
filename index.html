@@ -215,11 +215,11 @@ svg{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-lin
 .ctl.lit{background:#FFC93C;color:#3A2600}
 .screen-light{position:fixed;inset:0;pointer-events:none;z-index:28;opacity:var(--lo,.85);box-shadow:inset 0 0 0 var(--lw,16px) #FFFFFF,inset 0 0 var(--lg,36px) var(--ls,22px) rgba(255,255,255,.75)}
 .controls{gap:9px}
-@media (max-width:380px){.ctl{width:46px;height:46px}.ctl-end{width:58px}}
+@media (max-width:380px){.ctl{width:46px;height:46px}.ctl-end{width:58px}.emoji-grid.big{grid-template-columns:repeat(7,minmax(0,1fr))}}
 
 /* ---------- emoji effects ---------- */
 .sheet{position:fixed;inset:0;z-index:32;background:rgba(3,6,24,.55);display:flex;align-items:flex-end;justify-content:center}
-.sheet-card{width:100%;max-width:520px;background:#14205A;border:1px solid var(--line);border-radius:22px 22px 0 0;padding:12px 14px calc(16px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:6px}
+.sheet-card{width:100%;max-width:520px;background:#14205A;border:1px solid var(--line);border-radius:22px 22px 0 0;padding:12px 14px calc(16px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:6px;max-height:92vh;max-height:92dvh;overflow-y:auto;overscroll-behavior:contain}
 .sheet-head{display:flex;align-items:center;justify-content:space-between;font-weight:800;font-size:16px}
 .sheet-label{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-top:6px}
 .emoji-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
@@ -227,6 +227,19 @@ svg{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-lin
 .emoji-grid button:active{transform:scale(.88)}
 .emoji-grid button.picked{outline:3px solid var(--gold);background:rgba(255,201,60,.18)}
 .emoji-grid button:disabled{opacity:.4}
+.sheet-label .tab-name{text-transform:none;letter-spacing:0;color:var(--text);font-weight:700}
+.emoji-tabs{display:flex;gap:2px;justify-content:space-between;overflow-x:auto;scrollbar-width:none;flex:none;padding:2px 0}
+.emoji-tabs::-webkit-scrollbar{display:none}
+.emoji-tabs button{flex:1 0 32px;max-width:48px;height:38px;padding:0;border-radius:12px;border:1px solid transparent;background:transparent;font-size:21px;line-height:1;cursor:pointer;opacity:.55;transition:opacity .15s,background .15s}
+.emoji-tabs button.on{background:var(--surface2);border-color:var(--line);opacity:1}
+.emoji-grid.big{grid-template-columns:repeat(8,minmax(0,1fr));gap:4px;max-height:min(38vh,300px);overflow-y:auto;overscroll-behavior:contain;align-content:start;padding:3px;border-radius:14px;background:rgba(0,0,0,.14)}
+.emoji-grid.big button{height:44px;font-size:27px;border-radius:10px;border-color:transparent;background:transparent}
+.emoji-grid.big button:hover{background:var(--surface)}
+.leave-card{max-width:360px;text-align:center}
+.leave-text{margin:0;color:var(--muted);font-size:15px;line-height:1.45}
+.leave-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px}
+.btn-danger{background:linear-gradient(#EF5350,#C62828);box-shadow:0 4px 0 #8E1B1B}
+.btn-danger:active{transform:translateY(2px);box-shadow:0 2px 0 #8E1B1B}
 .target-chips{display:flex;flex-wrap:wrap;gap:8px}
 .target-chips button{display:flex;align-items:center;gap:8px;height:44px;padding:0 14px;border-radius:999px;border:2px solid var(--c);background:var(--surface2);color:#fff;font-weight:700;font-size:14px;cursor:pointer}
 .target-chips .cdot{width:12px;height:12px;border-radius:6px;background:var(--c)}
@@ -381,8 +394,9 @@ svg{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-lin
     </div>
     <div class="sheet-label">React</div>
     <div id="reactGrid" class="emoji-grid"></div>
-    <div class="sheet-label">Throw at a player</div>
-    <div id="throwGrid" class="emoji-grid"></div>
+    <div class="sheet-label">Throw at a player <span id="throwTabName" class="tab-name"></span></div>
+    <div id="throwTabs" class="emoji-tabs" role="tablist" aria-label="Emoji groups"></div>
+    <div id="throwGrid" class="emoji-grid big"></div>
     <div id="targetRow" class="target-row hidden">
       <div class="sheet-label">Who gets it?</div>
       <div id="targetChips" class="target-chips"></div>
@@ -396,6 +410,18 @@ svg{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-lin
   <video id="spotVideo" autoplay playsinline></video>
   <div id="spotName" class="spot-name"></div>
   <button id="spotClose" class="icon-btn spot-close" aria-label="Close video"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+</div>
+
+<!-- asks before leaving (Leave button or the phone's back button) -->
+<div id="leaveModal" class="modal hidden" role="alertdialog" aria-labelledby="leaveTitle" aria-describedby="leaveText">
+  <div class="modal-card leave-card">
+    <h2 id="leaveTitle">Leave the game?</h2>
+    <p id="leaveText" class="leave-text">You'll leave this game and the call.</p>
+    <div class="leave-btns">
+      <button id="leaveStay" class="btn btn-ghost">Stay</button>
+      <button id="leaveGo" class="btn btn-danger">Leave</button>
+    </div>
+  </div>
 </div>
 
 <!-- rules -->
@@ -635,6 +661,30 @@ window.LY_PEER_OPTS = {
 
 </script>
 <script>
+/* Ludo Yaari - all standard emojis (Emoji 13.0 and older, so they show on most phones), grouped for the Throw picker.
+   groups: [key, tab icon, name, default throw effect, emojis]; kinds: emojis whose effect differs from their group default. */
+window.LY_EMOJI = {
+  groups: [
+    ["smileys","😀","Smileys","hit","😀 😃 😄 😁 😆 😅 🤣 😂 🙂 🙃 😉 😊 😇 🥰 😍 🤩 😘 😗 ☺️ 😚 😙 🥲 😋 😛 😜 🤪 😝 🤑 🤗 🤭 🤫 🤔 🤐 🤨 😐 😑 😶 😏 😒 🙄 😬 🤥 😌 😔 😪 🤤 😴 😷 🤒 🤕 🤢 🤮 🤧 🥵 🥶 🥴 😵 🤯 🤠 🥳 🥸 😎 🤓 🧐 😕 😟 🙁 ☹️ 😮 😯 😲 😳 🥺 😦 😧 😨 😰 😥 😢 😭 😱 😖 😣 😞 😓 😩 😫 🥱 😤 😡 😠 🤬 😈 👿 💀 ☠️ 💩 🤡 👹 👺 👻 👽 👾 🤖 😺 😸 😹 😻 😼 😽 🙀 😿 😾 🙈 🙉 🙊 💌 💘 💝 💖 💗 💓 💞 💕 💟 ❣️ 💔 ❤️ 🧡 💛 💚 💙 💜 🤎 🖤 🤍 💋 💯 💢 💥 💫 💦 💨 🕳️ 💬 👁️‍🗨️ 🗨️ 🗯️ 💭 💤"],
+    ["people","👋","People","hit","👋 🤚 🖐️ ✋ 🖖 👌 🤌 🤏 ✌️ 🤞 🤟 🤘 🤙 👈 👉 👆 🖕 👇 ☝️ 👍 👎 ✊ 👊 🤛 🤜 👏 🙌 👐 🤲 🤝 🙏 ✍️ 💅 🤳 💪 🦾 🦿 🦵 🦶 👂 🦻 👃 🧠 🫀 🫁 🦷 🦴 👀 👁️ 👅 👄 👶 🧒 👦 👧 🧑 👱 👨 🧔 👨‍🦰 👨‍🦱 👨‍🦳 👨‍🦲 👩 👩‍🦰 🧑‍🦰 👩‍🦱 🧑‍🦱 👩‍🦳 🧑‍🦳 👩‍🦲 🧑‍🦲 👱‍♀️ 👱‍♂️ 🧓 👴 👵 🙍 🙍‍♂️ 🙍‍♀️ 🙎 🙎‍♂️ 🙎‍♀️ 🙅 🙅‍♂️ 🙅‍♀️ 🙆 🙆‍♂️ 🙆‍♀️ 💁 💁‍♂️ 💁‍♀️ 🙋 🙋‍♂️ 🙋‍♀️ 🧏 🧏‍♂️ 🧏‍♀️ 🙇 🙇‍♂️ 🙇‍♀️ 🤦 🤦‍♂️ 🤦‍♀️ 🤷 🤷‍♂️ 🤷‍♀️ 🧑‍⚕️ 👨‍⚕️ 👩‍⚕️ 🧑‍🎓 👨‍🎓 👩‍🎓 🧑‍🏫 👨‍🏫 👩‍🏫 🧑‍⚖️ 👨‍⚖️ 👩‍⚖️ 🧑‍🌾 👨‍🌾 👩‍🌾 🧑‍🍳 👨‍🍳 👩‍🍳 🧑‍🔧 👨‍🔧 👩‍🔧 🧑‍🏭 👨‍🏭 👩‍🏭 🧑‍💼 👨‍💼 👩‍💼 🧑‍🔬 👨‍🔬 👩‍🔬 🧑‍💻 👨‍💻 👩‍💻 🧑‍🎤 👨‍🎤 👩‍🎤 🧑‍🎨 👨‍🎨 👩‍🎨 🧑‍✈️ 👨‍✈️ 👩‍✈️ 🧑‍🚀 👨‍🚀 👩‍🚀 🧑‍🚒 👨‍🚒 👩‍🚒 👮 👮‍♂️ 👮‍♀️ 🕵️ 🕵️‍♂️ 🕵️‍♀️ 💂 💂‍♂️ 💂‍♀️ 🥷 👷 👷‍♂️ 👷‍♀️ 🤴 👸 👳 👳‍♂️ 👳‍♀️ 👲 🧕 🤵 🤵‍♂️ 🤵‍♀️ 👰 👰‍♂️ 👰‍♀️ 🤰 🤱 👩‍🍼 👨‍🍼 🧑‍🍼 👼 🎅 🤶 🧑‍🎄 🦸 🦸‍♂️ 🦸‍♀️ 🦹 🦹‍♂️ 🦹‍♀️ 🧙 🧙‍♂️ 🧙‍♀️ 🧚 🧚‍♂️ 🧚‍♀️ 🧛 🧛‍♂️ 🧛‍♀️ 🧜 🧜‍♂️ 🧜‍♀️ 🧝 🧝‍♂️ 🧝‍♀️ 🧞 🧞‍♂️ 🧞‍♀️ 🧟 🧟‍♂️ 🧟‍♀️ 💆 💆‍♂️ 💆‍♀️ 💇 💇‍♂️ 💇‍♀️ 🚶 🚶‍♂️ 🚶‍♀️ 🧍 🧍‍♂️ 🧍‍♀️ 🧎 🧎‍♂️ 🧎‍♀️ 🧑‍🦯 👨‍🦯 👩‍🦯 🧑‍🦼 👨‍🦼 👩‍🦼 🧑‍🦽 👨‍🦽 👩‍🦽 🏃 🏃‍♂️ 🏃‍♀️ 💃 🕺 🕴️ 👯 👯‍♂️ 👯‍♀️ 🧖 🧖‍♂️ 🧖‍♀️ 🧗 🧗‍♂️ 🧗‍♀️ 🤺 🏇 ⛷️ 🏂 🏌️ 🏌️‍♂️ 🏌️‍♀️ 🏄 🏄‍♂️ 🏄‍♀️ 🚣 🚣‍♂️ 🚣‍♀️ 🏊 🏊‍♂️ 🏊‍♀️ ⛹️ ⛹️‍♂️ ⛹️‍♀️ 🏋️ 🏋️‍♂️ 🏋️‍♀️ 🚴 🚴‍♂️ 🚴‍♀️ 🚵 🚵‍♂️ 🚵‍♀️ 🤸 🤸‍♂️ 🤸‍♀️ 🤼 🤼‍♂️ 🤼‍♀️ 🤽 🤽‍♂️ 🤽‍♀️ 🤾 🤾‍♂️ 🤾‍♀️ 🤹 🤹‍♂️ 🤹‍♀️ 🧘 🧘‍♂️ 🧘‍♀️ 🛀 🛌 🧑‍🤝‍🧑 👭 👫 👬 💏 👩‍❤️‍💋‍👨 👨‍❤️‍💋‍👨 👩‍❤️‍💋‍👩 💑 👩‍❤️‍👨 👨‍❤️‍👨 👩‍❤️‍👩 👨‍👩‍👦 👨‍👩‍👧 👨‍👩‍👧‍👦 👨‍👩‍👦‍👦 👨‍👩‍👧‍👧 👨‍👨‍👦 👨‍👨‍👧 👨‍👨‍👧‍👦 👨‍👨‍👦‍👦 👨‍👨‍👧‍👧 👩‍👩‍👦 👩‍👩‍👧 👩‍👩‍👧‍👦 👩‍👩‍👦‍👦 👩‍👩‍👧‍👧 👨‍👦 👨‍👦‍👦 👨‍👧 👨‍👧‍👦 👨‍👧‍👧 👩‍👦 👩‍👦‍👦 👩‍👧 👩‍👧‍👦 👩‍👧‍👧 🗣️ 👤 👥 🫂 👪 👣"],
+    ["animals","🐶","Animals & nature","hit","🐵 🐒 🦍 🦧 🐶 🐕 🦮 🐕‍🦺 🐩 🐺 🦊 🦝 🐱 🐈 🐈‍⬛ 🦁 🐯 🐅 🐆 🐴 🐎 🦄 🦓 🦌 🦬 🐮 🐂 🐃 🐄 🐷 🐖 🐗 🐽 🐏 🐑 🐐 🐪 🐫 🦙 🦒 🐘 🦣 🦏 🦛 🐭 🐁 🐀 🐹 🐰 🐇 🐿️ 🦫 🦔 🦇 🐻 🐻‍❄️ 🐨 🐼 🦥 🦦 🦨 🦘 🦡 🐾 🦃 🐔 🐓 🐣 🐤 🐥 🐦 🐧 🕊️ 🦅 🦆 🦢 🦉 🦤 🪶 🦩 🦚 🦜 🐸 🐊 🐢 🦎 🐍 🐲 🐉 🦕 🦖 🐳 🐋 🐬 🦭 🐟 🐠 🐡 🦈 🐙 🐚 🦀 🦞 🦐 🦑 🦪 🐌 🦋 🐛 🐜 🐝 🪲 🐞 🦗 🪳 🕷️ 🕸️ 🦂 🦟 🪰 🪱 🦠 💐 🌸 💮 🏵️ 🌹 🥀 🌺 🌻 🌼 🌷 🌱 🪴 🌲 🌳 🌴 🌵 🌾 🌿 ☘️ 🍀 🍁 🍂 🍃 🍄"],
+    ["food","🍔","Food & drink","splat","🍇 🍈 🍉 🍊 🍋 🍌 🍍 🥭 🍎 🍏 🍐 🍑 🍒 🍓 🫐 🥝 🍅 🫒 🥥 🥑 🍆 🥔 🥕 🌽 🌶️ 🫑 🥒 🥬 🥦 🧄 🧅 🥜 🌰 🍞 🥐 🥖 🫓 🥨 🥯 🥞 🧇 🧀 🍖 🍗 🥩 🥓 🍔 🍟 🍕 🌭 🥪 🌮 🌯 🫔 🥙 🧆 🥚 🍳 🥘 🍲 🫕 🥣 🥗 🍿 🧈 🧂 🥫 🍱 🍘 🍙 🍚 🍛 🍜 🍝 🍠 🍢 🍣 🍤 🍥 🥮 🍡 🥟 🥠 🥡 🍦 🍧 🍨 🍩 🍪 🎂 🍰 🧁 🥧 🍫 🍬 🍭 🍮 🍯 🍼 🥛 ☕ 🫖 🍵 🍶 🍾 🍷 🍸 🍹 🍺 🍻 🥂 🥃 🥤 🧋 🧃 🧉 🧊 🥢 🍽️ 🍴 🥄 🔪 🏺"],
+    ["travel","✈️","Travel & places","hit","🌍 🌎 🌏 🌐 🗺️ 🗾 🧭 🏔️ ⛰️ 🌋 🗻 🏕️ 🏖️ 🏜️ 🏝️ 🏞️ 🏟️ 🏛️ 🏗️ 🧱 🪨 🪵 🛖 🏘️ 🏚️ 🏠 🏡 🏢 🏣 🏤 🏥 🏦 🏨 🏩 🏪 🏫 🏬 🏭 🏯 🏰 💒 🗼 🗽 ⛪ 🕌 🛕 🕍 ⛩️ 🕋 ⛲ ⛺ 🌁 🌃 🏙️ 🌄 🌅 🌆 🌇 🌉 ♨️ 🎠 🎡 🎢 💈 🎪 🚂 🚃 🚄 🚅 🚆 🚇 🚈 🚉 🚊 🚝 🚞 🚋 🚌 🚍 🚎 🚐 🚑 🚒 🚓 🚔 🚕 🚖 🚗 🚘 🚙 🛻 🚚 🚛 🚜 🏎️ 🏍️ 🛵 🦽 🦼 🛺 🚲 🛴 🛹 🛼 🚏 🛣️ 🛤️ 🛢️ ⛽ 🚨 🚥 🚦 🛑 🚧 ⚓ ⛵ 🛶 🚤 🛳️ ⛴️ 🛥️ 🚢 ✈️ 🛩️ 🛫 🛬 🪂 💺 🚁 🚟 🚠 🚡 🛰️ 🚀 🛸 🛎️ 🧳 ⌛ ⏳ ⌚ ⏰ ⏱️ ⏲️ 🕰️ 🕛 🕧 🕐 🕜 🕑 🕝 🕒 🕞 🕓 🕟 🕔 🕠 🕕 🕡 🕖 🕢 🕗 🕣 🕘 🕤 🕙 🕥 🕚 🕦 🌑 🌒 🌓 🌔 🌕 🌖 🌗 🌘 🌙 🌚 🌛 🌜 🌡️ ☀️ 🌝 🌞 🪐 ⭐ 🌟 🌠 🌌 ☁️ ⛅ ⛈️ 🌤️ 🌥️ 🌦️ 🌧️ 🌨️ 🌩️ 🌪️ 🌫️ 🌬️ 🌀 🌈 🌂 ☂️ ☔ ⛱️ ⚡ ❄️ ☃️ ⛄ ☄️ 🔥 💧 🌊"],
+    ["activities","⚽","Activities","hit","🎃 🎄 🎆 🎇 🧨 ✨ 🎈 🎉 🎊 🎋 🎍 🎎 🎏 🎐 🎑 🧧 🎀 🎁 🎗️ 🎟️ 🎫 🎖️ 🏆 🏅 🥇 🥈 🥉 ⚽ ⚾ 🥎 🏀 🏐 🏈 🏉 🎾 🥏 🎳 🏏 🏑 🏒 🥍 🏓 🏸 🥊 🥋 🥅 ⛳ ⛸️ 🎣 🤿 🎽 🎿 🛷 🥌 🎯 🪀 🪁 🔫 🎱 🔮 🪄 🎮 🕹️ 🎰 🎲 🧩 🧸 🪅 🪆 ♠️ ♥️ ♦️ ♣️ ♟️ 🃏 🀄 🎴 🎭 🖼️ 🎨 🧵 🪡 🧶 🪢"],
+    ["objects","💡","Objects","hit","👓 🕶️ 🥽 🥼 🦺 👔 👕 👖 🧣 🧤 🧥 🧦 👗 👘 🥻 🩱 🩲 🩳 👙 👚 👛 👜 👝 🛍️ 🎒 🩴 👞 👟 🥾 🥿 👠 👡 🩰 👢 👑 👒 🎩 🎓 🧢 🪖 ⛑️ 📿 💄 💍 💎 🔇 🔈 🔉 🔊 📢 📣 📯 🔔 🔕 🎼 🎵 🎶 🎙️ 🎚️ 🎛️ 🎤 🎧 📻 🎷 🎺 🪗 🎸 🎹 🎻 🪕 🥁 🪘 📱 📲 ☎️ 📞 📟 📠 🔋 🔌 💻 🖥️ 🖨️ ⌨️ 🖱️ 🖲️ 💽 💾 💿 📀 🧮 🎥 🎞️ 📽️ 🎬 📺 📷 📸 📹 📼 🔍 🔎 🕯️ 💡 🔦 🏮 🪔 📔 📕 📖 📗 📘 📙 📚 📓 📒 📃 📜 📄 📰 🗞️ 📑 🔖 🏷️ 🪙 💰 💴 💵 💶 💷 💸 💳 🧾 💹 ✉️ 📧 📨 📩 📤 📥 📦 📫 📪 📬 📭 📮 🗳️ ✏️ ✒️ 🖋️ 🖊️ 🖌️ 🖍️ 📝 💼 📁 📂 🗂️ 📅 📆 🗒️ 🗓️ 📇 📈 📉 📊 📋 📌 📍 📎 🖇️ 📏 📐 ✂️ 🗃️ 🗄️ 🗑️ 🔒 🔓 🔏 🔐 🔑 🗝️ 🔨 🪓 ⛏️ ⚒️ 🛠️ 🗡️ ⚔️ 💣 🪃 🏹 🛡️ 🪚 🔧 🪛 🔩 ⚙️ 🗜️ ⚖️ 🦯 🔗 ⛓️ 🪝 🧰 🧲 🪜 ⚗️ 🧪 🧫 🧬 🔬 🔭 📡 💉 🩸 💊 🩹 🩺 🚪 🛗 🪞 🪟 🛏️ 🛋️ 🪑 🚽 🪠 🚿 🛁 🪤 🪒 🧴 🧷 🧹 🧺 🧻 🪣 🧼 🪥 🧽 🧯 🛒 🚬 ⚰️ 🪦 ⚱️ 🧿 🗿 🪧"],
+    ["symbols","❤️","Symbols","gift","🏧 🚮 🚰 ♿ 🚹 🚺 🚻 🚼 🚾 🛂 🛃 🛄 🛅 ⚠️ 🚸 ⛔ 🚫 🚳 🚭 🚯 🚱 🚷 📵 🔞 ☢️ ☣️ ⬆️ ↗️ ➡️ ↘️ ⬇️ ↙️ ⬅️ ↖️ ↕️ ↔️ ↩️ ↪️ ⤴️ ⤵️ 🔃 🔄 🔙 🔚 🔛 🔜 🔝 🛐 ⚛️ 🕉️ ✡️ ☸️ ☯️ ✝️ ☦️ ☪️ ☮️ 🕎 🔯 ♈ ♉ ♊ ♋ ♌ ♍ ♎ ♏ ♐ ♑ ♒ ♓ ⛎ 🔀 🔁 🔂 ▶️ ⏩ ⏭️ ⏯️ ◀️ ⏪ ⏮️ 🔼 ⏫ 🔽 ⏬ ⏸️ ⏹️ ⏺️ ⏏️ 🎦 🔅 🔆 📶 📳 📴 ♀️ ♂️ ⚧️ ✖️ ➕ ➖ ➗ ♾️ ‼️ ⁉️ ❓ ❔ ❕ ❗ 〰️ 💱 💲 ⚕️ ♻️ ⚜️ 🔱 📛 🔰 ⭕ ✅ ☑️ ✔️ ❌ ❎ ➰ ➿ 〽️ ✳️ ✴️ ❇️ ©️ ®️ ™️ #️⃣ *️⃣ 0️⃣ 1️⃣ 2️⃣ 3️⃣ 4️⃣ 5️⃣ 6️⃣ 7️⃣ 8️⃣ 9️⃣ 🔟 🔠 🔡 🔢 🔣 🔤 🅰️ 🆎 🅱️ 🆑 🆒 🆓 ℹ️ 🆔 Ⓜ️ 🆕 🆖 🅾️ 🆗 🅿️ 🆘 🆙 🆚 🈁 🈂️ 🈷️ 🈶 🈯 🉐 🈹 🈚 🈲 🉑 🈸 🈴 🈳 ㊗️ ㊙️ 🈺 🈵 🔴 🟠 🟡 🟢 🔵 🟣 🟤 ⚫ ⚪ 🟥 🟧 🟨 🟩 🟦 🟪 🟫 ⬛ ⬜ ◼️ ◻️ ◾ ◽ ▪️ ▫️ 🔶 🔷 🔸 🔹 🔺 🔻 💠 🔘 🔳 🔲"],
+    ["flags","🏁","Flags","gift","🏁 🚩 🎌 🏴 🏳️ 🏳️‍🌈 🏳️‍⚧️ 🏴‍☠️ 🇦🇨 🇦🇩 🇦🇪 🇦🇫 🇦🇬 🇦🇮 🇦🇱 🇦🇲 🇦🇴 🇦🇶 🇦🇷 🇦🇸 🇦🇹 🇦🇺 🇦🇼 🇦🇽 🇦🇿 🇧🇦 🇧🇧 🇧🇩 🇧🇪 🇧🇫 🇧🇬 🇧🇭 🇧🇮 🇧🇯 🇧🇱 🇧🇲 🇧🇳 🇧🇴 🇧🇶 🇧🇷 🇧🇸 🇧🇹 🇧🇻 🇧🇼 🇧🇾 🇧🇿 🇨🇦 🇨🇨 🇨🇩 🇨🇫 🇨🇬 🇨🇭 🇨🇮 🇨🇰 🇨🇱 🇨🇲 🇨🇳 🇨🇴 🇨🇵 🇨🇷 🇨🇺 🇨🇻 🇨🇼 🇨🇽 🇨🇾 🇨🇿 🇩🇪 🇩🇬 🇩🇯 🇩🇰 🇩🇲 🇩🇴 🇩🇿 🇪🇦 🇪🇨 🇪🇪 🇪🇬 🇪🇭 🇪🇷 🇪🇸 🇪🇹 🇪🇺 🇫🇮 🇫🇯 🇫🇰 🇫🇲 🇫🇴 🇫🇷 🇬🇦 🇬🇧 🇬🇩 🇬🇪 🇬🇫 🇬🇬 🇬🇭 🇬🇮 🇬🇱 🇬🇲 🇬🇳 🇬🇵 🇬🇶 🇬🇷 🇬🇸 🇬🇹 🇬🇺 🇬🇼 🇬🇾 🇭🇰 🇭🇲 🇭🇳 🇭🇷 🇭🇹 🇭🇺 🇮🇨 🇮🇩 🇮🇪 🇮🇱 🇮🇲 🇮🇳 🇮🇴 🇮🇶 🇮🇷 🇮🇸 🇮🇹 🇯🇪 🇯🇲 🇯🇴 🇯🇵 🇰🇪 🇰🇬 🇰🇭 🇰🇮 🇰🇲 🇰🇳 🇰🇵 🇰🇷 🇰🇼 🇰🇾 🇰🇿 🇱🇦 🇱🇧 🇱🇨 🇱🇮 🇱🇰 🇱🇷 🇱🇸 🇱🇹 🇱🇺 🇱🇻 🇱🇾 🇲🇦 🇲🇨 🇲🇩 🇲🇪 🇲🇫 🇲🇬 🇲🇭 🇲🇰 🇲🇱 🇲🇲 🇲🇳 🇲🇴 🇲🇵 🇲🇶 🇲🇷 🇲🇸 🇲🇹 🇲🇺 🇲🇻 🇲🇼 🇲🇽 🇲🇾 🇲🇿 🇳🇦 🇳🇨 🇳🇪 🇳🇫 🇳🇬 🇳🇮 🇳🇱 🇳🇴 🇳🇵 🇳🇷 🇳🇺 🇳🇿 🇴🇲 🇵🇦 🇵🇪 🇵🇫 🇵🇬 🇵🇭 🇵🇰 🇵🇱 🇵🇲 🇵🇳 🇵🇷 🇵🇸 🇵🇹 🇵🇼 🇵🇾 🇶🇦 🇷🇪 🇷🇴 🇷🇸 🇷🇺 🇷🇼 🇸🇦 🇸🇧 🇸🇨 🇸🇩 🇸🇪 🇸🇬 🇸🇭 🇸🇮 🇸🇯 🇸🇰 🇸🇱 🇸🇲 🇸🇳 🇸🇴 🇸🇷 🇸🇸 🇸🇹 🇸🇻 🇸🇽 🇸🇾 🇸🇿 🇹🇦 🇹🇨 🇹🇩 🇹🇫 🇹🇬 🇹🇭 🇹🇯 🇹🇰 🇹🇱 🇹🇲 🇹🇳 🇹🇴 🇹🇷 🇹🇹 🇹🇻 🇹🇼 🇹🇿 🇺🇦 🇺🇬 🇺🇲 🇺🇳 🇺🇸 🇺🇾 🇺🇿 🇻🇦 🇻🇨 🇻🇪 🇻🇬 🇻🇮 🇻🇳 🇻🇺 🇼🇫 🇼🇸 🇽🇰 🇾🇪 🇾🇹 🇿🇦 🇿🇲 🇿🇼 🏴󠁧󠁢󠁥󠁮󠁧󠁿 🏴󠁧󠁢󠁳󠁣󠁴󠁿 🏴󠁧󠁢󠁷󠁬󠁳󠁿"]
+  ],
+  kinds: {
+    love: "🥰 😍 🤩 😘 😗 ☺️ 😚 😙 🥲 😻 😽 💌 💘 💝 💖 💗 💓 💞 💕 💟 ❣️ ❤️ 🧡 💛 💚 💙 💜 🤎 🖤 🤍 💋 💏 👩‍❤️‍💋‍👨 👨‍❤️‍💋‍👨 👩‍❤️‍💋‍👩 💑 👩‍❤️‍👨 👨‍❤️‍👨 👩‍❤️‍👩 💐 🌸 💮 🏵️ 🌹 🥀 🌺 🌻 🌼 🌷",
+    splat: "🤢 🤮 💩 💦 💧 🌊",
+    boom: "💢 💥 🌋 🚀 🌪️ ⚡ ☄️ 🔥 🎆 🎇 🧨 🔫 💣",
+    gift: "💫 ⭐ 🌟 🌈 🎃 🎄 ✨ 🎈 🎉 🎊 🎋 🎍 🎎 🎏 🎐 🎑 🧧 🎀 🎁 🎗️ 🎟️ 🎫 🎖️ 🏆 🏅 🥇 🥈 🥉 🧸 🪅 👑 💍 💎 🪙 💰 💴 💵 💶 💷 💸 💳 🧾 💹",
+    hit: "🥢 🍽️ 🍴 🥄 🔪 🏺"
+  }
+};
+</script>
+<script>
 /* Ludo Yaari – UI, sounds, animations, online rooms (PeerJS/WebRTC), chat, voice & HD video */
 (() => {
   'use strict';
@@ -653,6 +703,19 @@ window.LY_PEER_OPTS = {
   const ORD = ['1st', '2nd', '3rd', '4th'];
   const REACT = ['😂', '😍', '😎', '😡', '😭', '👍', '🔥', '🎉', '😱', '🙏', '🤣', '😘'];
   const THROW = { '🍅': 'splat', '💣': 'boom', '🥚': 'splat', '🌹': 'love', '💋': 'love', '❤️': 'love', '👊': 'hit', '🎁': 'gift', '💐': 'love', '🧊': 'hit', '💩': 'splat', '⭐': 'gift' };
+  // every emoji that can be thrown, with the effect it plays when it lands (emoji-data.js)
+  const EMO = (() => {
+    const src = window.LY_EMOJI || { groups: [], kinds: {} };
+    const kind = new Map();
+    const groups = src.groups.map(([key, icon, label, def, list]) => {
+      const items = list.split(' ');
+      items.forEach(e => kind.set(e, def));
+      return { key, icon, label, items };
+    });
+    Object.entries(src.kinds).forEach(([k, list]) => list.split(' ').forEach(e => kind.set(e, k)));
+    Object.entries(THROW).forEach(([e, k]) => kind.set(e, k));
+    return { groups, kind };
+  })();
   const lastFx = new Map(); // host: peerId -> time of last emoji (anti-spam)
 
   const ICON = {
@@ -1182,12 +1245,13 @@ window.LY_PEER_OPTS = {
       case 'move': doMove(p, Number(msg.i)); break;
       case 'emoji': {
         const e = String(msg.e || '');
-        if (!REACT.includes(e) && !THROW[e]) return;
+        const throwing = msg.to != null;
+        if (throwing ? !EMO.kind.has(e) : !REACT.includes(e)) return;
         const now = Date.now();
         if (now - (lastFx.get(from) || 0) < 700) return;
         lastFx.set(from, now);
-        const target = THROW[e] ? room.players.find(x => x.color === msg.to && x.id !== from) : null;
-        if (THROW[e] && !target) return;
+        const target = throwing ? room.players.find(x => x.color === msg.to && x.id !== from) : null;
+        if (throwing && !target) return;
         const fx = { t: 'fx', from: p.color, e, to: target ? target.color : null };
         conns.forEach(c => { if (c.open) { try { c.send(fx); } catch (er) {} } });
         playFx(fx);
@@ -1382,6 +1446,7 @@ window.LY_PEER_OPTS = {
     $('roomCode').textContent = room.code;
     $('waitCode').textContent = room.code;
     history.replaceState(null, '', location.pathname + '?room=' + room.code);
+    armBackTrap();
     attachMeter(myId, localStream);
     startLoops();
     if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
@@ -1402,7 +1467,8 @@ window.LY_PEER_OPTS = {
     stopMedia();
     flashOn = false; flashMode = null; $('screenLight').classList.add('hidden'); $('lightPanel').classList.add('hidden');
     Object.values(panelEls).forEach(el => { el.video.srcObject = null; });
-    closeSpotlight(); closeEmoji(); fxLayer.innerHTML = '';
+    closeSpotlight(); closeEmoji(); closeLeave(); fxLayer.innerHTML = '';
+    disarmBackTrap();
     room = null; myId = null; isHost = false; inGame = false; rollPending = false;
     lastRollId = -1; lastChatId = 0; wasMyTurn = false; lastWinners = 0; unread = 0;
     prevGame = null; prevGameNo = -1; animSeq++; animating = false; diceBusy = false;
@@ -1975,13 +2041,62 @@ window.LY_PEER_OPTS = {
       if (flashOn) await applyFlash();
     } catch (e) { toast('No other camera found'); if (flashOn) await applyFlash(); }
   };
-  $('leaveBtn').onclick = () => {
-    if (!confirm('Leave the game and call?')) return;
+  // ---- leaving: the Leave button and the phone's back button both ask first ----
+  function openLeave() {
+    const g = room && room.game;
+    let text = "You'll leave this game and the call.";
+    if (g && !g.over) text = isHost
+      ? "You're the host — the match stops for everyone if you leave."
+      : 'The match is still on. Your moves will be played for you until you join back with the room code.';
+    $('leaveText').textContent = text;
+    $('leaveModal').classList.remove('hidden');
+    setTimeout(() => $('leaveStay').focus(), 50);
+  }
+  function closeLeave() { $('leaveModal').classList.add('hidden'); }
+  function leaveNow() {
+    closeLeave();
     const code = room && room.code;
     endSession();
     forgetSession(code);
     showRejoin();
-  };
+  }
+  $('leaveBtn').onclick = openLeave;
+  $('leaveStay').onclick = closeLeave;
+  $('leaveGo').onclick = leaveNow;
+  $('leaveModal').addEventListener('click', e => { if (e.target.id === 'leaveModal') closeLeave(); });
+
+  // While in a room we keep one extra history entry. Pressing back lands on the entry below it:
+  // we put ours back at once and close whatever is open (sheet, chat, video), or ask before leaving.
+  let backTrap = false, skipPop = false;
+  function armBackTrap() {
+    if (backTrap) return;
+    try { history.pushState({ ly: 'game' }, '', location.href); backTrap = true; } catch (e) {}
+  }
+  function disarmBackTrap() {
+    if (!backTrap) return;
+    backTrap = false;
+    if (history.state && history.state.ly === 'game') { skipPop = true; history.back(); }
+  }
+  function closeTopLayer() {
+    if (!$('leaveModal').classList.contains('hidden')) { closeLeave(); return true; }
+    if (!$('spotlight').classList.contains('hidden')) { closeSpotlight(); return true; }
+    if (!$('emojiSheet').classList.contains('hidden')) { closeEmoji(); return true; }
+    if (!$('rulesModal').classList.contains('hidden')) { $('rulesModal').classList.add('hidden'); return true; }
+    if (window.innerWidth < 1100 && chatPanel.classList.contains('open')) { chatPanel.classList.remove('open'); return true; }
+    return false;
+  }
+  window.addEventListener('popstate', () => {
+    if (skipPop) { skipPop = false; if (!inGame) history.replaceState(null, '', location.pathname); return; }
+    if (!backTrap || !inGame) return;
+    backTrap = false;
+    armBackTrap();
+    if (!closeTopLayer()) openLeave();
+  });
+  // closing the tab or reloading mid-match also asks (the browser shows its own prompt)
+  window.addEventListener('beforeunload', e => {
+    const g = inGame && room && room.game;
+    if (g && !g.over) { e.preventDefault(); e.returnValue = ''; }
+  });
 
   async function copyLink() {
     const link = roomLink();
@@ -2027,12 +2142,20 @@ window.LY_PEER_OPTS = {
   const fxLayer = $('fxLayer');
   let pickedThrow = null, emojiCooldown = 0;
   function closeEmoji() { $('emojiSheet').classList.add('hidden'); pickedThrow = null; $('targetRow').classList.add('hidden'); [...$('throwGrid').children].forEach(b => b.classList.remove('picked')); }
+  // recently thrown emojis come first in the "Popular" tab
+  let recentThrow = [];
+  { const saved = store.get('ly_recent_throw'); if (Array.isArray(saved)) recentThrow = saved.filter(e => EMO.kind.has(e)).slice(0, 16); }
   function sendEmoji(e, to) {
     const now = Date.now();
     if (now < emojiCooldown) return;
     emojiCooldown = now + 900;
     Sfx.unlock();
     send({ t: 'emoji', e, to: to || null });
+    if (to) {
+      recentThrow = [e, ...recentThrow.filter(x => x !== e)].slice(0, 16);
+      store.set('ly_recent_throw', recentThrow);
+      if (throwTab === 'top') renderThrowGrid();
+    }
     closeEmoji();
   }
   REACT.forEach(e => {
@@ -2040,25 +2163,57 @@ window.LY_PEER_OPTS = {
     b.onclick = () => sendEmoji(e);
     $('reactGrid').appendChild(b);
   });
-  Object.keys(THROW).forEach(e => {
-    const b = document.createElement('button'); b.type = 'button'; b.textContent = e; b.setAttribute('aria-label', 'Throw ' + e);
+  const THROW_TABS = [{ key: 'top', icon: '⭐', label: 'Popular' }].concat(EMO.groups);
+  let throwTab = 'top';
+  function tabItems(key) {
+    if (key === 'top') return [...new Set([...recentThrow, ...Object.keys(THROW)])];
+    const g = EMO.groups.find(x => x.key === key);
+    return g ? g.items : [];
+  }
+  function renderThrowGrid() {
+    const grid = $('throwGrid');
+    grid.innerHTML = ''; grid.scrollTop = 0;
+    const frag = document.createDocumentFragment();
+    tabItems(throwTab).forEach(e => {
+      const b = document.createElement('button'); b.type = 'button'; b.textContent = e; b.dataset.e = e;
+      b.setAttribute('aria-label', 'Throw ' + e);
+      frag.appendChild(b);
+    });
+    grid.appendChild(frag);
+    const tab = THROW_TABS.find(t => t.key === throwTab);
+    $('throwTabName').textContent = tab ? '· ' + tab.label : '';
+    [...$('throwTabs').children].forEach(t => t.classList.toggle('on', t.dataset.k === throwTab));
+  }
+  THROW_TABS.forEach(t => {
+    const b = document.createElement('button'); b.type = 'button'; b.textContent = t.icon; b.dataset.k = t.key;
+    b.title = t.label; b.setAttribute('aria-label', t.label);
     b.onclick = () => {
-      const others = room ? room.players.filter(p => p.id !== myId && p.online) : [];
-      if (!others.length) return toast('No one to throw at yet — invite a friend!');
-      if (others.length === 1) return sendEmoji(e, others[0].color);
-      pickedThrow = e;
-      [...$('throwGrid').children].forEach(x => x.classList.toggle('picked', x === b));
-      const chips = $('targetChips'); chips.innerHTML = '';
-      others.forEach(p => {
-        const c = document.createElement('button'); c.type = 'button'; c.style.setProperty('--c', HEX[p.color]);
-        const d = document.createElement('span'); d.className = 'cdot'; c.appendChild(d);
-        c.appendChild(document.createTextNode(p.name));
-        c.onclick = () => sendEmoji(pickedThrow, p.color);
-        chips.appendChild(c);
-      });
-      $('targetRow').classList.remove('hidden');
+      if (throwTab === t.key) return;
+      throwTab = t.key; pickedThrow = null; $('targetRow').classList.add('hidden');
+      renderThrowGrid();
     };
-    $('throwGrid').appendChild(b);
+    $('throwTabs').appendChild(b);
+  });
+  renderThrowGrid();
+  $('throwGrid').addEventListener('click', ev => {
+    const b = ev.target.closest('button[data-e]');
+    if (!b) return;
+    const e = b.dataset.e;
+    const others = room ? room.players.filter(p => p.id !== myId && p.online) : [];
+    if (!others.length) return toast('No one to throw at yet — invite a friend!');
+    if (others.length === 1) return sendEmoji(e, others[0].color);
+    pickedThrow = e;
+    [...$('throwGrid').children].forEach(x => x.classList.toggle('picked', x === b));
+    const chips = $('targetChips'); chips.innerHTML = '';
+    others.forEach(p => {
+      const c = document.createElement('button'); c.type = 'button'; c.style.setProperty('--c', HEX[p.color]);
+      const d = document.createElement('span'); d.className = 'cdot'; c.appendChild(d);
+      c.appendChild(document.createTextNode(p.name));
+      c.onclick = () => sendEmoji(pickedThrow, p.color);
+      chips.appendChild(c);
+    });
+    $('targetRow').classList.remove('hidden');
+    $('targetRow').scrollIntoView({ block: 'nearest' });
   });
   $('emojiBtn').onclick = () => { Sfx.unlock(); $('emojiSheet').classList.remove('hidden'); };
   $('emojiClose').onclick = closeEmoji;
@@ -2116,6 +2271,19 @@ window.LY_PEER_OPTS = {
     t.root.classList.remove('shake'); void t.root.offsetWidth; t.root.classList.add('shake');
     setTimeout(() => t.root.classList.remove('shake'), 600);
   }
+  const SPLASH = [
+    ['🥚🍳🍋🍌🧀🍯🌽🥞🧇🍺🍻🥧🍮🍍🥭', '#FFD54F'],
+    ['💩🍫☕🍪🥔🥜🌰🍞🥐🥖🥨🥯🍖🍗🥩🍩🧆🥃🧉', '#8D6E63'],
+    ['💧💦🌊🧊', '#4FC3F7'],
+    ['🥛🍼🍶🍚🍙🥥🍦🍨🧁🎂🍰', '#F5F5F5'],
+    ['🥦🥬🥒🍏🍐🥝🤮🤢🍈🥑🍵🥗🫑', '#7CB342'],
+    ['🍊🥕🍑🧡🍤🍠🥮', '#FB8C00'],
+    ['🍇🍆🍷🫐🍠', '#8E24AA'],
+  ];
+  function splashColor(e) {
+    const hit = SPLASH.find(([list]) => list.includes(e));
+    return hit ? hit[1] : '#E53935';
+  }
   function impact(kind, e, x, y, color) {
     if (kind === 'splat') {
       Sfx.splat(); shake(color);
@@ -2126,7 +2294,7 @@ window.LY_PEER_OPTS = {
         { transform: 'translate(-50%,-50%) translate(0, 14px) scale(1.5, .45)', opacity: 1, offset: 0.7 },
         { transform: 'translate(-50%,-50%) translate(0, 30px) scale(1.4, .4)', opacity: 0 },
       ], 1300);
-      drops(e === '🥚' ? '#FFD54F' : e === '💩' ? '#8D6E63' : '#E53935', x, y, 12);
+      drops(splashColor(e), x, y, 12);
     } else if (kind === 'boom') {
       Sfx.boom(); shake(color);
       const s = spawn('💥', x, y, 50);
@@ -2169,7 +2337,7 @@ window.LY_PEER_OPTS = {
     }
     const to = centerOf(fx.to);
     if (!to) return;
-    const kind = THROW[fx.e] || 'hit';
+    const kind = EMO.kind.get(fx.e) || 'hit';
     const dx = to[0] - from[0], dy = to[1] - from[1];
     const arc = Math.min(160, 60 + Math.hypot(dx, dy) * 0.25);
     Sfx.whoosh();
