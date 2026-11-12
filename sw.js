@@ -1,5 +1,5 @@
 /* Ludo Yaari service worker – makes the app installable and quick to open */
-const VERSION = 'ly-v3';
+const VERSION = 'ly-v4';
 const SHELL = ['/', '/manifest.webmanifest', '/icons/icon-192.png', '/icons/icon-512.png'];
 const CDN = ['fonts.googleapis.com', 'fonts.gstatic.com', 'unpkg.com'];
 
