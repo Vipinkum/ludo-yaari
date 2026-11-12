@@ -1,234 +1,363 @@
 <!doctype html>
-<html lang="hi">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0F1525">
-<title>Ludo Yaari – Dosto ke saath Ludo + Video Call</title>
-<meta name="description" content="Online Ludo game with friends – room code, chat, voice and video call.">
+<meta name="theme-color" content="#14205A">
+<title>Ludo Yaari – Play Ludo with Friends + Video Call</title>
+<meta name="description" content="Play online Ludo with friends – private rooms, chat, voice and HD video call.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Ludo Yaari">
 <style>
 :root{
-  --bg:#0F1525; --surface:#1A2236; --surface2:#222C44; --line:#2E3A57;
-  --text:#EEF1F7; --muted:#9AA4B8;
-  --red:#E5484D; --green:#30A46C; --yellow:#F5C518; --blue:#3E7BFA;
-  --danger:#D93036;
+  --bg1:#1B2A7A; --bg2:#0B1238; --surface:rgba(255,255,255,.08); --surface2:rgba(255,255,255,.14); --line:rgba(255,255,255,.18);
+  --text:#F4F6FF; --muted:#B8C0E6;
+  --red:#E53935; --green:#2FA84F; --yellow:#FBC02D; --blue:#1E88E5;
+  --gold:#FFC93C; --danger:#E5383B;
 }
 *{box-sizing:border-box}
-html,body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%;color:var(--text);font-family:Inter,system-ui,sans-serif;-webkit-tap-highlight-color:transparent}
+body{background:radial-gradient(1200px 700px at 50% -10%,#3446B8 0%,var(--bg1) 35%,var(--bg2) 100%) fixed;background-color:var(--bg2)}
 button{font-family:inherit}
 .hidden{display:none!important}
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
-.muted{color:var(--muted);font-size:13px;margin:8px 0 0}
+.muted{color:var(--muted);font-size:13px;margin:0}
 svg{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* ---------- buttons & fields ---------- */
+.btn{height:50px;border:none;border-radius:14px;font-size:17px;font-weight:800;cursor:pointer;padding:0 20px;color:#fff;font-family:'Baloo 2',Inter,sans-serif;letter-spacing:.02em}
+.btn:disabled{opacity:.55;cursor:default}
+.btn-play{background:linear-gradient(#FFD54F,#FFA000);color:#4A2A00;box-shadow:0 4px 0 #B26A00}
+.btn-play:active{transform:translateY(2px);box-shadow:0 2px 0 #B26A00}
+.btn-join{background:linear-gradient(#4FC3F7,#1E88E5);box-shadow:0 4px 0 #0D5CA8;white-space:nowrap}
+.btn-wa{background:linear-gradient(#43C463,#1E9A47);box-shadow:0 3px 0 #11692F}
+.btn-ghost{background:var(--surface2);border:1px solid var(--line)}
+.btn-small{height:40px;font-size:14px;padding:0 14px}
+.link-btn{background:none;border:none;color:#9FD3FF;font-size:14px;cursor:pointer;text-decoration:underline;padding:6px}
+.icon-btn{position:relative;width:42px;height:42px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center}
+.icon-btn svg{width:20px;height:20px}
+.icon-btn.small{width:34px;height:34px}
+.icon-btn.off{color:#FF9A9C}
+.fld{width:100%;height:48px;border-radius:12px;border:2px solid transparent;background:rgba(5,10,40,.55);color:var(--text);padding:0 14px;font-size:16px;font-family:inherit}
+.fld::placeholder{color:#8C95C4}
+.fld:focus{outline:none;border-color:#4FC3F7}
+.fld.code{text-transform:uppercase;letter-spacing:.2em;font-weight:800}
+.row{display:flex;gap:8px;align-items:center}
+.row.center{justify-content:center;flex-wrap:wrap}
 
 /* ---------- lobby ---------- */
 #lobby{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px 16px}
-.lobby-card{width:100%;max-width:400px;background:var(--surface);border-radius:20px;padding:28px 22px;display:flex;flex-direction:column;gap:10px}
-.logo{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:40px;line-height:1;margin:0;color:#fff}
-.logo.small{font-size:22px}
-.tag{margin:0 0 10px;color:var(--muted);font-size:14px;line-height:1.45}
-.fld-label{font-size:13px;font-weight:600;color:var(--muted);margin-top:6px}
-.fld{width:100%;height:46px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--text);padding:0 14px;font-size:16px;font-family:inherit}
-.fld:focus{outline:2px solid var(--blue);outline-offset:1px}
-.fld.code{text-transform:uppercase;letter-spacing:.15em;font-weight:700}
-.row{display:flex;gap:8px;align-items:center}
-.row.center{justify-content:center;flex-wrap:wrap}
-.btn{height:48px;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;padding:0 18px;color:#fff}
-.btn:disabled{opacity:.55;cursor:default}
-.btn-primary{background:var(--blue)}
-.btn-secondary{background:var(--surface2);border:1px solid var(--line);white-space:nowrap}
-.btn-green{background:#1F8A55}
-.btn-small{height:40px;font-size:14px;padding:0 14px}
-.or{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:13px;margin:6px 0}
+.lobby-card{width:100%;max-width:410px;background:rgba(10,18,70,.72);border:1px solid var(--line);border-radius:24px;padding:26px 22px;display:flex;flex-direction:column;gap:10px;box-shadow:0 20px 60px rgba(0,0,0,.45)}
+.brand{text-align:center;margin-bottom:6px}
+.brand-pawns{display:flex;justify-content:center;gap:10px;margin-bottom:6px}
+.mini-pawn{width:22px;height:30px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;position:relative;box-shadow:inset -3px -4px 0 rgba(0,0,0,.25),0 3px 0 rgba(0,0,0,.25)}
+.mini-pawn::after{content:"";position:absolute;left:5px;top:5px;width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.6)}
+.mini-pawn.red{background:var(--red)}.mini-pawn.green{background:var(--green)}.mini-pawn.yellow{background:var(--yellow)}.mini-pawn.blue{background:var(--blue)}
+.logo{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:46px;line-height:1;margin:0;color:#fff;text-shadow:0 4px 0 rgba(0,0,0,.3)}
+.logo span{color:var(--gold)}
+.logo.small{font-size:22px;text-shadow:0 2px 0 rgba(0,0,0,.3)}
+.tag{margin:8px 0 0;color:var(--muted);font-size:14px;line-height:1.45}
+.fld-label{font-size:13px;font-weight:700;color:var(--muted);margin-top:4px}
+.or{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:13px;margin:8px 0 0}
 .or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
-.lobby-msg{min-height:20px;margin:4px 0 0;color:#FF9EA2;font-size:14px}
-.hint{margin:0;color:var(--muted);font-size:12px;line-height:1.5}
+.lobby-msg{min-height:20px;margin:2px 0 0;color:#FFB4B5;font-size:14px}
+.hint{margin:0;color:var(--muted);font-size:12px;line-height:1.5;text-align:center}
 
-/* ---------- game ---------- */
-#game{min-height:100vh;display:flex;flex-direction:column;padding:12px 12px calc(84px + env(safe-area-inset-bottom))}
-.topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;max-width:1100px;width:100%;margin:0 auto 10px}
-.room-line{font-size:12px;color:var(--muted);margin-top:2px}
-.room-line strong{color:var(--text);letter-spacing:.08em}
-.link-btn{background:none;border:none;color:#9EC1FF;font-size:12px;cursor:pointer;padding:4px 6px;text-decoration:underline}
-.online-pill{display:flex;align-items:center;gap:6px;background:var(--surface);padding:8px 12px;border-radius:999px;font-size:13px;font-weight:600}
-.online-pill svg{width:16px;height:16px;color:var(--muted)}
+/* ---------- game layout ---------- */
+#game{min-height:100vh;display:flex;flex-direction:column;padding:10px 10px calc(84px + env(safe-area-inset-bottom))}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:8px;max-width:1180px;width:100%;margin:0 auto 8px}
+.tb-left{display:flex;flex-direction:column;gap:4px;min-width:0}
+.tb-right{display:flex;gap:6px}
+.room-chip{display:flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--line);color:var(--muted);font-size:12px;border-radius:999px;padding:4px 10px;cursor:pointer;width:max-content}
+.room-chip strong{color:#fff;letter-spacing:.12em}
+.room-chip svg{width:14px;height:14px}
+.badge{position:absolute;top:-6px;right:-6px;min-width:20px;height:20px;border-radius:10px;background:var(--danger);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 5px}
 
-.layout{display:flex;flex-wrap:wrap;gap:12px;max-width:1100px;width:100%;margin:0 auto;align-items:flex-start}
-.play{flex:1 1 360px;max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:10px;min-width:0}
-.chat{flex:1 1 300px;max-width:560px;margin:0 auto;width:100%;background:var(--surface);border-radius:14px;display:flex;flex-direction:column;min-height:180px;max-height:300px}
-@media (min-width:920px){.chat{max-height:none;height:calc(100vh - 170px);position:sticky;top:12px;max-width:360px}}
+.layout{display:flex;gap:14px;max-width:1180px;width:100%;margin:0 auto;align-items:flex-start;justify-content:center}
+.arena{flex:1 1 auto;max-width:620px;width:100%;display:flex;flex-direction:column;gap:10px;min-width:0}
 
-.tiles{display:flex;gap:10px}
-.tile{position:relative;flex:1 1 0;height:110px;border-radius:14px;overflow:hidden;background:var(--surface2);border:2px solid var(--line);transition:box-shadow .15s}
-@media (min-width:600px){.tile{height:150px}}
-.tile.empty{border-style:dashed;opacity:.5}
-.tile.speaking{box-shadow:0 0 0 3px var(--green)}
-.tile.turn{outline:3px solid #fff;outline-offset:-6px}
-.tile video{width:100%;height:100%;object-fit:cover;display:block;background:#11182A}
-.tile video.mirror{transform:scaleX(-1)}
-.tile .avatar{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
-.tile .avatar span{width:54px;height:54px;border-radius:27px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:22px;color:#0F1525}
-.tile .label{position:absolute;left:6px;bottom:6px;display:flex;align-items:center;gap:5px;background:rgba(15,21,37,.8);padding:3px 7px;border-radius:6px;font-size:12px;font-weight:600;max-width:calc(100% - 12px)}
-.tile .label .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.tile .label .cdot{width:8px;height:8px;border-radius:4px;flex:none}
-.tile .label svg{width:14px;height:14px;flex:none}
-.tile .label svg.off{color:#FF8A8F}
-.tile .badge{position:absolute;top:6px;right:6px;background:rgba(15,21,37,.8);padding:2px 6px;border-radius:6px;font-size:10px;color:var(--muted)}
-.tile .empty-txt{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--muted)}
+/* ---------- player panels ---------- */
+.panels{display:flex;justify-content:space-between;gap:10px}
+.panel{position:relative;flex:1 1 0;min-width:0;display:flex;align-items:center;gap:8px;padding:6px;border-radius:18px;background:var(--surface);border:1px solid var(--line);transition:background .2s,transform .2s}
+.panel.right{flex-direction:row-reverse}
+.panel.empty{opacity:.45}
+.panel.turn{background:rgba(255,255,255,.18);transform:translateY(-2px)}
+.avatar{position:relative;width:96px;height:96px;flex:none;border-radius:18px;padding:4px;background:rgba(255,255,255,.12);cursor:pointer}
+@media (min-width:640px){.avatar{width:128px;height:128px}}
+.panel.turn .avatar{background:conic-gradient(var(--c) calc(var(--p,100) * 1%), rgba(255,255,255,.12) 0)}
+.vbox{position:relative;width:100%;height:100%;border-radius:14px;overflow:hidden;background:#0B1238;border:2px solid var(--c)}
+.vbox video{width:100%;height:100%;object-fit:cover;display:block;background:#0B1238}
+.vbox video.mirror{transform:scaleX(-1)}
+.initial{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.initial span{width:56%;aspect-ratio:1;border-radius:50%;background:var(--c);color:#fff;font-family:'Baloo 2',sans-serif;font-weight:800;font-size:28px;display:flex;align-items:center;justify-content:center;box-shadow:inset -4px -5px 0 rgba(0,0,0,.2)}
+.vbox .mic{position:absolute;right:4px;bottom:4px;width:22px;height:22px;border-radius:11px;background:rgba(5,10,40,.75);display:flex;align-items:center;justify-content:center}
+.vbox .mic svg{width:13px;height:13px}
+.vbox .mic.off{color:#FF8A8C}
+.vbox .net{position:absolute;left:4px;top:4px;display:flex;align-items:flex-end;gap:2px;height:14px;padding:2px 3px;border-radius:5px;background:rgba(5,10,40,.65)}
+.vbox .net i{display:block;width:3px;border-radius:1px;background:rgba(255,255,255,.3)}
+.vbox .net i:nth-child(1){height:4px}.vbox .net i:nth-child(2){height:7px}.vbox .net i:nth-child(3){height:10px}
+.vbox .net.q3 i{background:#5BE37D}.vbox .net.q2 i:nth-child(-n+2){background:#FFD54F}.vbox .net.q1 i:nth-child(1){background:#FF6B6B}
+.vbox .tag2{position:absolute;left:0;right:0;bottom:0;padding:2px 4px;font-size:10px;text-align:center;background:rgba(5,10,40,.7);color:var(--muted)}
+.panel.speaking .vbox{box-shadow:0 0 0 3px #5BE37D}
+.side{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0;flex:1 1 auto}
+.pname{font-weight:700;font-size:13px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:flex;align-items:center;gap:5px}
+.pname .cdot{width:9px;height:9px;border-radius:5px;background:var(--c);flex:none}
+.pstat{font-size:11px;color:var(--muted);white-space:nowrap}
+.dice-slot{width:58px;height:58px;display:flex;align-items:center;justify-content:center;border-radius:14px;background:rgba(0,0,0,.18)}
+.bubble{position:absolute;bottom:calc(100% + 6px);left:12px;max-width:180px;background:#fff;color:#14205A;font-size:13px;font-weight:700;padding:7px 10px;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,.3);opacity:0;transform:translateY(6px) scale(.9);transition:.2s;pointer-events:none;z-index:4}
+.panel.right .bubble{left:auto;right:12px}
+#panelsBottom .bubble{bottom:auto;top:calc(100% + 6px)}
+.bubble.show{opacity:1;transform:none}
 
-.board-wrap{display:flex;justify-content:center}
-.board-box{position:relative;width:100%;max-width:520px;aspect-ratio:1;background:var(--surface);border-radius:16px;padding:8px}
-#board{width:100%;height:100%;display:block}
-.token{transition:transform .35s ease;cursor:default}
+/* ---------- dice ---------- */
+.dice{position:relative;width:52px;height:52px;border-radius:12px;border:none;background:linear-gradient(145deg,#fff,#E6E9F5);display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);padding:9px;gap:2px;box-shadow:0 4px 0 #A9B0CC,inset 0 -2px 0 rgba(0,0,0,.06);cursor:default}
+.dice i{display:block;border-radius:50%;margin:auto;width:9px;height:9px}
+.dice i.on{background:#1B2340;box-shadow:inset 0 1px 1px rgba(255,255,255,.3)}
+.dice.six i.on{background:#D32F2F}
+.dice.ready{cursor:pointer;animation:diceGlow 1s ease-in-out infinite}
+.dice.ready::after{content:"";position:absolute;left:50%;top:-22px;width:0;height:0;border:9px solid transparent;border-top:12px solid var(--gold);transform:translateX(-50%);animation:point .7s ease-in-out infinite}
+@keyframes diceGlow{0%,100%{box-shadow:0 4px 0 #A9B0CC,0 0 0 3px rgba(255,201,60,.4)}50%{box-shadow:0 4px 0 #A9B0CC,0 0 0 7px rgba(255,201,60,.9)}}
+@keyframes point{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,-6px)}}
+.dice.rolling{animation:roll .6s ease-out}
+@keyframes roll{0%{transform:rotate(0) scale(1)}30%{transform:rotate(200deg) scale(1.15)}60%{transform:rotate(320deg) scale(.95)}100%{transform:rotate(360deg) scale(1)}}
+
+/* ---------- board ---------- */
+.board-box{position:relative;width:100%;aspect-ratio:1;border-radius:20px;padding:8px;background:linear-gradient(#FFFFFF,#DDE3F5);box-shadow:0 14px 40px rgba(0,0,0,.45),inset 0 -4px 0 rgba(0,0,0,.08)}
+#board{width:100%;height:100%;display:block;overflow:visible}
+.token{transition:transform .14s linear}
+.token.slow{transition:transform .6s cubic-bezier(.3,.7,.3,1)}
+.token .pawn{transform-box:fill-box;transform-origin:50% 100%}
+.token.hop .pawn{animation:hop .15s ease-out}
+@keyframes hop{0%{transform:translateY(0) scale(1)}45%{transform:translateY(-.45px) scale(1.08)}100%{transform:translateY(0) scale(1)}}
 .token.can{cursor:pointer}
-.token.can .ring{animation:pulse 0.9s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:.25}50%{opacity:1}}
+.token.can .pawn{animation:bob .6s ease-in-out infinite}
+.token.can .halo{animation:halo .9s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-.22px)}}
+@keyframes halo{0%,100%{opacity:.35}50%{opacity:1}}
 
-.overlay-card{position:absolute;inset:8px;border-radius:12px;background:rgba(15,21,37,.94);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:16px;text-align:center;overflow:auto}
-.overlay-card h2{margin:0;font-family:'Baloo 2',sans-serif;font-size:26px}
-.overlay-card p{margin:0}
-.big-code{font-size:24px;letter-spacing:.15em;color:#fff;display:block;margin-top:4px}
-.wait-players,.ranking{list-style:none;padding:0;margin:4px 0;display:flex;flex-direction:column;gap:6px;width:100%;max-width:260px}
-.wait-players li,.ranking li{display:flex;align-items:center;gap:8px;background:var(--surface);padding:8px 10px;border-radius:10px;font-size:14px;text-align:left}
-.wait-players .cdot,.ranking .cdot{width:12px;height:12px;border-radius:6px;flex:none}
+.overlay-card{position:absolute;inset:8px;border-radius:14px;background:rgba(11,18,56,.93);display:flex;flex-direction:column;align-items:center;justify-content:safe center;gap:10px;padding:16px;text-align:center;overflow:auto;z-index:3}
+.overlay-card > *{flex:none}
+.overlay-card h2{margin:0;font-family:'Baloo 2',sans-serif;font-size:28px;color:#fff}
+.big-code{font-family:'Baloo 2',sans-serif;font-size:34px;letter-spacing:.18em;color:var(--gold)}
+.wait-players,.ranking{list-style:none;padding:0;margin:4px 0;display:flex;flex-direction:column;gap:6px;width:100%;max-width:280px}
+.wait-players li,.ranking li{display:flex;align-items:center;gap:10px;background:var(--surface2);padding:9px 12px;border-radius:12px;font-size:15px;font-weight:600;text-align:left}
+.wait-players .cdot,.ranking .cdot{width:14px;height:14px;border-radius:7px;flex:none}
+.ranking .pos{font-family:'Baloo 2',sans-serif;font-weight:800;color:var(--gold);width:34px}
+.trophy{width:64px;height:64px;border-radius:32px;background:linear-gradient(#FFE082,#FFA000);display:flex;align-items:center;justify-content:center;color:#5A3500;box-shadow:0 0 0 6px rgba(255,201,60,.25)}
+.trophy svg{width:36px;height:36px}
 
-.turnbar{display:flex;align-items:center;justify-content:space-between;background:var(--surface);border-radius:14px;padding:10px 12px;gap:10px}
-.turn-info{display:flex;align-items:center;gap:10px;min-width:0}
-.dot{width:14px;height:14px;border-radius:7px;background:var(--muted);flex:none}
-.turn-text{font-weight:700;font-size:15px}
-.turn-sub{font-size:12px;color:var(--muted);margin-top:2px}
-.dice{width:58px;height:58px;border-radius:14px;border:none;background:#fff;cursor:pointer;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);padding:10px;gap:3px;box-shadow:0 4px 0 #C9CED8;flex:none}
-.dice:disabled{cursor:default;opacity:.6;box-shadow:none}
-.dice.ready{box-shadow:0 4px 0 #C9CED8,0 0 0 4px var(--green)}
-.dice i{display:block;border-radius:50%;background:transparent;margin:auto;width:9px;height:9px}
-.dice i.on{background:#0F1525}
-.dice.rolling{animation:shake .45s}
-@keyframes shake{0%{transform:rotate(0)}25%{transform:rotate(-18deg)}50%{transform:rotate(14deg)}75%{transform:rotate(-8deg)}100%{transform:rotate(0)}}
+.banner{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.4);font-family:'Baloo 2',sans-serif;font-weight:800;font-size:48px;color:#fff;-webkit-text-stroke:2px #14205A;text-shadow:0 5px 0 #14205A;opacity:0;pointer-events:none;z-index:2;white-space:nowrap}
+.banner.show{animation:pop 1.1s ease-out}
+@keyframes pop{0%{opacity:0;transform:translate(-50%,-50%) scale(.4)}20%{opacity:1;transform:translate(-50%,-50%) scale(1.15)}35%{transform:translate(-50%,-50%) scale(1)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-60%) scale(1)}}
 
-.chat-head{padding:10px 12px 6px;font-weight:700;font-size:14px;border-bottom:1px solid var(--line)}
-.chat-list{flex:1;overflow-y:auto;padding:8px 12px;display:flex;flex-direction:column;gap:6px;font-size:14px;line-height:1.4}
-.chat-list .msg strong{margin-right:4px}
+.status-line{margin:0;text-align:center;font-weight:700;font-size:15px;min-height:22px;color:#fff}
+.status-line .hl{color:var(--gold)}
+
+/* ---------- chat ---------- */
+.chat{display:flex;flex-direction:column;background:rgba(10,18,70,.96);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.chat-head{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;font-weight:800;border-bottom:1px solid var(--line)}
+.chat-list{flex:1;overflow-y:auto;padding:10px 12px;display:flex;flex-direction:column;gap:6px;font-size:14px;line-height:1.4;min-height:120px}
+.chat-list .msg strong{margin-right:5px}
 .chat-list .sys{color:var(--muted);font-size:12px;font-style:italic}
-.chat-form{display:flex;gap:8px;padding:8px 10px 10px}
+.quick{display:flex;gap:6px;overflow-x:auto;padding:6px 10px 0;scrollbar-width:none}
+.quick button{flex:none;border:1px solid var(--line);background:var(--surface);color:var(--text);border-radius:999px;padding:6px 11px;font-size:12px;font-weight:600;cursor:pointer}
+.chat-form{display:flex;gap:8px;padding:8px 10px 12px}
 .chat-form .fld{height:42px;font-size:15px}
-.send{width:46px;height:42px;border-radius:10px;border:none;background:var(--blue);color:#fff;cursor:pointer;flex:none;display:flex;align-items:center;justify-content:center}
+.send{width:46px;height:42px;border-radius:12px;border:none;background:#1E88E5;color:#fff;cursor:pointer;flex:none;display:flex;align-items:center;justify-content:center}
 .send svg{width:18px;height:18px}
+@media (max-width:1099px){
+  .chat{position:fixed;left:0;right:0;bottom:0;height:62vh;max-height:520px;border-radius:20px 20px 0 0;z-index:15;transform:translateY(105%);transition:transform .25s ease;padding-bottom:env(safe-area-inset-bottom)}
+  .chat.open{transform:none}
+}
+@media (min-width:1100px){
+  .chat{flex:0 0 330px;height:calc(100vh - 150px);position:sticky;top:10px}
+  #chatBtn,#chatClose{display:none}
+}
 
-.controls{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:center;gap:12px;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:rgba(15,21,37,.96);border-top:1px solid var(--line);z-index:5}
-.ctl{width:52px;height:52px;border-radius:26px;border:none;background:#2A3550;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center}
+/* ---------- call controls ---------- */
+.controls{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:center;gap:12px;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:rgba(8,14,48,.92);border-top:1px solid var(--line);z-index:10}
+.ctl{width:52px;height:52px;border-radius:26px;border:none;background:rgba(255,255,255,.14);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center}
 .ctl svg{width:22px;height:22px}
 .ctl.off{background:var(--danger)}
 .ctl-end{width:66px;background:var(--danger)}
 
-.toast{position:fixed;left:50%;top:16px;transform:translate(-50%,-150%);background:#fff;color:#0F1525;padding:10px 16px;border-radius:12px;font-size:14px;font-weight:600;z-index:20;transition:transform .25s;max-width:90vw;text-align:center;box-shadow:0 6px 24px rgba(0,0,0,.35)}
+/* ---------- spotlight / modal / toast ---------- */
+.spotlight{position:fixed;inset:0;background:rgba(3,6,24,.94);z-index:30;display:flex;align-items:center;justify-content:center;padding:16px}
+.spotlight video{max-width:100%;max-height:100%;border-radius:16px;background:#000}
+.spotlight video.mirror{transform:scaleX(-1)}
+.spot-name{position:absolute;left:20px;bottom:24px;background:rgba(0,0,0,.6);padding:6px 12px;border-radius:10px;font-weight:700}
+.spot-close{position:absolute;top:16px;right:16px}
+.modal{position:fixed;inset:0;background:rgba(3,6,24,.7);z-index:40;display:flex;align-items:center;justify-content:center;padding:16px}
+.modal-card{width:100%;max-width:440px;background:#14205A;border:1px solid var(--line);border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:12px}
+.modal-card h2{margin:0;font-family:'Baloo 2',sans-serif}
+.rules{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:8px;font-size:14px;line-height:1.45;color:#E3E7FA}
+.toast{position:fixed;left:50%;top:14px;transform:translate(-50%,-160%);background:#fff;color:#14205A;padding:10px 16px;border-radius:12px;font-size:14px;font-weight:700;z-index:50;transition:transform .25s;max-width:92vw;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.35)}
 .toast.show{transform:translate(-50%,0)}
-.toast button{margin-left:8px;border:none;background:var(--blue);color:#fff;border-radius:8px;padding:6px 10px;font-weight:700;cursor:pointer}
-.overlay-card > *{flex:none}
+.toast button{margin-left:8px;border:none;background:#1E88E5;color:#fff;border-radius:8px;padding:6px 10px;font-weight:700;cursor:pointer}
+
+@media (max-width:520px){
+  .overlay-card{gap:7px;padding:12px}
+  .overlay-card h2{font-size:22px}
+  .big-code{font-size:26px}
+  .wait-players li,.ranking li{padding:6px 10px;font-size:14px}
+  .overlay-card .btn-play{height:44px}
+}
+.btn-install{display:flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(#7C4DFF,#5631D6);box-shadow:0 4px 0 #3A1F9E;margin-top:4px}
+.btn-install svg{width:20px;height:20px}
 
 </style>
 </head>
 <body>
 
-<!-- ============ LOBBY ============ -->
+<!-- ================= LOBBY ================= -->
 <main id="lobby" class="screen">
   <div class="lobby-card">
-    <h1 class="logo">Ludo Yaari</h1>
-    <p class="tag">Dosto ke saath online Ludo — chat, voice aur video call ke saath</p>
+    <div class="brand">
+      <div class="brand-pawns" aria-hidden="true">
+        <span class="mini-pawn red"></span><span class="mini-pawn green"></span><span class="mini-pawn yellow"></span><span class="mini-pawn blue"></span>
+      </div>
+      <h1 class="logo">LUDO <span>YAARI</span></h1>
+      <p class="tag">Play Ludo with friends — with chat, voice &amp; HD video call</p>
+    </div>
 
-    <label class="fld-label" for="nameInput">Tumhara naam</label>
-    <input id="nameInput" class="fld" maxlength="14" placeholder="Jaise: Vipin" autocomplete="nickname">
+    <label class="fld-label" for="nameInput">Your name</label>
+    <input id="nameInput" class="fld" maxlength="14" placeholder="e.g. Vipin" autocomplete="nickname">
 
-    <button id="createBtn" class="btn btn-primary">Naya room banao</button>
+    <button id="createBtn" class="btn btn-play">Create Room</button>
 
-    <div class="or"><span>ya</span></div>
+    <div class="or"><span>or join a friend</span></div>
 
-    <label class="fld-label" for="codeInput">Dost ka room code</label>
+    <label class="fld-label" for="codeInput">Room code</label>
     <div class="row">
       <input id="codeInput" class="fld code" maxlength="6" placeholder="ABC123" autocapitalize="characters" autocomplete="off">
-      <button id="joinBtn" class="btn btn-secondary">Join karo</button>
+      <button id="joinBtn" class="btn btn-join">Join</button>
     </div>
 
     <p id="lobbyMsg" class="lobby-msg" role="status"></p>
-    <p class="hint">Room bante hi browser mic aur camera ki permission maangega — "Allow" dabana. 2 se 4 log khel sakte hain.</p>
+    <button id="installBtn" class="btn btn-install hidden"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 4v11"/><path d="M7 10l5 5 5-5"/><path d="M5 20h14"/></svg>Install App</button>
+    <button id="rulesBtn" class="link-btn">How to play</button>
+    <p class="hint">Allow microphone &amp; camera when asked. 2 to 4 players.</p>
   </div>
 </main>
 
-<!-- ============ GAME ============ -->
+<!-- ================= GAME ================= -->
 <div id="game" class="screen hidden">
   <header class="topbar">
-    <div>
-      <div class="logo small">Ludo Yaari</div>
-      <div class="room-line">Room code: <strong id="roomCode">------</strong>
-        <button id="copyBtn" class="link-btn" aria-label="Room link copy karo">Link copy</button>
-      </div>
+    <div class="tb-left">
+      <div class="logo small">LUDO <span>YAARI</span></div>
+      <button id="copyBtn" class="room-chip" aria-label="Copy room link">Room <strong id="roomCode">------</strong>
+        <svg aria-hidden="true" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></svg>
+      </button>
     </div>
-    <div class="online-pill"><svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7"/><path d="M18 14a6.5 6.5 0 0 1 3.5 6"/></svg><span id="onlineCount">1</span> online</div>
+    <div class="tb-right">
+      <button id="rulesBtn2" class="icon-btn" aria-label="Rules"><svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14"/><path d="M12 17.5v.01"/></svg></button>
+      <button id="sfxBtn" class="icon-btn" aria-label="Game sounds on/off"></button>
+      <button id="chatBtn" class="icon-btn" aria-label="Open chat"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1.1-4.6A8 8 0 1 1 21 12z"/></svg><span id="chatBadge" class="badge hidden">0</span></button>
+    </div>
   </header>
 
   <div class="layout">
-    <section class="play">
-      <div class="tiles" id="tilesTop"></div>
+    <section class="arena">
+      <div class="panels" id="panelsTop"></div>
 
-      <div class="board-wrap">
-        <div class="board-box">
-          <svg id="board" viewBox="0 0 15 15" role="img" aria-label="Ludo board"></svg>
+      <div class="board-box">
+        <svg id="board" viewBox="-0.15 -0.15 15.3 15.3" role="img" aria-label="Ludo board"></svg>
 
-          <div id="waitCard" class="overlay-card hidden">
-            <h2>Doston ka intezaar…</h2>
-            <p>Yeh code bhejo: <strong id="waitCode" class="big-code">------</strong></p>
-            <div class="row center">
-              <button id="shareBtn" class="btn btn-small btn-green">WhatsApp pe bhejo</button>
-              <button id="copyBtn2" class="btn btn-small btn-secondary">Link copy</button>
-            </div>
-            <ul id="waitPlayers" class="wait-players"></ul>
-            <button id="startBtn" class="btn btn-primary hidden">Game shuru karo</button>
-            <p id="waitHint" class="muted"></p>
+        <div id="waitCard" class="overlay-card hidden">
+          <h2>Waiting for friends…</h2>
+          <p class="muted">Share this room code</p>
+          <strong id="waitCode" class="big-code">------</strong>
+          <div class="row center">
+            <button id="shareBtn" class="btn btn-small btn-wa">Share on WhatsApp</button>
+            <button id="copyBtn2" class="btn btn-small btn-ghost">Copy link</button>
           </div>
-
-          <div id="overCard" class="overlay-card hidden">
-            <h2>Game khatam!</h2>
-            <ol id="ranking" class="ranking"></ol>
-            <button id="againBtn" class="btn btn-primary hidden">Phir se khelo</button>
-            <p id="againHint" class="muted"></p>
-          </div>
+          <ul id="waitPlayers" class="wait-players"></ul>
+          <button id="startBtn" class="btn btn-play hidden">Start Game</button>
+          <p id="waitHint" class="muted"></p>
         </div>
+
+        <div id="overCard" class="overlay-card hidden">
+          <div class="trophy" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4"/><path d="M12 13v4M8 21h8M9 17h6v4H9z"/></svg></div>
+          <h2 id="overTitle">Game Over</h2>
+          <ol id="ranking" class="ranking"></ol>
+          <button id="againBtn" class="btn btn-play hidden">Play Again</button>
+          <p id="againHint" class="muted"></p>
+        </div>
+
+        <div id="banner" class="banner" aria-live="polite"></div>
       </div>
 
-      <div class="tiles" id="tilesBottom"></div>
-
-      <div class="turnbar">
-        <div class="turn-info">
-          <span id="turnDot" class="dot"></span>
-          <div>
-            <div id="turnText" class="turn-text">Game shuru nahi hua</div>
-            <div id="turnSub" class="turn-sub"></div>
-          </div>
-        </div>
-        <button id="diceBtn" class="dice" aria-label="Dice roll karo" disabled></button>
-      </div>
+      <div class="panels" id="panelsBottom"></div>
+      <p id="statusLine" class="status-line" aria-live="polite"></p>
     </section>
 
-    <aside class="chat">
-      <div class="chat-head">Chat</div>
+    <aside id="chatPanel" class="chat">
+      <div class="chat-head">
+        <span>Chat</span>
+        <button id="chatClose" class="icon-btn small" aria-label="Close chat"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      </div>
       <div id="chatList" class="chat-list" aria-live="polite"></div>
+      <div class="quick" id="quickRow"></div>
       <form id="chatForm" class="chat-form">
         <label for="chatInput" class="sr-only">Message</label>
-        <input id="chatInput" class="fld" maxlength="200" placeholder="Message likho…" autocomplete="off">
-        <button class="send" aria-label="Message bhejo"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 12l16-8-6 16-2-6z"/></svg></button>
+        <input id="chatInput" class="fld" maxlength="200" placeholder="Type a message…" autocomplete="off">
+        <button class="send" aria-label="Send message"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 12l16-8-6 16-2-6z"/></svg></button>
       </form>
     </aside>
   </div>
 
   <nav class="controls" aria-label="Call controls">
-    <button id="micBtn" class="ctl" aria-label="Mic on/off"></button>
+    <button id="micBtn" class="ctl" aria-label="Microphone on/off"></button>
     <button id="camBtn" class="ctl" aria-label="Camera on/off"></button>
-    <button id="spkBtn" class="ctl" aria-label="Speaker on/off"></button>
-    <button id="flipBtn" class="ctl" aria-label="Camera palto (front/back)"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M20 7h-3l-2-3H9L7 7H4a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1z"/><path d="M9 13a3 3 0 0 1 5-2.2M15 13a3 3 0 0 1-5 2.2"/><path d="M14 9v2h-2M10 17v-2h2"/></svg></button>
-    <button id="leaveBtn" class="ctl ctl-end" aria-label="Game aur call chhodo"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M3 15c5-5 13-5 18 0l-2 3-4-1v-3a10 10 0 0 0-6 0v3l-4 1z"/></svg></button>
+    <button id="spkBtn" class="ctl" aria-label="Call audio on/off"></button>
+    <button id="flipBtn" class="ctl" aria-label="Switch camera"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M20 7h-3l-2-3H9L7 7H4a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1z"/><path d="M9 13a3 3 0 0 1 5-2.2M15 13a3 3 0 0 1-5 2.2"/><path d="M14 9v2h-2M10 17v-2h2"/></svg></button>
+    <button id="leaveBtn" class="ctl ctl-end" aria-label="Leave game and call"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M3 15c5-5 13-5 18 0l-2 3-4-1v-3a10 10 0 0 0-6 0v3l-4 1z"/></svg></button>
   </nav>
+</div>
+
+<!-- big video view -->
+<div id="spotlight" class="spotlight hidden" role="dialog" aria-label="Video">
+  <video id="spotVideo" autoplay playsinline></video>
+  <div id="spotName" class="spot-name"></div>
+  <button id="spotClose" class="icon-btn spot-close" aria-label="Close video"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+</div>
+
+<!-- rules -->
+<div id="rulesModal" class="modal hidden" role="dialog" aria-label="How to play">
+  <div class="modal-card">
+    <h2>How to play</h2>
+    <ul class="rules">
+      <li>Roll a <b>6</b> to bring a token out of your home.</li>
+      <li>Rolling a <b>6</b> gives you another roll. Three 6s in a row and your turn is cancelled.</li>
+      <li>Land on an opponent's token to <b>cut</b> it — it goes back home and you get a bonus roll.</li>
+      <li>Tokens on <b>star</b> squares and coloured start squares are <b>safe</b> and can't be cut.</li>
+      <li>You need the <b>exact</b> number to reach the centre. Reaching home gives a bonus roll.</li>
+      <li>Each turn has a <b>20-second</b> timer — if it runs out, a move is made for you.</li>
+      <li>First player to bring all 4 tokens home wins!</li>
+    </ul>
+    <button id="rulesClose" class="btn btn-play">Got it</button>
+  </div>
+</div>
+
+<!-- iPhone install help -->
+<div id="iosModal" class="modal hidden" role="dialog" aria-label="Install on iPhone">
+  <div class="modal-card">
+    <h2>Install on iPhone</h2>
+    <ol class="rules">
+      <li>Open this page in <b>Safari</b>.</li>
+      <li>Tap the <b>Share</b> button (square with an arrow).</li>
+      <li>Choose <b>Add to Home Screen</b>, then tap <b>Add</b>.</li>
+    </ol>
+    <button id="iosClose" class="btn btn-play">OK</button>
+  </div>
 </div>
 
 <div id="toast" class="toast" role="status"></div>
@@ -406,47 +535,136 @@ window.LY_PEER_OPTS = {
     return true;
   }
 
+  // Pick a sensible move when the timer runs out or a player is offline
+  function bestMove(g, color, d) {
+    const mv = movable(g, color, d);
+    if (!mv.length) return -1;
+    let best = mv[0], score = -Infinity;
+    mv.forEach(i => {
+      const p = g.tokens[color][i];
+      const np = p < 0 ? 0 : p + d;
+      let s = np;
+      if (np === FINISH) s += 1000;
+      if (p < 0) s += 500;
+      if (np <= 50) {
+        const gi = globalIndex(color, np);
+        if (SAFE.includes(gi)) s += 50;
+        else g.colors.forEach(oc => {
+          if (oc === color) return;
+          g.tokens[oc].forEach(op => { if (op >= 0 && op <= 50 && globalIndex(oc, op) === gi) s += 2000; });
+        });
+      }
+      if (s > score) { score = s; best = i; }
+    });
+    return best;
+  }
+
   const api = { COLORS, START, SAFE, FINISH, TRACK, HOME_COL, BASE_ORIGIN, BASE_SLOTS,
-    globalIndex, tokenXY, newGame, currentColor, canMove, movable, roll, move, passIfStuck, nextTurn };
+    globalIndex, tokenXY, newGame, currentColor, canMove, movable, roll, move, passIfStuck, nextTurn, bestMove };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.Ludo = api;
 })(this);
 
 </script>
 <script>
-/* Ludo Yaari - UI, online rooms (PeerJS/WebRTC), chat, voice & video */
+/* Ludo Yaari – UI, sounds, animations, online rooms (PeerJS/WebRTC), chat, voice & HD video */
 (() => {
   'use strict';
   const L = window.Ludo;
   const $ = id => document.getElementById(id);
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-  const HEX = { red: '#E5484D', green: '#30A46C', yellow: '#F5C518', blue: '#3E7BFA' };
+  const HEX = { red: '#E53935', green: '#2FA84F', yellow: '#FBC02D', blue: '#1E88E5' };
+  const LIGHT = { red: '#FF8A80', green: '#8EE6A2', yellow: '#FFF59D', blue: '#90CAF9' };
+  const DARK = { red: '#9E1B1B', green: '#17692F', yellow: '#B7860B', blue: '#0D4F94' };
   const ASSIGN = ['red', 'yellow', 'green', 'blue']; // 2 players sit opposite each other
   const PREFIX = 'ludoyaari-v1-';
-  const MAX_CHAT = 60;
+  const MAX_CHAT = 40;
+  const TURN_MS = 20000;
+  const QUICK = ['Nice move!', 'Hurry up!', 'Oops!', 'Lucky six!', 'Watch out!', 'Well played', 'Not again!', 'Good game!'];
+  const ORD = ['1st', '2nd', '3rd', '4th'];
 
   const ICON = {
     mic: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3z"/><path d="M19 11a7 7 0 0 1-14 0"/><path d="M12 18v3"/></svg>',
-    micOff: '<svg viewBox="0 0 24 24" aria-hidden="true" class="off"><path d="M3 3l18 18"/><path d="M9 9v3a3 3 0 0 0 5.1 2.1"/><path d="M15 9.3V6a3 3 0 0 0-5.7-1.3"/><path d="M19 11a7 7 0 0 1-1.2 3.9"/><path d="M5 11a7 7 0 0 0 10.7 5.9"/><path d="M12 18v3"/></svg>',
+    micOff: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3l18 18"/><path d="M9 9v3a3 3 0 0 0 5.1 2.1"/><path d="M15 9.3V6a3 3 0 0 0-5.7-1.3"/><path d="M19 11a7 7 0 0 1-1.2 3.9"/><path d="M5 11a7 7 0 0 0 10.7 5.9"/><path d="M12 18v3"/></svg>',
     cam: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10l5-3v10l-5-3"/></svg>',
     camOff: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3l18 18"/><path d="M16 16v1a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h2"/><path d="M10 6h5a1 1 0 0 1 1 1v3l5-3v10"/></svg>',
     spk: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M17 9a4 4 0 0 1 0 6"/><path d="M19.5 6.5a8 8 0 0 1 0 11"/></svg>',
     spkOff: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M17 9l5 6M22 9l-5 6"/></svg>',
+    note: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg>',
+    noteOff: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/><path d="M3 3l18 18"/></svg>',
   };
 
-  // ---------------- state ----------------
+  // ================= sound effects (synthesised, no audio files) =================
+  const Sfx = (() => {
+    let ctx = null, on = true;
+    try { on = localStorage.getItem('ly_sfx') !== '0'; } catch (e) {}
+    function ac() {
+      if (!ctx) { try { ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return null; } }
+      if (ctx.state === 'suspended') ctx.resume();
+      return ctx;
+    }
+    function tone(freq, dur, type, vol, when, slideTo) {
+      const c = ac(); if (!c || !on) return;
+      const t = c.currentTime + (when || 0);
+      const o = c.createOscillator(), g = c.createGain();
+      o.type = type || 'sine';
+      o.frequency.setValueAtTime(freq, t);
+      if (slideTo) o.frequency.exponentialRampToValueAtTime(slideTo, t + dur);
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(vol || 0.2, t + 0.012);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      o.connect(g); g.connect(c.destination);
+      o.start(t); o.stop(t + dur + 0.03);
+    }
+    function noise(dur, vol, when, hp) {
+      const c = ac(); if (!c || !on) return;
+      const t = c.currentTime + (when || 0);
+      const n = Math.max(1, Math.floor(c.sampleRate * dur));
+      const b = c.createBuffer(1, n, c.sampleRate), d = b.getChannelData(0);
+      for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / n, 2);
+      const s = c.createBufferSource(); s.buffer = b;
+      const f = c.createBiquadFilter(); f.type = 'highpass'; f.frequency.value = hp || 1000;
+      const g = c.createGain(); g.gain.value = vol || 0.2;
+      s.connect(f); f.connect(g); g.connect(c.destination); s.start(t);
+    }
+    return {
+      unlock: ac,
+      get on() { return on; },
+      set on(v) { on = v; try { localStorage.setItem('ly_sfx', v ? '1' : '0'); } catch (e) {} },
+      dice() { for (let k = 0; k < 8; k++) { noise(0.045, 0.35, k * 0.065, 1500 + Math.random() * 1500); tone(180 + Math.random() * 260, 0.035, 'square', 0.035, k * 0.065); } },
+      step(k) { tone(k % 2 ? 620 : 540, 0.08, 'triangle', 0.25); tone(1250, 0.025, 'sine', 0.06); },
+      out() { tone(260, 0.18, 'sine', 0.3, 0, 880); tone(1320, 0.08, 'triangle', 0.08, 0.12); },
+      capture() { tone(1000, 0.5, 'sawtooth', 0.11, 0, 110); noise(0.35, 0.25, 0.04, 300); tone(140, 0.25, 'sine', 0.3, 0.3, 70); },
+      home() { [523, 659, 784, 1047].forEach((f, k) => tone(f, 0.28, 'triangle', 0.2, k * 0.085)); },
+      six() { tone(880, 0.12, 'sine', 0.2); tone(1320, 0.22, 'sine', 0.16, 0.09); },
+      turn() { tone(660, 0.12, 'sine', 0.22); tone(990, 0.2, 'sine', 0.22, 0.13); },
+      lost() { tone(400, 0.25, 'triangle', 0.2, 0, 200); tone(260, 0.35, 'triangle', 0.2, 0.22, 130); },
+      win() { [523, 659, 784, 1047, 784, 1047, 1319].forEach((f, k) => tone(f, 0.32, 'triangle', 0.22, k * 0.13)); },
+      msg() { tone(1180, 0.07, 'sine', 0.14); tone(1580, 0.06, 'sine', 0.1, 0.06); },
+      tick() { tone(1600, 0.03, 'square', 0.06); },
+      join() { tone(520, 0.1, 'sine', 0.18); tone(780, 0.14, 'sine', 0.18, 0.1); },
+    };
+  })();
+
+  // ================= state =================
   let peer = null, myId = null, isHost = false, hostConn = null, room = null;
   const conns = new Map();          // host only: peerId -> DataConnection
   const calls = new Map();          // peerId -> MediaConnection
   const remoteStreams = new Map();  // peerId -> MediaStream
-  const meters = new Map();         // peerId -> analyser info
+  const meters = new Map();         // peerId -> analyser
+  const netQ = new Map();           // peerId -> {q, rtt, relay}
   let localStream = null, realAudio = false, realVideo = false;
   let mic = true, cam = true, speakerOn = true, facing = 'user';
-  let audioCtx = null, meterTimer = null, hostTimer = null;
+  let audioCtx = null, meterTimer = null, statsTimer = null, clockTimer = null, hostTimer = null;
+  let turnTimer = null, turnKey = '', turnEnds = 0, turnTotal = TURN_MS, autoFollow = false;
+  let timerEnd = 0, timerTotal = TURN_MS, lastTick = -1;
   let leaving = false, inGame = false, rollPending = false;
-  let lastRollId = -1, lastChatLen = -1, lastChatKey = '', wasMyTurn = false;
+  let lastRollId = -1, lastChatId = 0, wasMyTurn = false, lastWinners = 0, unread = 0;
+  let diceBusy = false, animating = false, animSeq = 0, prevGame = null, prevGameNo = -1;
+  const vis = {}; // token key -> progress currently drawn
 
-  // ---------------- helpers ----------------
+  // ================= helpers =================
   function toast(text, actionLabel, action) {
     const t = $('toast');
     t.textContent = text;
@@ -460,6 +678,11 @@ window.LY_PEER_OPTS = {
     clearTimeout(toast._t);
     toast._t = setTimeout(() => t.classList.remove('show'), actionLabel ? 8000 : 2600);
   }
+  function banner(text) {
+    const b = $('banner');
+    b.textContent = text;
+    b.classList.remove('show'); void b.offsetWidth; b.classList.add('show');
+  }
   function genCode() {
     const a = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
     let s = '';
@@ -470,64 +693,77 @@ window.LY_PEER_OPTS = {
   const me = () => room && room.players.find(p => p.id === myId);
   const byColor = c => room && room.players.find(p => p.color === c);
   const roomLink = () => location.origin + location.pathname + '?room=' + room.code;
+  const clone = o => JSON.parse(JSON.stringify(o));
 
-  // ---------------- lobby ----------------
+  function peerOptions() {
+    const user = window.LY_PEER_OPTS || {};
+    const ice = [
+      { urls: ['stun:stun.l.google.com:19302', 'stun:stun1.l.google.com:19302', 'stun:stun2.l.google.com:19302'] },
+      { urls: 'stun:stun.cloudflare.com:3478' },
+    ].concat(window.LY_TURN || []).concat([
+      { urls: ['turn:eu-0.turn.peerjs.com:3478', 'turn:us-0.turn.peerjs.com:3478'], username: 'peerjs', credential: 'peerjsp' },
+    ]);
+    const o = Object.assign({ debug: 0 }, user);
+    o.config = Object.assign({ iceServers: ice, iceCandidatePoolSize: 4, bundlePolicy: 'max-bundle' }, user.config || {});
+    return o;
+  }
+
+  // ================= lobby =================
   const nameInput = $('nameInput'), codeInput = $('codeInput');
   try { nameInput.value = localStorage.getItem('ly_name') || ''; } catch (e) {}
   const urlRoom = new URLSearchParams(location.search).get('room');
-  if (urlRoom) { codeInput.value = urlRoom.toUpperCase().slice(0, 6); }
+  if (urlRoom) codeInput.value = urlRoom.toUpperCase().slice(0, 6);
 
   function lobbyMsg(t) { $('lobbyMsg').textContent = t || ''; }
   function lobbyBusy(b) { $('createBtn').disabled = b; $('joinBtn').disabled = b; }
   function readName() {
+    if (!nameInput.value.trim()) { lobbyMsg('Please enter your name first.'); nameInput.focus(); return null; }
     const n = cleanName(nameInput.value);
-    if (!nameInput.value.trim()) { lobbyMsg('Pehle apna naam likho.'); nameInput.focus(); return null; }
     try { localStorage.setItem('ly_name', n); } catch (e) {}
     return n;
   }
-
   $('createBtn').onclick = async () => {
     const name = readName(); if (!name) return;
-    lobbyBusy(true); lobbyMsg('Mic/camera chalu ho raha hai…');
+    Sfx.unlock();
+    lobbyBusy(true); lobbyMsg('Starting camera & mic…');
     await setupMedia();
-    lobbyMsg('Room ban raha hai…');
+    lobbyMsg('Creating room…');
     createRoom(name);
   };
   $('joinBtn').onclick = async () => {
     const name = readName(); if (!name) return;
     const code = codeInput.value.trim().toUpperCase();
-    if (code.length !== 6) { lobbyMsg('Room code 6 akshar ka hota hai.'); codeInput.focus(); return; }
-    lobbyBusy(true); lobbyMsg('Mic/camera chalu ho raha hai…');
+    if (code.length !== 6) { lobbyMsg('Room code has 6 characters.'); codeInput.focus(); return; }
+    Sfx.unlock();
+    lobbyBusy(true); lobbyMsg('Starting camera & mic…');
     await setupMedia();
-    lobbyMsg('Room se jud rahe hain…');
+    lobbyMsg('Joining room…');
     joinRoom(name, code);
   };
   codeInput.addEventListener('keydown', e => { if (e.key === 'Enter') $('joinBtn').click(); });
 
-  // ---------------- media ----------------
+  // ================= media (HD) =================
+  const VIDEO = { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 720 }, frameRate: { ideal: 30, max: 30 } };
+  const AUDIO = { echoCancellation: true, noiseSuppression: true, autoGainControl: true, channelCount: 1 };
+
   async function setupMedia() {
     try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { audioCtx = null; }
     let stream = null;
-    const vid = { facingMode: 'user', width: { ideal: 320 }, height: { ideal: 240 }, frameRate: { ideal: 15 } };
-    const aud = { echoCancellation: true, noiseSuppression: true, autoGainControl: true };
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-      try { stream = await navigator.mediaDevices.getUserMedia({ audio: aud, video: vid }); }
+      try { stream = await navigator.mediaDevices.getUserMedia({ audio: AUDIO, video: VIDEO }); }
       catch (e) {
-        try { stream = await navigator.mediaDevices.getUserMedia({ audio: aud }); toast('Camera nahi mila — sirf awaaz chalegi'); }
-        catch (e2) { toast('Mic/camera ki permission nahi mili — game aur chat phir bhi chalega'); }
+        try { stream = await navigator.mediaDevices.getUserMedia({ audio: AUDIO }); toast('No camera found — voice only'); }
+        catch (e2) { toast('Mic/camera permission denied — you can still play and chat'); }
       }
     }
     stream = stream || new MediaStream();
     realAudio = stream.getAudioTracks().length > 0;
     realVideo = stream.getVideoTracks().length > 0;
-    // Make sure every stream has 1 audio + 1 video track so calls always negotiate both
-    if (!realAudio && audioCtx) {
-      const dest = audioCtx.createMediaStreamDestination();
-      stream.addTrack(dest.stream.getAudioTracks()[0]);
-    }
+    // every stream gets 1 audio + 1 video track so calls always negotiate both
+    if (!realAudio && audioCtx) stream.addTrack(audioCtx.createMediaStreamDestination().stream.getAudioTracks()[0]);
     if (!realVideo) {
       const cv = document.createElement('canvas'); cv.width = 160; cv.height = 120;
-      const cx = cv.getContext('2d'); cx.fillStyle = '#11182A'; cx.fillRect(0, 0, 160, 120);
+      const cx = cv.getContext('2d'); cx.fillStyle = '#0B1238'; cx.fillRect(0, 0, 160, 120);
       if (cv.captureStream) stream.addTrack(cv.captureStream(1).getVideoTracks()[0]);
     }
     localStream = stream;
@@ -547,8 +783,53 @@ window.LY_PEER_OPTS = {
     meters.clear();
   }
 
+  // Give each connection a fair share of upload bandwidth so video stays sharp and smooth
+  function tuneSenders() {
+    const n = Math.max(1, calls.size);
+    const vBit = n === 1 ? 2500000 : n === 2 ? 1500000 : 1000000;
+    calls.forEach(c => {
+      const pc = c.peerConnection; if (!pc) return;
+      pc.getSenders().forEach(s => {
+        if (!s.track || !s.getParameters) return;
+        const p = s.getParameters();
+        if (!p.encodings || !p.encodings.length) p.encodings = [{}];
+        if (s.track.kind === 'video') {
+          p.encodings[0].maxBitrate = vBit;
+          p.encodings[0].maxFramerate = 30;
+          p.encodings[0].scaleResolutionDownBy = 1;
+          p.degradationPreference = 'balanced';
+        } else {
+          p.encodings[0].maxBitrate = 48000;
+          p.encodings[0].priority = 'high';
+          p.encodings[0].networkPriority = 'high';
+        }
+        s.setParameters(p).catch(() => {});
+      });
+    });
+  }
+
+  // Connection quality (round-trip time, relayed or direct) for the signal bars
+  async function pollStats() {
+    for (const [id, c] of calls) {
+      const pc = c.peerConnection; if (!pc) continue;
+      try {
+        const st = await pc.getStats();
+        let pair = null;
+        st.forEach(r => { if (r.type === 'transport' && r.selectedCandidatePairId) pair = st.get(r.selectedCandidatePairId); });
+        if (!pair) st.forEach(r => { if (r.type === 'candidate-pair' && r.nominated && r.state === 'succeeded') pair = r; });
+        if (!pair) continue;
+        const rtt = pair.currentRoundTripTime || 0;
+        const remote = st.get(pair.remoteCandidateId), local = st.get(pair.localCandidateId);
+        const relay = (remote && remote.candidateType === 'relay') || (local && local.candidateType === 'relay');
+        const q = rtt < 0.15 ? 3 : rtt < 0.35 ? 2 : 1;
+        netQ.set(id, { q, rtt: Math.round(rtt * 1000), relay });
+      } catch (e) {}
+    }
+    renderPanels();
+  }
+
   function attachMeter(id, stream) {
-    if (!audioCtx || !stream.getAudioTracks().length) return;
+    if (!audioCtx || !stream || !stream.getAudioTracks().length) return;
     try {
       const src = audioCtx.createMediaStreamSource(stream);
       const an = audioCtx.createAnalyser(); an.fftSize = 512;
@@ -556,12 +837,12 @@ window.LY_PEER_OPTS = {
       meters.set(id, { an, buf: new Uint8Array(an.fftSize) });
     } catch (e) {}
   }
-  function startMeters() {
-    clearInterval(meterTimer);
+  function startLoops() {
+    clearInterval(meterTimer); clearInterval(statsTimer); clearInterval(clockTimer);
     meterTimer = setInterval(() => {
       if (!room) return;
       room.players.forEach(p => {
-        const el = tileEls[p.color]; if (!el) return;
+        const el = panelEls[p.color]; if (!el) return;
         const m = meters.get(p.id);
         let speaking = false;
         if (m && p.mic) {
@@ -573,17 +854,19 @@ window.LY_PEER_OPTS = {
         el.root.classList.toggle('speaking', speaking);
       });
     }, 200);
+    statsTimer = setInterval(pollStats, 3000);
+    clockTimer = setInterval(renderClock, 100);
   }
 
-  // ---------------- networking: host ----------------
+  // ================= networking: host =================
   function createRoom(name) {
     const code = genCode();
-    peer = new Peer(PREFIX + code, Object.assign({ debug: 0 }, window.LY_PEER_OPTS || {}));
+    peer = new Peer(PREFIX + code, peerOptions());
     peer.on('open', id => {
       myId = id; isHost = true;
-      room = { code, hostId: id, started: false, chat: [], game: null,
+      room = { code, hostId: id, started: false, chat: [], chatSeq: 0, game: null, gameNo: 0,
         players: [{ id, name, color: 'red', mic, cam, online: true }] };
-      sys(`${name} ne room banaya`);
+      sys(`${name} created the room`);
       enterGame();
       broadcast();
     });
@@ -607,7 +890,7 @@ window.LY_PEER_OPTS = {
         const name = cleanName(msg.name);
         room.players.push({ id: conn.peer, name, color, mic: !!msg.mic, cam: !!msg.cam, online: true });
         conns.set(conn.peer, conn);
-        sys(`${name} aa gaya`);
+        sys(`${name} joined`);
         broadcast();
         return;
       }
@@ -624,26 +907,65 @@ window.LY_PEER_OPTS = {
     if (p) {
       if (!room.started) room.players = room.players.filter(x => x !== p);
       else p.online = false;
-      sys(`${p.name} chala gaya`);
+      sys(`${p.name} left`);
     }
     dropCall(conn.peer);
+    turnKey = ''; // re-arm the timer (offline players are auto-played quickly)
     afterChange();
   }
 
-  function sys(text) { room.chat.push({ s: text }); trimChat(); }
+  function sys(text) { room.chat.push({ id: ++room.chatSeq, s: text }); trimChat(); }
   function trimChat() { if (room.chat.length > MAX_CHAT) room.chat.splice(0, room.chat.length - MAX_CHAT); }
 
   function broadcast() {
     if (!isHost || !room) return;
-    const msg = { t: 'state', room };
+    const left = turnTimer ? Math.max(0, turnEnds - Date.now()) : 0;
+    const msg = { t: 'state', room, timeLeft: left, timerTotal: turnTotal };
     conns.forEach(c => { if (c.open) { try { c.send(msg); } catch (e) {} } });
-    render();
-    syncCalls();
+    applyState(msg);
   }
-  function afterChange() { broadcast(); scheduleAuto(); }
+  function afterChange() { armTurnTimer(); broadcast(); }
   function hostLater(fn, ms) {
     clearTimeout(hostTimer);
     hostTimer = setTimeout(() => { hostTimer = null; fn(); afterChange(); }, ms);
+  }
+
+  // Each phase of a turn gets 20 s; offline players / timed-out turns are played automatically
+  function armTurnTimer() {
+    const g = room && room.game;
+    if (!isHost) return;
+    if (!g || g.over) { clearTimeout(turnTimer); turnTimer = null; turnKey = ''; return; }
+    const key = `${room.gameNo}|${g.turn}|${g.rolled}|${g.rollId}`;
+    if (key === turnKey) return;
+    turnKey = key;
+    clearTimeout(turnTimer);
+    const cur = byColor(L.currentColor(g));
+    const quick = !cur || !cur.online || autoFollow;
+    autoFollow = false;
+    turnTotal = quick ? 1200 : TURN_MS;
+    turnEnds = Date.now() + turnTotal;
+    turnTimer = setTimeout(() => {
+      turnTimer = null;
+      if (turnKey !== key) return;
+      turnKey = '';
+      onTurnTimeout();
+      afterChange();
+    }, turnTotal);
+  }
+  function onTurnTimeout() {
+    const g = room.game; if (!g || g.over) return;
+    const c = L.currentColor(g), p = byColor(c) || { name: c, color: c };
+    if (!g.rolled) {
+      if (p.online) sys(`${p.name} ran out of time`);
+      const r = L.roll(g);
+      if (g.last && g.last.type === 'three6') sys(`${p.name} rolled three 6s — turn lost`);
+      autoFollow = true;
+      if (r && r.pass) hostLater(() => L.passIfStuck(g), 1500);
+      return;
+    }
+    const mv = L.movable(g, c, g.dice);
+    if (g.sixes === 3 || !mv.length) { L.passIfStuck(g); return; }
+    doMove(p, L.bestMove(g, c, g.dice), true);
   }
 
   function hostAction(from, msg) {
@@ -654,7 +976,7 @@ window.LY_PEER_OPTS = {
       case 'chat': {
         const x = String(msg.text || '').trim().slice(0, 200);
         if (!x) return;
-        room.chat.push({ n: p.name, c: p.color, x }); trimChat(); broadcast();
+        room.chat.push({ id: ++room.chatSeq, n: p.name, c: p.color, x }); trimChat(); broadcast();
         break;
       }
       case 'media': p.mic = !!msg.mic; p.cam = !!msg.cam; broadcast(); break;
@@ -667,16 +989,17 @@ window.LY_PEER_OPTS = {
       case 'roll': {
         if (!g || g.over || g.rolled || L.currentColor(g) !== p.color) return;
         const r = L.roll(g);
-        if (g.last && g.last.type === 'three6') sys(`${p.name} ke teen baar 6 — baari gayi`);
-        broadcast();
-        if (r.pass) hostLater(() => L.passIfStuck(g), 1300);
-        else if (r.moves.length === 1) hostLater(() => doMove(p, r.moves[0], true), 800);
+        if (g.last && g.last.type === 'three6') sys(`${p.name} rolled three 6s — turn lost`);
+        afterChange();
+        if (r.pass) hostLater(() => L.passIfStuck(g), 1500);
+        else if (r.moves.length === 1) hostLater(() => doMove(p, r.moves[0], true), 900);
         break;
       }
       case 'move': doMove(p, Number(msg.i)); break;
     }
   }
 
+  const announced = new Set();
   function doMove(p, i, fromTimer) {
     const g = room.game;
     if (!g || !(i >= 0 && i < 4)) return;
@@ -684,17 +1007,17 @@ window.LY_PEER_OPTS = {
     if (!fromTimer) clearTimeout(hostTimer);
     const ev = g.last;
     if (ev && ev.captured && ev.captured.length) {
-      ev.captured.forEach(c => { const v = byColor(c); sys(`${p.name} ne ${v ? v.name : c} ki goti kaat di!`); });
+      ev.captured.forEach(c => { const v = byColor(c); sys(`${p.name} cut ${v ? v.name : c}'s token!`); });
     }
-    if (ev && ev.home) sys(`${p.name} ki ek goti ghar pahunch gayi`);
-    if (g.winners.includes(p.color) && !announced.has(p.color)) {
-      announced.add(p.color);
-      const pos = g.winners.indexOf(p.color) + 1;
-      sys(pos === 1 ? `${p.name} jeet gaya! Pehla number` : `${p.name} ki saari gotiyan ghar — position ${pos}`);
-    }
+    if (ev && ev.home) sys(`${p.name} got a token home`);
+    g.winners.forEach((c, k) => {
+      if (announced.has(c)) return;
+      announced.add(c);
+      const w = byColor(c);
+      sys(k === 0 ? `${w ? w.name : c} wins the game!` : `${w ? w.name : c} finished ${ORD[k]}`);
+    });
     if (!fromTimer) afterChange();
   }
-  const announced = new Set();
 
   function startGame() {
     clearTimeout(hostTimer);
@@ -702,42 +1025,30 @@ window.LY_PEER_OPTS = {
     const colors = L.COLORS.filter(c => room.players.some(p => p.color === c));
     room.game = L.newGame(colors);
     room.started = true;
+    room.gameNo++;
     announced.clear();
-    sys('Game shuru! Laal se pehle baari, phir clockwise.');
+    turnKey = '';
+    sys('Game started! Red goes first, then clockwise.');
     afterChange();
   }
 
-  // Offline player's turn is played automatically so the game never gets stuck
-  function scheduleAuto() {
-    if (!isHost || !room || !room.game || room.game.over || hostTimer) return;
-    const g = room.game, cur = byColor(L.currentColor(g));
-    if (cur && cur.online) return;
-    hostLater(() => {
-      const c = L.currentColor(g);
-      if (!g.rolled) { L.roll(g); return; }
-      const mv = L.movable(g, c, g.dice);
-      if (g.sixes === 3 || !mv.length) { L.passIfStuck(g); return; }
-      L.move(g, c, mv[mv.length - 1]);
-    }, 1400);
-  }
-
-  // ---------------- networking: guest ----------------
+  // ================= networking: guest =================
   function joinRoom(name, code) {
-    peer = new Peer(Object.assign({ debug: 0 }, window.LY_PEER_OPTS || {}));
+    peer = new Peer(peerOptions());
     let opened = false;
     peer.on('open', id => {
       myId = id;
       hostConn = peer.connect(PREFIX + code, { reliable: true });
-      const t = setTimeout(() => { if (!opened) failJoin('Room nahi mila. Code check karo.'); }, 15000);
+      const t = setTimeout(() => { if (!opened) failJoin('Room not found. Check the code.'); }, 15000);
       hostConn.on('open', () => { opened = true; clearTimeout(t); hostConn.send({ t: 'hello', name, mic, cam }); });
       hostConn.on('data', onHostMsg);
       hostConn.on('close', () => {
         if (leaving) return;
-        if (inGame) { toast('Host ne room band kar diya'); endSession(); }
+        if (inGame) { toast('The host closed the room'); endSession(); }
       });
     });
     peer.on('error', err => {
-      if (err.type === 'peer-unavailable' && !inGame) { failJoin('Room nahi mila. Code check karo.'); return; }
+      if (err.type === 'peer-unavailable' && !inGame) { failJoin('Room not found. Check the code.'); return; }
       onPeerError(err);
     });
     peer.on('call', answerCall);
@@ -746,23 +1057,18 @@ window.LY_PEER_OPTS = {
 
   function onHostMsg(msg) {
     if (!msg || typeof msg !== 'object') return;
-    if (msg.t === 'full') return failJoin('Room full hai (4 log already hain).');
-    if (msg.t === 'started') return failJoin('Is room mein game shuru ho chuka hai.');
-    if (msg.t === 'state') {
-      room = msg.room;
-      if (!inGame) enterGame();
-      render();
-      syncCalls();
-    }
+    if (msg.t === 'full') return failJoin('This room is full (4 players).');
+    if (msg.t === 'started') return failJoin('The game in this room has already started.');
+    if (msg.t === 'state') applyState(msg);
   }
 
   function failJoin(text) { endSession(); lobbyMsg(text); }
 
   function onPeerError(err) {
     const type = err && err.type;
-    if (type === 'peer-unavailable') return; // a call target left; harmless
-    if (!inGame) { endSession(); lobbyMsg('Connection nahi ho paya (' + (type || 'error') + '). Internet check karke dobara try karo.'); }
-    else if (type === 'network' || type === 'server-error') toast('Internet connection mein dikkat…');
+    if (type === 'peer-unavailable') return;
+    if (!inGame) { endSession(); lobbyMsg('Could not connect (' + (type || 'error') + '). Check your internet and try again.'); }
+    else if (type === 'network' || type === 'server-error') toast('Connection problem…');
   }
 
   function send(msg) {
@@ -770,7 +1076,18 @@ window.LY_PEER_OPTS = {
     else if (hostConn && hostConn.open) hostConn.send(msg);
   }
 
-  // ---------------- calls (audio/video mesh) ----------------
+  function applyState(msg) {
+    const prevPlayers = room ? room.players.length : 0;
+    room = msg.room;
+    timerEnd = performance.now() + (msg.timeLeft || 0);
+    timerTotal = msg.timerTotal || TURN_MS;
+    if (!inGame) enterGame();
+    else if (room.players.length > prevPlayers) Sfx.join();
+    render();
+    syncCalls();
+  }
+
+  // ================= calls (audio/video mesh) =================
   function syncCalls() {
     if (!room || !peer || !localStream) return;
     const ids = new Set(room.players.filter(p => p.online && p.id !== myId).map(p => p.id));
@@ -798,19 +1115,20 @@ window.LY_PEER_OPTS = {
       if (calls.get(id) !== call) return;
       remoteStreams.set(id, s);
       attachMeter(id, s);
-      renderTiles();
+      tuneSenders();
+      renderPanels();
     });
-    const gone = () => { if (calls.get(id) === call) { calls.delete(id); remoteStreams.delete(id); meters.delete(id); renderTiles(); } };
+    const gone = () => { if (calls.get(id) === call) { calls.delete(id); remoteStreams.delete(id); meters.delete(id); netQ.delete(id); tuneSenders(); renderPanels(); } };
     call.on('close', gone);
     call.on('error', gone);
   }
   function dropCall(id) {
     const c = calls.get(id);
-    calls.delete(id); remoteStreams.delete(id); meters.delete(id);
+    calls.delete(id); remoteStreams.delete(id); meters.delete(id); netQ.delete(id);
     if (c) { try { c.close(); } catch (e) {} }
   }
 
-  // ---------------- screens ----------------
+  // ================= screens =================
   function enterGame() {
     inGame = true;
     lobbyBusy(false); lobbyMsg('');
@@ -820,23 +1138,29 @@ window.LY_PEER_OPTS = {
     $('waitCode').textContent = room.code;
     history.replaceState(null, '', location.pathname + '?room=' + room.code);
     attachMeter(myId, localStream);
-    startMeters();
+    startLoops();
     if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+    lastChatId = room.chat.length ? room.chat[room.chat.length - 1].id : 0;
   }
 
   function endSession() {
     leaving = true;
     clearTimeout(hostTimer); hostTimer = null;
-    clearInterval(meterTimer);
+    clearTimeout(turnTimer); turnTimer = null; turnKey = '';
+    clearInterval(meterTimer); clearInterval(statsTimer); clearInterval(clockTimer);
     calls.forEach((c, id) => dropCall(id));
     conns.forEach(c => { try { c.close(); } catch (e) {} }); conns.clear();
     if (hostConn) { try { hostConn.close(); } catch (e) {} hostConn = null; }
     if (peer) { try { peer.destroy(); } catch (e) {} peer = null; }
     stopMedia();
-    Object.values(tileEls).forEach(el => { el.video.srcObject = null; });
+    Object.values(panelEls).forEach(el => { el.video.srcObject = null; });
+    closeSpotlight();
     room = null; myId = null; isHost = false; inGame = false; rollPending = false;
-    lastRollId = -1; lastChatLen = -1; lastChatKey = ''; wasMyTurn = false;
-    tokenEls.clear(); $('tokens') && ($('tokens').innerHTML = '');
+    lastRollId = -1; lastChatId = 0; wasMyTurn = false; lastWinners = 0; unread = 0;
+    prevGame = null; prevGameNo = -1; animSeq++; animating = false; diceBusy = false;
+    tokenEls.forEach(e => e.remove()); tokenEls.clear();
+    for (const k in vis) delete vis[k];
+    $('chatList').innerHTML = '';
     $('game').classList.add('hidden');
     $('lobby').classList.remove('hidden');
     lobbyBusy(false);
@@ -845,7 +1169,7 @@ window.LY_PEER_OPTS = {
   }
   window.addEventListener('pagehide', () => { if (peer) { leaving = true; peer.destroy(); } });
 
-  // ---------------- board ----------------
+  // ================= board =================
   const SVGNS = 'http://www.w3.org/2000/svg';
   function el(tag, attrs, parent) {
     const e = document.createElementNS(SVGNS, tag);
@@ -853,16 +1177,37 @@ window.LY_PEER_OPTS = {
     if (parent) parent.appendChild(e);
     return e;
   }
+  function starPoints(cx, cy, ro, ri) {
+    const pts = [];
+    for (let k = 0; k < 10; k++) {
+      const a = -Math.PI / 2 + k * Math.PI / 5, r = k % 2 ? ri : ro;
+      pts.push((cx + r * Math.cos(a)).toFixed(3) + ',' + (cy + r * Math.sin(a)).toFixed(3));
+    }
+    return pts.join(' ');
+  }
   function drawBoard() {
     const b = $('board');
     b.innerHTML = '';
-    b.style.fill = ''; b.style.stroke = '';
-    el('rect', { x: 0, y: 0, width: 15, height: 15, rx: 0.3, fill: '#FFFFFF', stroke: 'none' }, b);
+    const defs = el('defs', {}, b);
+    L.COLORS.forEach(c => {
+      const pg = el('radialGradient', { id: 'pg-' + c, cx: '35%', cy: '30%', r: '75%' }, defs);
+      el('stop', { offset: '0%', 'stop-color': LIGHT[c] }, pg);
+      el('stop', { offset: '55%', 'stop-color': HEX[c] }, pg);
+      el('stop', { offset: '100%', 'stop-color': DARK[c] }, pg);
+      const hg = el('linearGradient', { id: 'hg-' + c, x1: 0, y1: 0, x2: 1, y2: 1 }, defs);
+      el('stop', { offset: '0%', 'stop-color': LIGHT[c] }, hg);
+      el('stop', { offset: '45%', 'stop-color': HEX[c] }, hg);
+      el('stop', { offset: '100%', 'stop-color': DARK[c] }, hg);
+    });
+    el('rect', { x: 0, y: 0, width: 15, height: 15, rx: 0.35, fill: '#FFFFFF', stroke: 'none' }, b);
     const homes = [[0, 0, 'red'], [9, 0, 'green'], [9, 9, 'yellow'], [0, 9, 'blue']];
     homes.forEach(([x, y, c]) => {
-      el('rect', { x, y, width: 6, height: 6, fill: HEX[c], stroke: 'none' }, b);
-      el('rect', { x: x + 1, y: y + 1, width: 4, height: 4, rx: 0.4, fill: '#FFFFFF', stroke: 'none' }, b);
-      L.BASE_SLOTS.forEach(([dx, dy]) => el('circle', { cx: x + dx, cy: y + dy, r: 0.62, fill: 'none', stroke: HEX[c], 'stroke-width': 0.12 }, b));
+      el('rect', { x: x + 0.05, y: y + 0.05, width: 5.9, height: 5.9, rx: 0.35, fill: `url(#hg-${c})`, stroke: 'none' }, b);
+      el('rect', { x: x + 0.9, y: y + 0.9, width: 4.2, height: 4.2, rx: 0.5, fill: '#FFFFFF', stroke: DARK[c], 'stroke-width': 0.06 }, b);
+      L.BASE_SLOTS.forEach(([dx, dy]) => {
+        el('circle', { cx: x + dx, cy: y + dy, r: 0.62, fill: LIGHT[c], opacity: 0.55, stroke: 'none' }, b);
+        el('circle', { cx: x + dx, cy: y + dy, r: 0.62, fill: 'none', stroke: HEX[c], 'stroke-width': 0.1 }, b);
+      });
     });
     const startCells = { '1,6': 'red', '8,1': 'green', '13,8': 'yellow', '6,13': 'blue' };
     for (let r = 0; r < 15; r++) for (let c = 0; c < 15; c++) {
@@ -873,232 +1218,391 @@ window.LY_PEER_OPTS = {
       if (c === 7 && r >= 1 && r <= 5) f = HEX.green;
       if (r === 7 && c >= 9 && c <= 13) f = HEX.yellow;
       if (c === 7 && r >= 9 && r <= 13) f = HEX.blue;
-      if (startCells[c + ',' + r]) f = HEX[startCells[c + ',' + r]];
-      el('rect', { x: c, y: r, width: 1, height: 1, fill: f, stroke: '#C9CED8', 'stroke-width': 0.04 }, b);
+      const sc = startCells[c + ',' + r];
+      if (sc) f = HEX[sc];
+      el('rect', { x: c, y: r, width: 1, height: 1, fill: f, stroke: '#B9C1D9', 'stroke-width': 0.045 }, b);
+      if (sc) el('polygon', { points: starPoints(c + 0.5, r + 0.5, 0.34, 0.15), fill: 'none', stroke: '#FFFFFF', 'stroke-width': 0.06 }, b);
     }
     [8, 21, 34, 47].forEach(gi => {
-      const [c, r] = L.TRACK[gi]; const cx = c + 0.5, cy = r + 0.5;
-      const pts = [];
-      for (let k = 0; k < 10; k++) {
-        const a = -Math.PI / 2 + k * Math.PI / 5, rad = k % 2 ? 0.14 : 0.34;
-        pts.push((cx + rad * Math.cos(a)).toFixed(3) + ',' + (cy + rad * Math.sin(a)).toFixed(3));
-      }
-      el('polygon', { points: pts.join(' '), fill: '#9AA4B8', stroke: 'none' }, b);
+      const [c, r] = L.TRACK[gi];
+      el('polygon', { points: starPoints(c + 0.5, r + 0.5, 0.36, 0.16), fill: '#C3CAE0', stroke: '#8D97B8', 'stroke-width': 0.04 }, b);
     });
-    el('polygon', { points: '6,6 7.5,7.5 6,9', fill: HEX.red, stroke: 'none' }, b);
-    el('polygon', { points: '6,6 9,6 7.5,7.5', fill: HEX.green, stroke: 'none' }, b);
-    el('polygon', { points: '9,6 9,9 7.5,7.5', fill: HEX.yellow, stroke: 'none' }, b);
-    el('polygon', { points: '6,9 9,9 7.5,7.5', fill: HEX.blue, stroke: 'none' }, b);
+    // arrows showing where each colour enters its home lane
+    const arrows = [[0.5, 7.5, 0, 'red'], [7.5, 0.5, 90, 'green'], [14.5, 7.5, 180, 'yellow'], [7.5, 14.5, 270, 'blue']];
+    arrows.forEach(([x, y, rot, c]) => {
+      const g = el('g', { transform: `translate(${x} ${y}) rotate(${rot})` }, b);
+      el('path', { d: 'M-0.28 -0.2 L0.18 0 L-0.28 0.2', fill: 'none', stroke: HEX[c], 'stroke-width': 0.12 }, g);
+    });
+    el('polygon', { points: '6,6 7.5,7.5 6,9', fill: `url(#hg-red)`, stroke: '#fff', 'stroke-width': 0.04 }, b);
+    el('polygon', { points: '6,6 9,6 7.5,7.5', fill: `url(#hg-green)`, stroke: '#fff', 'stroke-width': 0.04 }, b);
+    el('polygon', { points: '9,6 9,9 7.5,7.5', fill: `url(#hg-yellow)`, stroke: '#fff', 'stroke-width': 0.04 }, b);
+    el('polygon', { points: '6,9 9,9 7.5,7.5', fill: `url(#hg-blue)`, stroke: '#fff', 'stroke-width': 0.04 }, b);
+    el('rect', { x: 0, y: 0, width: 15, height: 15, rx: 0.35, fill: 'none', stroke: '#14205A', 'stroke-width': 0.12 }, b);
     el('g', { id: 'tokens' }, b);
   }
 
+  // ---------- tokens ----------
   const tokenEls = new Map();
   function tokenEl(color, i) {
     const key = color + i;
     if (tokenEls.has(key)) return tokenEls.get(key);
     const g = el('g', { class: 'token' }, $('tokens'));
-    el('circle', { class: 'ring', r: 0.6, fill: 'none', stroke: '#0F1525', 'stroke-width': 0.1, 'stroke-dasharray': '0.2 0.12' }, g);
-    el('circle', { cy: 0.07, r: 0.4, fill: '#000', opacity: 0.25, stroke: 'none' }, g);
-    el('circle', { class: 'body', r: 0.4, fill: HEX[color], stroke: '#FFFFFF', 'stroke-width': 0.12 }, g);
-    el('circle', { r: 0.14, fill: '#FFFFFF', opacity: 0.55, stroke: 'none' }, g);
-    el('circle', { r: 0.7, fill: 'transparent', stroke: 'none' }, g); // bigger tap area
+    el('ellipse', { class: 'halo', cx: 0, cy: 0.3, rx: 0.5, ry: 0.24, fill: 'rgba(255,179,0,0.35)', stroke: '#FF9800', 'stroke-width': 0.12, opacity: 0 }, g);
+    el('ellipse', { cx: 0, cy: 0.3, rx: 0.3, ry: 0.11, fill: '#000', opacity: 0.3, stroke: 'none' }, g);
+    const pawn = el('g', { class: 'pawn' }, g);
+    el('path', { d: 'M0 0.3 C -0.1 0.12 -0.33 -0.02 -0.33 -0.28 A 0.33 0.33 0 1 1 0.33 -0.28 C 0.33 -0.02 0.1 0.12 0 0.3 Z',
+      fill: `url(#pg-${color})`, stroke: '#FFFFFF', 'stroke-width': 0.07 }, pawn);
+    el('circle', { cx: 0, cy: -0.28, r: 0.14, fill: '#FFFFFF', opacity: 0.92, stroke: 'none' }, pawn);
+    el('circle', { cx: 0, cy: -0.28, r: 0.085, fill: HEX[color], stroke: 'none' }, pawn);
+    el('ellipse', { cx: -0.13, cy: -0.43, rx: 0.07, ry: 0.045, fill: '#FFFFFF', opacity: 0.65, stroke: 'none' }, pawn);
+    el('circle', { cx: 0, cy: -0.1, r: 0.62, fill: 'transparent', stroke: 'none' }, g); // bigger tap area
     g.addEventListener('click', () => {
-      if (g.classList.contains('can')) { send({ t: 'move', i }); g.classList.remove('can'); }
+      if (g.classList.contains('can')) {
+        clearCan();
+        send({ t: 'move', i });
+      }
     });
     tokenEls.set(key, g);
     return g;
   }
+  function clearCan() { tokenEls.forEach(e => e.classList.remove('can')); }
 
-  function renderTokens() {
-    const g = room.game;
+  function layoutTokens(raiseKey) {
+    const g = room && room.game;
     const colors = g ? g.colors : room.players.map(p => p.color);
-    // remove tokens of colors no longer present
-    tokenEls.forEach((e, k) => { if (!colors.some(c => k.startsWith(c))) { e.remove(); tokenEls.delete(k); } });
-    const myColor = me() && me().color;
-    const canSet = new Set();
-    if (g && !g.over && g.rolled && L.currentColor(g) === myColor && g.sixes < 3) {
-      L.movable(g, myColor, g.dice).forEach(i => canSet.add(i));
-    }
     const groups = {};
     colors.forEach(c => {
-      const toks = g ? g.tokens[c] : [-1, -1, -1, -1];
-      toks.forEach((p, i) => {
-        const [x, y] = L.tokenXY(c, p, i);
-        const key = x.toFixed(2) + ',' + y.toFixed(2);
-        (groups[key] = groups[key] || []).push({ c, i, x, y });
-      });
+      for (let i = 0; i < 4; i++) {
+        const key = c + i;
+        if (!(key in vis)) vis[key] = g ? g.tokens[c][i] : -1;
+        const [x, y] = L.tokenXY(c, vis[key], i);
+        const gk = x.toFixed(2) + ',' + y.toFixed(2);
+        (groups[gk] = groups[gk] || []).push({ c, i, x, y, key });
+      }
     });
+    const placed = [];
     Object.values(groups).forEach(list => {
       const n = list.length;
       list.forEach((t, k) => {
         let dx = 0, dy = 0, s = 1;
-        if (n > 1) { s = n > 2 ? 0.6 : 0.72; const a = (k / n) * Math.PI * 2; dx = Math.cos(a) * 0.22; dy = Math.sin(a) * 0.22; }
+        if (n > 1) { s = n > 2 ? 0.62 : 0.75; const a = (k / n) * Math.PI * 2 + 0.6; dx = Math.cos(a) * 0.22; dy = Math.sin(a) * 0.18; }
         const e = tokenEl(t.c, t.i);
-        e.style.transform = `translate(${t.x + dx}px, ${t.y + dy}px) scale(${s})`;
-        const can = t.c === myColor && canSet.has(t.i);
-        e.classList.toggle('can', can);
-        e.querySelector('.ring').setAttribute('opacity', can ? 1 : 0);
-        if (can) $('tokens').appendChild(e); // keep movable tokens on top
+        e.style.transform = `translate(${(t.x + dx).toFixed(3)}px, ${(t.y + 0.08 + dy).toFixed(3)}px) scale(${s})`;
+        placed.push({ e, y: t.y + dy, key: t.key });
       });
     });
+    if (!animating) {
+      placed.sort((a, b) => a.y - b.y).forEach(p => $('tokens').appendChild(p.e));
+    }
   }
 
-  // ---------------- tiles ----------------
-  const tileEls = {};
-  function buildTiles() {
-    const layout = { tilesTop: ['red', 'green'], tilesBottom: ['blue', 'yellow'] };
+  function syncTokens() {
+    const g = room.game;
+    const colors = g ? g.colors : room.players.map(p => p.color);
+    tokenEls.forEach((e, k) => { if (!colors.some(c => k.startsWith(c))) { e.remove(); tokenEls.delete(k); delete vis[k]; } });
+    if (!g) { colors.forEach(c => { for (let i = 0; i < 4; i++) vis[c + i] = -1; }); prevGame = null; layoutTokens(); return; }
+    if (!prevGame || room.gameNo !== prevGameNo || prevGame.colors.join() !== g.colors.join()) {
+      animSeq++; animating = false;
+      g.colors.forEach(c => g.tokens[c].forEach((p, i) => { vis[c + i] = p; }));
+      prevGame = clone(g); prevGameNo = room.gameNo;
+      layoutTokens();
+      return;
+    }
+    const moves = [], caps = [];
+    g.colors.forEach(c => g.tokens[c].forEach((p, i) => {
+      const op = prevGame.tokens[c][i];
+      if (p === op) return;
+      if (p < 0 && op >= 0) caps.push({ c, i });
+      else moves.push({ c, i, from: op, to: p });
+    }));
+    prevGame = clone(g);
+    if (moves.length || caps.length) runAnim(moves, caps, g);
+    else if (!animating) layoutTokens();
+  }
+
+  async function runAnim(moves, caps, g) {
+    const my = ++animSeq;
+    animating = true; clearCan();
+    // anything not part of this animation jumps to where it belongs
+    g.colors.forEach(c => g.tokens[c].forEach((p, i) => {
+      const key = c + i;
+      if (!moves.some(m => m.c + m.i === key) && !caps.some(m => m.c + m.i === key)) vis[key] = p;
+    }));
+    for (const m of moves) {
+      const key = m.c + m.i;
+      const e = tokenEl(m.c, m.i);
+      $('tokens').appendChild(e); e.getBoundingClientRect();
+      const steps = [];
+      if (m.from < 0) steps.push(0);
+      else if (m.to > m.from) for (let p = m.from + 1; p <= m.to; p++) steps.push(p);
+      else steps.push(m.to);
+      for (let k = 0; k < steps.length; k++) {
+        if (my !== animSeq) return;
+        vis[key] = steps[k];
+        layoutTokens();
+        e.classList.remove('hop'); e.getBoundingClientRect(); e.classList.add('hop');
+        if (m.from < 0) Sfx.out(); else Sfx.step(k);
+        await sleep(m.from < 0 ? 280 : 170);
+      }
+      if (m.to === L.FINISH) { Sfx.home(); banner('HOME!'); }
+    }
+    if (caps.length) {
+      if (my !== animSeq) return;
+      Sfx.capture(); banner('CUT!');
+      caps.forEach(m => { const e = tokenEl(m.c, m.i); e.classList.add('slow'); vis[m.c + m.i] = -1; });
+      layoutTokens();
+      await sleep(650);
+      caps.forEach(m => tokenEl(m.c, m.i).classList.remove('slow'));
+    }
+    if (my !== animSeq) return;
+    animating = false;
+    layoutTokens();
+    refreshInteractive();
+  }
+
+  // ================= panels =================
+  const panelEls = {};
+  function buildPanels() {
+    const layout = { panelsTop: ['red', 'green'], panelsBottom: ['blue', 'yellow'] };
     Object.entries(layout).forEach(([box, cols]) => {
-      cols.forEach(c => {
+      cols.forEach((c, k) => {
         const root = document.createElement('div');
-        root.className = 'tile';
-        root.style.borderColor = HEX[c];
-        root.innerHTML = '<video autoplay playsinline></video><div class="avatar"><span></span></div><div class="empty-txt">Khaali jagah</div><div class="badge"></div><div class="label"><span class="cdot"></span><span class="nm"></span><span class="mi"></span></div>';
-        root.querySelector('.cdot').style.background = HEX[c];
-        root.querySelector('.avatar span').style.background = HEX[c];
+        root.className = 'panel ' + (k === 0 ? 'left' : 'right');
+        root.style.setProperty('--c', HEX[c]);
+        root.innerHTML = '<div class="avatar" role="button" tabindex="0" aria-label="Show video bigger"><div class="vbox"><video autoplay playsinline></video><div class="initial"><span></span></div><div class="net" title=""><i></i><i></i><i></i></div><div class="mic"></div><div class="tag2"></div></div></div>' +
+          '<div class="side"><div class="pname"><span class="cdot"></span><span class="nm"></span></div><div class="pstat"></div><div class="dice-slot"></div></div><div class="bubble"></div>';
         $(box).appendChild(root);
-        tileEls[c] = { root, video: root.querySelector('video'), avatar: root.querySelector('.avatar'),
-          initial: root.querySelector('.avatar span'), empty: root.querySelector('.empty-txt'),
-          badge: root.querySelector('.badge'), label: root.querySelector('.label'),
-          nm: root.querySelector('.nm'), mi: root.querySelector('.mi') };
+        const p = {
+          root, avatar: root.querySelector('.avatar'), video: root.querySelector('video'), initial: root.querySelector('.initial'),
+          letter: root.querySelector('.initial span'), net: root.querySelector('.net'), mic: root.querySelector('.mic'),
+          tag: root.querySelector('.tag2'), nm: root.querySelector('.nm'), stat: root.querySelector('.pstat'),
+          slot: root.querySelector('.dice-slot'), bubble: root.querySelector('.bubble'),
+        };
+        p.avatar.addEventListener('click', () => openSpotlight(c));
+        p.avatar.addEventListener('keydown', e => { if (e.key === 'Enter') openSpotlight(c); });
+        panelEls[c] = p;
       });
     });
   }
 
-  function renderTiles() {
+  function streamFor(p) { return p.id === myId ? localStream : remoteStreams.get(p.id); }
+
+  function renderPanels() {
     if (!room) return;
     const g = room.game;
     const cur = g && !g.over ? L.currentColor(g) : null;
     L.COLORS.forEach(c => {
-      const t = tileEls[c], p = byColor(c);
+      const t = panelEls[c], p = byColor(c);
       t.root.classList.toggle('empty', !p);
-      t.empty.style.display = p ? 'none' : '';
-      t.label.style.display = p ? '' : 'none';
       t.root.classList.toggle('turn', !!p && cur === c);
-      if (!p) { t.video.srcObject = null; t.avatar.style.display = 'none'; t.badge.style.display = 'none'; return; }
+      if (!p) {
+        t.video.srcObject = null; t.video.style.visibility = 'hidden';
+        t.initial.style.display = 'none'; t.net.style.display = 'none'; t.mic.style.display = 'none'; t.tag.style.display = 'none';
+        t.nm.textContent = room.started ? '—' : 'Empty'; t.stat.textContent = '';
+        return;
+      }
       const isMe = p.id === myId;
-      const stream = isMe ? localStream : remoteStreams.get(p.id);
+      const stream = streamFor(p);
       if (t.video.srcObject !== (stream || null)) {
         t.video.srcObject = stream || null;
         if (stream) {
           const pr = t.video.play();
-          if (pr && pr.catch) pr.catch(() => toast('Dosto ki awaaz sunne ke liye tap karo', 'Awaaz chalu', playAll));
+          if (pr && pr.catch) pr.catch(() => toast('Tap to hear your friends', 'Turn on sound', playAll));
         }
       }
       t.video.muted = isMe || !speakerOn;
       t.video.classList.toggle('mirror', isMe && facing === 'user');
-      const showVideo = stream && p.cam && p.online;
+      const showVideo = !!stream && p.cam && p.online;
       t.video.style.visibility = showVideo ? 'visible' : 'hidden';
-      t.avatar.style.display = showVideo ? 'none' : 'flex';
-      t.initial.textContent = p.name.charAt(0).toUpperCase();
-      t.nm.textContent = isMe ? p.name + ' (Tum)' : p.name;
-      t.mi.innerHTML = p.mic ? ICON.mic : ICON.micOff;
-      let badge = '';
-      if (!p.online) badge = 'Offline';
-      else if (!isMe && !stream) badge = 'Video jud raha…';
-      else if (!p.cam) badge = 'Camera off';
-      t.badge.textContent = badge;
-      t.badge.style.display = badge ? '' : 'none';
+      t.initial.style.display = showVideo ? 'none' : 'flex';
+      t.letter.textContent = p.name.charAt(0).toUpperCase();
+      t.mic.style.display = '';
+      t.mic.className = 'mic' + (p.mic ? '' : ' off');
+      t.mic.innerHTML = p.mic ? ICON.mic : ICON.micOff;
+      const nq = netQ.get(p.id);
+      t.net.style.display = !isMe && nq ? '' : 'none';
+      if (nq) { t.net.className = 'net q' + nq.q; t.net.title = `${nq.rtt} ms${nq.relay ? ' (relayed)' : ' (direct)'}`; }
+      let tag = '';
+      if (!p.online) tag = 'Offline';
+      else if (!isMe && !stream) tag = 'Connecting…';
+      t.tag.textContent = tag; t.tag.style.display = tag ? '' : 'none';
+      t.nm.textContent = p.name;
+      const rank = g ? g.winners.indexOf(c) : -1;
+      const info = rank >= 0 ? `${ORD[rank]} place` : (g ? `${g.tokens[c].filter(x => x === L.FINISH).length}/4 home` : (p.id === room.hostId ? 'Host' : 'Ready'));
+      t.stat.textContent = isMe ? `You · ${info}` : info;
     });
   }
-  function playAll() { Object.values(tileEls).forEach(t => { if (t.video.srcObject) t.video.play().catch(() => {}); }); if (audioCtx) audioCtx.resume(); }
+  function playAll() {
+    Object.values(panelEls).forEach(t => { if (t.video.srcObject) t.video.play().catch(() => {}); });
+    if (audioCtx) audioCtx.resume();
+    Sfx.unlock();
+  }
 
-  // ---------------- dice / turn ----------------
+  // ---------- spotlight (big video) ----------
+  let spotColor = null;
+  function openSpotlight(c) {
+    const p = byColor(c); if (!p) return;
+    const s = streamFor(p);
+    if (!s || !p.cam) { toast(`${p.name}'s camera is off`); return; }
+    spotColor = c;
+    const v = $('spotVideo');
+    v.srcObject = s; v.muted = true; // audio already plays from the small tile
+    v.classList.toggle('mirror', p.id === myId && facing === 'user');
+    v.play().catch(() => {});
+    $('spotName').textContent = p.id === myId ? `${p.name} (You)` : p.name;
+    $('spotlight').classList.remove('hidden');
+  }
+  function closeSpotlight() { spotColor = null; $('spotVideo').srcObject = null; $('spotlight').classList.add('hidden'); }
+  $('spotClose').onclick = closeSpotlight;
+  $('spotlight').addEventListener('click', e => { if (e.target.id === 'spotlight') closeSpotlight(); });
+
+  // ================= dice =================
   const PIPS = { 1: [4], 2: [0, 8], 3: [0, 4, 8], 4: [0, 2, 6, 8], 5: [0, 2, 4, 6, 8], 6: [0, 2, 3, 5, 6, 8] };
-  const diceBtn = $('diceBtn');
-  for (let i = 0; i < 9; i++) diceBtn.appendChild(document.createElement('i'));
+  const dice = document.createElement('button');
+  dice.className = 'dice'; dice.setAttribute('aria-label', 'Roll the dice'); dice.disabled = true;
+  for (let i = 0; i < 9; i++) dice.appendChild(document.createElement('i'));
   function showDice(v) {
     const on = PIPS[v] || [];
-    [...diceBtn.children].forEach((p, i) => p.classList.toggle('on', on.includes(i)));
+    [...dice.children].forEach((p, i) => p.classList.toggle('on', on.includes(i)));
+    dice.classList.toggle('six', v === 6);
   }
-  diceBtn.onclick = () => {
-    if (diceBtn.disabled) return;
-    rollPending = true; diceBtn.disabled = true; diceBtn.classList.remove('ready');
-    diceBtn.classList.add('rolling');
+  showDice(6);
+  dice.onclick = () => {
+    if (dice.disabled || !dice.classList.contains('ready')) return;
+    Sfx.unlock();
+    rollPending = true; dice.classList.remove('ready'); dice.disabled = true;
+    dice.classList.add('rolling');
     send({ t: 'roll' });
   };
+  async function animateRoll(value, three6) {
+    diceBusy = true; clearCan();
+    Sfx.dice();
+    dice.classList.remove('rolling'); void dice.offsetWidth; dice.classList.add('rolling');
+    for (let k = 0; k < 6; k++) { showDice(1 + Math.floor(Math.random() * 6)); await sleep(85); }
+    showDice(value);
+    if (three6) { Sfx.lost(); banner('3 SIXES!'); }
+    else if (value === 6) { Sfx.six(); banner('SIX!'); }
+    diceBusy = false;
+    refreshInteractive();
+  }
 
-  function renderTurn() {
+  // ================= turn / status =================
+  function refreshInteractive() {
+    if (!room || !inGame) return;
     const g = room.game, mine = me();
-    const dot = $('turnDot'), tt = $('turnText'), ts = $('turnSub');
+    const st = $('statusLine');
     let myTurn = false;
+    clearCan();
     if (!room.started || !g) {
-      dot.style.background = '#9AA4B8';
-      tt.textContent = 'Game shuru nahi hua';
-      ts.textContent = room.players.length < 2 ? 'Kam se kam 2 log chahiye' : (isHost ? 'Start dabao jab sab aa jaayein' : 'Host start karega');
-      showDice(6);
+      st.textContent = room.players.length < 2 ? 'Waiting for players…' : (isHost ? 'Everyone ready? Tap Start Game' : 'Waiting for the host to start…');
     } else if (g.over) {
-      dot.style.background = '#9AA4B8';
-      tt.textContent = 'Game khatam';
-      ts.textContent = '';
+      const w = byColor(g.winners[0]);
+      st.textContent = w ? `${w.id === myId ? 'You' : w.name} won the game!` : 'Game over';
     } else {
       const c = L.currentColor(g), p = byColor(c);
-      myTurn = mine && mine.color === c;
-      dot.style.background = HEX[c];
+      myTurn = !!mine && mine.color === c;
       if (myTurn) {
-        if (!g.rolled) tt.textContent = 'Tumhari baari! Dice dabao';
-        else if (L.movable(g, c, g.dice).length && g.sixes < 3) tt.textContent = 'Chamakti goti chuno';
-        else tt.textContent = 'Koi chaal nahi bachi';
-      } else tt.textContent = (p ? p.name : c) + ' ki baari' + (p && !p.online ? ' (auto)' : '');
-      if (g.dice) {
-        ts.textContent = 'Dice aaya: ' + g.dice + (g.sixes === 3 ? ' — teen 6, baari gayi' : g.dice === 6 ? ' — ek aur chance' : '');
-        showDice(g.dice);
-      } else ts.textContent = g.last && g.last.type === 'move' && g.last.color === c && (g.last.captured.length || g.last.home) ? 'Bonus chance mila!' : '';
-      if (g.rollId !== lastRollId) {
-        lastRollId = g.rollId;
-        diceBtn.classList.remove('rolling'); void diceBtn.offsetWidth; diceBtn.classList.add('rolling');
+        if (!g.rolled) st.innerHTML = '<span class="hl">Your turn</span> — tap the dice!';
+        else if (!diceBusy && !animating && g.sixes < 3) {
+          const mv = L.movable(g, c, g.dice);
+          if (mv.length) {
+            st.innerHTML = `You rolled <span class="hl">${g.dice}</span> — tap a glowing token`;
+            mv.forEach(i => tokenEl(c, i).classList.add('can'));
+            mv.forEach(i => $('tokens').appendChild(tokenEl(c, i)));
+          } else st.textContent = `You rolled ${g.dice} — no moves possible`;
+        } else st.textContent = '';
+      } else {
+        const nm = p ? p.name : c;
+        st.textContent = g.rolled && g.dice ? `${nm} rolled ${g.dice}` : `${nm}'s turn${p && !p.online ? ' (auto)' : ''}`;
       }
     }
-    const canRoll = myTurn && !g.rolled && !rollPending;
-    diceBtn.disabled = !canRoll;
-    diceBtn.classList.toggle('ready', !!canRoll);
-    if (canRoll && !wasMyTurn && navigator.vibrate) navigator.vibrate(120);
+    const canRoll = myTurn && !g.rolled && !rollPending && !diceBusy && !animating;
+    dice.disabled = !canRoll;
+    dice.classList.toggle('ready', !!canRoll);
+    if (canRoll && !wasMyTurn) { Sfx.turn(); if (navigator.vibrate) navigator.vibrate(120); }
     wasMyTurn = !!canRoll;
   }
 
-  // ---------------- overlays ----------------
+  function placeDice() {
+    const g = room.game;
+    if (!g || g.over || !room.started) { if (dice.parentNode) dice.remove(); return; }
+    const slot = panelEls[L.currentColor(g)].slot;
+    if (dice.parentNode !== slot) slot.appendChild(dice);
+  }
+
+  function renderClock() {
+    if (!room || !room.game || room.game.over) return;
+    const g = room.game, c = L.currentColor(g);
+    const rem = Math.max(0, timerEnd - performance.now());
+    const pct = Math.max(0, Math.min(100, (rem / (timerTotal || TURN_MS)) * 100));
+    L.COLORS.forEach(k => panelEls[k].avatar.style.setProperty('--p', k === c ? pct.toFixed(1) : 100));
+    const mine = me();
+    if (mine && mine.color === c && timerTotal >= TURN_MS && rem > 0 && rem < 5000) {
+      const s = Math.ceil(rem / 1000);
+      if (s !== lastTick) { lastTick = s; Sfx.tick(); }
+    } else lastTick = -1;
+  }
+
+  // ================= overlays =================
   function renderOverlays() {
     const g = room.game;
-    const wait = $('waitCard'), over = $('overCard');
-    wait.classList.toggle('hidden', room.started);
-    over.classList.toggle('hidden', !(g && g.over));
+    $('waitCard').classList.toggle('hidden', room.started);
+    $('overCard').classList.toggle('hidden', !(g && g.over));
     if (!room.started) {
       const ul = $('waitPlayers'); ul.innerHTML = '';
       room.players.forEach(p => {
         const li = document.createElement('li');
         const d = document.createElement('span'); d.className = 'cdot'; d.style.background = HEX[p.color];
         li.appendChild(d);
-        li.appendChild(document.createTextNode(p.name + (p.id === room.hostId ? ' (host)' : '') + (p.id === myId ? ' — tum' : '')));
+        li.appendChild(document.createTextNode(p.name + (p.id === room.hostId ? ' (host)' : '') + (p.id === myId ? ' — you' : '')));
         ul.appendChild(li);
       });
-      const canStart = isHost && room.players.length >= 2;
-      $('startBtn').classList.toggle('hidden', !canStart);
-      $('waitHint').textContent = room.players.length < 2 ? 'Kam se kam 1 dost aur chahiye (max 4).'
-        : isHost ? `${room.players.length} log aa gaye. Start dabao!` : 'Host game shuru karega…';
+      $('startBtn').classList.toggle('hidden', !(isHost && room.players.length >= 2));
+      $('waitHint').textContent = room.players.length < 2 ? 'At least 1 more player needed (max 4).'
+        : isHost ? `${room.players.length} players ready.` : 'Waiting for the host to start…';
     }
     if (g && g.over) {
+      const w = byColor(g.winners[0]);
+      $('overTitle').textContent = w ? (w.id === myId ? 'You won!' : `${w.name} wins!`) : 'Game over';
       const ol = $('ranking'); ol.innerHTML = '';
       g.winners.forEach((c, k) => {
         const p = byColor(c);
         const li = document.createElement('li');
+        const pos = document.createElement('span'); pos.className = 'pos'; pos.textContent = ORD[k];
         const d = document.createElement('span'); d.className = 'cdot'; d.style.background = HEX[c];
-        li.appendChild(d);
-        li.appendChild(document.createTextNode(`${k + 1}. ${p ? p.name : c}`));
+        li.appendChild(pos); li.appendChild(d);
+        li.appendChild(document.createTextNode(p ? p.name : c));
         ol.appendChild(li);
       });
       $('againBtn').classList.toggle('hidden', !isHost);
-      $('againHint').textContent = isHost ? '' : 'Host dobara game shuru kar sakta hai';
+      $('againHint').textContent = isHost ? '' : 'The host can start a new game';
     }
   }
-  $('startBtn').onclick = () => send({ t: 'start' });
+  $('startBtn').onclick = () => { Sfx.unlock(); send({ t: 'start' }); };
   $('againBtn').onclick = () => send({ t: 'again' });
 
-  // ---------------- chat ----------------
+  // ================= chat =================
+  const chatPanel = $('chatPanel');
+  const chatVisible = () => window.innerWidth >= 1100 || chatPanel.classList.contains('open');
+  function setUnread(n) { unread = n; const b = $('chatBadge'); b.textContent = n > 9 ? '9+' : n; b.classList.toggle('hidden', !n); }
+  $('chatBtn').onclick = () => { chatPanel.classList.add('open'); setUnread(0); setTimeout(() => $('chatInput').focus(), 250); };
+  $('chatClose').onclick = () => chatPanel.classList.remove('open');
+  QUICK.forEach(q => {
+    const b = document.createElement('button'); b.type = 'button'; b.textContent = q;
+    b.onclick = () => { send({ t: 'chat', text: q }); if (window.innerWidth < 1100) chatPanel.classList.remove('open'); };
+    $('quickRow').appendChild(b);
+  });
+  function showBubble(color, text) {
+    const t = panelEls[color]; if (!t) return;
+    t.bubble.textContent = text;
+    t.bubble.classList.add('show');
+    clearTimeout(t._bt);
+    t._bt = setTimeout(() => t.bubble.classList.remove('show'), 3200);
+  }
   function renderChat() {
-    const last = room.chat[room.chat.length - 1];
-    const key = room.chat.length + '|' + (last ? (last.x || last.s) : '');
-    if (key === lastChatKey) return;
-    lastChatKey = key;
     const list = $('chatList');
+    const fresh = room.chat.filter(m => m.id > lastChatId);
+    if (!fresh.length && list.childElementCount) return;
     list.innerHTML = '';
     room.chat.forEach(m => {
       const d = document.createElement('div');
@@ -1106,12 +1610,19 @@ window.LY_PEER_OPTS = {
       else {
         d.className = 'msg';
         const b = document.createElement('strong');
-        b.style.color = HEX[m.c]; b.textContent = m.n + ':';
+        b.style.color = LIGHT[m.c]; b.textContent = m.n + ':';
         d.appendChild(b); d.appendChild(document.createTextNode(m.x));
       }
       list.appendChild(d);
     });
     list.scrollTop = list.scrollHeight;
+    const mine = me();
+    fresh.forEach(m => {
+      if (!m.x) return;
+      showBubble(m.c, m.x);
+      if (!mine || m.c !== mine.color) { Sfx.msg(); if (!chatVisible()) setUnread(unread + 1); }
+    });
+    if (room.chat.length) lastChatId = room.chat[room.chat.length - 1].id;
   }
   $('chatForm').addEventListener('submit', e => {
     e.preventDefault();
@@ -1120,32 +1631,32 @@ window.LY_PEER_OPTS = {
     send({ t: 'chat', text }); inp.value = '';
   });
 
-  // ---------------- controls ----------------
+  // ================= controls =================
   function renderControls() {
     const mb = $('micBtn'), cb = $('camBtn'), sb = $('spkBtn');
-    mb.innerHTML = mic ? ICON.mic : ICON.micOff.replace(' class="off"', '');
-    mb.classList.toggle('off', !mic);
-    cb.innerHTML = cam ? ICON.cam : ICON.camOff;
-    cb.classList.toggle('off', !cam);
-    sb.innerHTML = speakerOn ? ICON.spk : ICON.spkOff;
-    sb.classList.toggle('off', !speakerOn);
+    mb.innerHTML = mic ? ICON.mic : ICON.micOff; mb.classList.toggle('off', !mic);
+    cb.innerHTML = cam ? ICON.cam : ICON.camOff; cb.classList.toggle('off', !cam);
+    sb.innerHTML = speakerOn ? ICON.spk : ICON.spkOff; sb.classList.toggle('off', !speakerOn);
     $('flipBtn').style.display = realVideo ? '' : 'none';
+    $('sfxBtn').innerHTML = Sfx.on ? ICON.note : ICON.noteOff;
+    $('sfxBtn').classList.toggle('off', !Sfx.on);
   }
   function pushMedia() { send({ t: 'media', mic, cam }); }
   $('micBtn').onclick = () => {
-    if (!realAudio) return toast('Mic ki permission nahi mili. Browser settings mein allow karke page reload karo.');
+    if (!realAudio) return toast('Microphone permission was not given. Allow it in browser settings and reload.');
     mic = !mic; applyLocalTracks(); pushMedia();
   };
   $('camBtn').onclick = () => {
-    if (!realVideo) return toast('Camera ki permission nahi mili. Browser settings mein allow karke page reload karo.');
-    cam = !cam; applyLocalTracks(); pushMedia(); renderTiles();
+    if (!realVideo) return toast('Camera permission was not given. Allow it in browser settings and reload.');
+    cam = !cam; applyLocalTracks(); pushMedia(); renderPanels();
   };
-  $('spkBtn').onclick = () => { speakerOn = !speakerOn; renderControls(); renderTiles(); };
+  $('spkBtn').onclick = () => { speakerOn = !speakerOn; renderControls(); renderPanels(); };
+  $('sfxBtn').onclick = () => { Sfx.on = !Sfx.on; renderControls(); if (Sfx.on) Sfx.turn(); };
   $('flipBtn').onclick = async () => {
     if (!realVideo) return;
     const want = facing === 'user' ? 'environment' : 'user';
     try {
-      const s = await navigator.mediaDevices.getUserMedia({ video: { facingMode: want, width: { ideal: 320 }, height: { ideal: 240 }, frameRate: { ideal: 15 } } });
+      const s = await navigator.mediaDevices.getUserMedia({ video: Object.assign({}, VIDEO, { facingMode: want }) });
       const nt = s.getVideoTracks()[0];
       const old = localStream.getVideoTracks()[0];
       calls.forEach(c => {
@@ -1156,38 +1667,78 @@ window.LY_PEER_OPTS = {
       if (old) { localStream.removeTrack(old); old.stop(); }
       localStream.addTrack(nt);
       nt.enabled = cam; facing = want;
-      tileEls[me().color].video.srcObject = null; renderTiles();
-    } catch (e) { toast('Doosra camera nahi mila'); }
+      const mine = me(); if (mine) panelEls[mine.color].video.srcObject = null;
+      renderPanels();
+    } catch (e) { toast('No other camera found'); }
   };
-  $('leaveBtn').onclick = () => { if (confirm('Game aur call chhodna hai?')) endSession(); };
+  $('leaveBtn').onclick = () => { if (confirm('Leave the game and call?')) endSession(); };
 
   async function copyLink() {
     const link = roomLink();
-    try { await navigator.clipboard.writeText(link); toast('Link copy ho gaya — dosto ko bhejo'); }
+    try { await navigator.clipboard.writeText(link); toast('Link copied — send it to your friends'); }
     catch (e) { toast('Link: ' + link); }
   }
   $('copyBtn').onclick = copyLink;
   $('copyBtn2').onclick = copyLink;
   $('shareBtn').onclick = () => {
-    const text = `Ludo khelne aaja! Room code: ${room.code}\n${roomLink()}`;
+    const text = `Let's play Ludo! Room code: ${room.code}\n${roomLink()}`;
     window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank', 'noopener');
   };
+  const openRules = () => $('rulesModal').classList.remove('hidden');
+  $('rulesBtn').onclick = openRules; $('rulesBtn2').onclick = openRules;
+  $('rulesClose').onclick = () => $('rulesModal').classList.add('hidden');
 
-  // ---------------- main render ----------------
+  // ================= main render =================
   function render() {
     if (!room || !inGame) return;
     rollPending = false;
-    $('onlineCount').textContent = room.players.filter(p => p.online).length;
-    renderTokens();
-    renderTiles();
-    renderTurn();
+    const g = room.game;
+    if (g && g.rollId !== lastRollId) {
+      const fresh = lastRollId !== -1 || g.rollId > 0;
+      lastRollId = g.rollId;
+      if (fresh && g.dice) animateRoll(g.dice, g.last && g.last.type === 'three6');
+    }
+    if (g && g.winners.length > lastWinners) {
+      if (lastWinners === 0) { setTimeout(() => { Sfx.win(); banner('WINNER!'); }, 900); }
+      lastWinners = g.winners.length;
+    }
+    if (!g || !g.winners.length) lastWinners = g ? g.winners.length : 0;
+    syncTokens();
+    placeDice();
+    if (g && !g.rolled && !diceBusy) showDice(g.dice || (g.last && g.last.dice) || 6);
+    renderPanels();
+    refreshInteractive();
     renderOverlays();
     renderChat();
     renderControls();
   }
 
+  // ================= installable app (PWA) =================
+  let installEvt = null;
+  const standalone = () => window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  if ('serviceWorker' in navigator && (location.protocol === 'https:' || /^(localhost|127\.0\.0\.1)$/.test(location.hostname))) {
+    window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(() => {}));
+  }
+  window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault(); installEvt = e;
+    $('installBtn').classList.remove('hidden');
+  });
+  window.addEventListener('appinstalled', () => { installEvt = null; $('installBtn').classList.add('hidden'); toast('Ludo Yaari installed! Open it from your home screen.'); });
+  if (isIOS && !standalone()) $('installBtn').classList.remove('hidden');
+  $('installBtn').onclick = async () => {
+    if (installEvt) {
+      installEvt.prompt();
+      const r = await installEvt.userChoice.catch(() => null);
+      if (r && r.outcome === 'accepted') $('installBtn').classList.add('hidden');
+      installEvt = null;
+    } else if (isIOS) $('iosModal').classList.remove('hidden');
+    else toast('Use your browser menu → "Install app" or "Add to Home screen"');
+  };
+  $('iosClose').onclick = () => $('iosModal').classList.add('hidden');
+
   drawBoard();
-  buildTiles();
+  buildPanels();
   renderControls();
 })();
 
