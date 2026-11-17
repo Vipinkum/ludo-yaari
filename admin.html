@@ -1,0 +1,561 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0B1238">
+<meta name="robots" content="noindex">
+<title>Ludo Yaari – Admin</title>
+<link rel="icon" href="/icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg1:#1B2A7A;--bg2:#0B1238;--card:rgba(10,18,70,.72);--surface:rgba(255,255,255,.07);--surface2:rgba(255,255,255,.13);
+  --line:rgba(255,255,255,.16);--text:#F4F6FF;--muted:#AEB7E0;--gold:#FFC107;--green:#2FA84F;--red:#E53935;--blue:#4FC3F7;
+}
+*{box-sizing:border-box}
+html{background:var(--bg2)}
+html,body{margin:0;min-height:100%;color:var(--text);}
+body{background:radial-gradient(1200px 700px at 50% -10%,var(--bg1),var(--bg2)) no-repeat;font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+button,input,select{font:inherit;color:inherit}
+.hidden{display:none!important}
+.wrap{max-width:1180px;margin:0 auto;padding:16px 14px 40px}
+header{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.logo{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:26px;line-height:1;margin:0}
+.logo span{color:var(--gold)}
+.logo small{font-family:Inter,sans-serif;font-size:13px;font-weight:700;color:var(--muted);margin-left:8px;padding:3px 8px;border:1px solid var(--line);border-radius:999px;vertical-align:middle}
+.who{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.who b{color:var(--text)}
+.btn{height:38px;border-radius:11px;border:1px solid var(--line);background:var(--surface2);color:var(--text);font-weight:700;font-size:14px;padding:0 14px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;text-decoration:none;white-space:nowrap}
+.btn:hover{background:rgba(255,255,255,.2)}
+.btn.gold{background:linear-gradient(#FFD54F,#FFA000);color:#4A2A00;border-color:transparent}
+.btn.danger{background:linear-gradient(#EF5350,#C62828);border-color:transparent}
+.btn.ok{background:linear-gradient(#43C463,#1E9A47);border-color:transparent}
+.btn:disabled{opacity:.5;cursor:default}
+.stats{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin-bottom:16px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px}
+.stat .n{font-family:'Baloo 2',sans-serif;font-size:30px;font-weight:800;line-height:1.1}
+.stat .l{font-size:12px;color:var(--muted);font-weight:600}
+.stat.warn .n{color:#FF8A80}.stat.good .n{color:#8EE6A2}
+.grid{display:grid;grid-template-columns:minmax(0,1.75fr) minmax(0,1fr);gap:16px;align-items:start}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;min-width:0}
+.card h2{font-size:16px;margin:0 0 10px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.tools{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.search{flex:1 1 200px;height:38px;border-radius:11px;border:1px solid var(--line);background:rgba(5,10,40,.55);padding:0 12px;font-size:14px;min-width:0}
+.search:focus,select:focus{outline:none;border-color:var(--blue)}
+select{height:38px;border-radius:11px;border:1px solid var(--line);background:#121c55;padding:0 10px;font-size:14px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{height:32px;border-radius:999px;border:1px solid var(--line);background:transparent;padding:0 12px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer}
+.chip.on{background:var(--surface2);color:#fff;border-color:rgba(255,255,255,.35)}
+.users{display:flex;flex-direction:column;gap:8px}
+.user{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px 12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 12px}
+.user.blocked{border-color:rgba(229,57,53,.55);background:rgba(229,57,53,.08)}
+.av{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:17px;background:linear-gradient(#4FC3F7,#1E88E5);position:relative;flex:none}
+.av .dot{position:absolute;right:-1px;bottom:-1px;width:12px;height:12px;border-radius:50%;background:#43C463;border:2px solid #101a52}
+.uinfo{min-width:0}
+.uname{font-weight:700;font-size:15px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.uname button{background:none;border:none;padding:0;font-weight:700;font-size:15px;cursor:pointer;color:var(--text);text-align:left}
+.uname button:hover{text-decoration:underline}
+.badge{font-size:11px;font-weight:800;border-radius:999px;padding:2px 8px;letter-spacing:.02em}
+.badge.admin{background:var(--gold);color:#4A2A00}
+.badge.blocked{background:var(--red);color:#fff}
+.badge.you{background:var(--surface2);color:var(--muted)}
+.umeta{font-size:12px;color:var(--muted);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ustats{font-size:12px;color:var(--muted);margin-top:4px;display:flex;gap:12px;flex-wrap:wrap}
+.ustats b{color:var(--text)}
+.uactions{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.tog{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 10px 0 6px;border-radius:999px;border:1px solid var(--line);background:rgba(5,10,40,.4);font-size:12px;font-weight:700;cursor:pointer;color:var(--muted)}
+.tog .sw{width:30px;height:18px;border-radius:999px;background:#5b6390;position:relative;transition:background .15s;flex:none}
+.tog .sw::after{content:"";position:absolute;left:2px;top:2px;width:14px;height:14px;border-radius:50%;background:#fff;transition:transform .15s}
+.tog[aria-checked="true"]{color:#fff}
+.tog[aria-checked="true"] .sw{background:#43C463}
+.tog[aria-checked="true"] .sw::after{transform:translateX(12px)}
+.tog:disabled{opacity:.45;cursor:default}
+.tog.adm[aria-checked="true"] .sw{background:#FFA000}
+.feed{display:flex;flex-direction:column;max-height:70vh;overflow-y:auto;margin:0 -4px;padding:0 4px}
+.ev{display:grid;grid-template-columns:28px minmax(0,1fr);gap:8px;padding:8px 2px;border-bottom:1px solid rgba(255,255,255,.07);font-size:13px;line-height:1.4}
+.ev:last-child{border-bottom:none}
+.ev .ic{font-size:17px;text-align:center}
+.ev .t{color:var(--muted);font-size:11px}
+.ev b{font-weight:700}
+.filter-on{display:inline-flex;align-items:center;gap:6px;font-size:12px;background:var(--surface2);border-radius:999px;padding:4px 6px 4px 10px;margin-bottom:8px}
+.filter-on button{width:20px;height:20px;border-radius:50%;border:none;background:rgba(255,255,255,.2);cursor:pointer;line-height:1}
+.empty{color:var(--muted);font-size:14px;text-align:center;padding:24px 8px}
+.gate{min-height:80vh;display:flex;align-items:center;justify-content:center}
+.gate .card{max-width:380px;text-align:center;padding:26px 22px}
+.gate p{color:var(--muted);line-height:1.5}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#101a52;border:1px solid var(--line);border-radius:12px;padding:10px 16px;font-size:14px;font-weight:600;box-shadow:0 10px 30px rgba(0,0,0,.4);z-index:50;max-width:90vw}
+.toast.err{border-color:#E53935}
+.modal{position:fixed;inset:0;background:rgba(3,6,25,.7);display:flex;align-items:center;justify-content:center;padding:16px;z-index:40}
+.modal .card{max-width:380px;width:100%;text-align:center}
+.modal p{color:var(--muted);line-height:1.45;margin:6px 0 16px}
+.modal .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.spinner{width:36px;height:36px;border-radius:50%;border:4px solid rgba(255,255,255,.2);border-top-color:#fff;animation:spin .8s linear infinite;margin:40px auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+.updated{font-size:12px;color:var(--muted);font-weight:500}
+@media (max-width:980px){.grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(3,minmax(0,1fr))}.feed{max-height:none}}
+@media (max-width:620px){
+  .user{grid-template-columns:auto minmax(0,1fr)}
+  .uactions{grid-column:1 / -1;justify-content:flex-start}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .stat .n{font-size:24px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div id="loading"><div class="spinner" aria-label="Loading"></div></div>
+
+  <div id="gate" class="gate hidden">
+    <div class="card">
+      <h1 class="logo">LUDO <span>YAARI</span></h1>
+      <p id="gateText">Please log in first.</p>
+      <a class="btn gold" href="/">Go to the game</a>
+    </div>
+  </div>
+
+  <div id="app" class="hidden">
+    <header>
+      <h1 class="logo">LUDO <span>YAARI</span><small>Admin</small></h1>
+      <div class="who">
+        <span>Signed in as <b id="meEmail"></b></span>
+        <button id="refreshBtn" class="btn" title="Refresh now">↻ Refresh</button>
+        <a class="btn" href="/">Back to game</a>
+        <button id="logoutBtn" class="btn">Log out</button>
+      </div>
+    </header>
+
+    <section class="stats" aria-label="Summary">
+      <div class="stat"><div class="n" id="sTotal">0</div><div class="l">Total players</div></div>
+      <div class="stat good"><div class="n" id="sOnline">0</div><div class="l">Online now</div></div>
+      <div class="stat"><div class="n" id="sToday">0</div><div class="l">Active today</div></div>
+      <div class="stat warn"><div class="n" id="sBlocked">0</div><div class="l">Blocked</div></div>
+      <div class="stat"><div class="n" id="sGames">0</div><div class="l">Games played</div></div>
+      <div class="stat"><div class="n" id="sRooms">0</div><div class="l">Rooms created</div></div>
+    </section>
+
+    <div class="grid">
+      <section class="card">
+        <h2>Players <span class="updated" id="updated"></span></h2>
+        <div class="tools">
+          <input id="search" class="search" type="search" placeholder="Search name or email…" aria-label="Search players">
+          <select id="sort" aria-label="Sort players">
+            <option value="seen">Last active</option>
+            <option value="new">Newest</option>
+            <option value="games">Most games</option>
+            <option value="name">Name A–Z</option>
+          </select>
+        </div>
+        <div class="chips" id="filters" style="margin-bottom:10px">
+          <button class="chip on" data-f="all">All</button>
+          <button class="chip" data-f="online">Online</button>
+          <button class="chip" data-f="admin">Admins</button>
+          <button class="chip" data-f="blocked">Blocked</button>
+          <button class="chip" data-f="limited">Calls/chat off</button>
+        </div>
+        <div id="users" class="users"></div>
+      </section>
+
+      <section class="card">
+        <h2>Activity
+          <select id="kindFilter" aria-label="Filter activity">
+            <option value="">Everything</option>
+            <option value="signup">Sign-ups</option>
+            <option value="login">Log-ins</option>
+            <option value="room_create">Rooms created</option>
+            <option value="room_join">Rooms joined</option>
+            <option value="game_start">Games started</option>
+            <option value="game_win">Wins</option>
+            <option value="admin_change">Admin changes</option>
+          </select>
+        </h2>
+        <div id="userFilter" class="filter-on hidden"><span id="userFilterName"></span><button id="clearUser" aria-label="Show everyone">×</button></div>
+        <div id="feed" class="feed"></div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<div id="confirm" class="modal hidden" role="alertdialog" aria-labelledby="cfTitle" aria-describedby="cfText">
+  <div class="card">
+    <h2 id="cfTitle" style="justify-content:center"></h2>
+    <p id="cfText"></p>
+    <div class="row">
+      <button id="cfNo" class="btn">Cancel</button>
+      <button id="cfYes" class="btn danger"></button>
+    </div>
+  </div>
+</div>
+<div id="toast" class="toast hidden" role="status"></div>
+
+<script src="https://unpkg.com/@supabase/supabase-js@2.119.0/dist/umd/supabase.js"></script>
+<script>
+/* Ludo Yaari – accounts (Supabase): sign up / log in, the player's rights, activity log, join passes */
+(function () {
+  'use strict';
+  const CFG = window.LY_SUPABASE || {
+    url: 'https://eiqzfillulivvfsjxiaw.supabase.co',
+    key: 'sb_publishable_lNDzhh_4n8akw43h560Pzw_-lJSJuBO',
+  };
+  const lib = window.supabase;
+  const sb = lib && lib.createClient ? lib.createClient(CFG.url, CFG.key, {
+    auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
+  }) : null;
+
+  let session = null, profile = null;
+  const listeners = [];
+  const emit = () => listeners.forEach(fn => { try { fn(profile); } catch (e) { console.error(e); } });
+
+  function niceError(err) {
+    const m = String((err && (err.message || err.error_description)) || err || '');
+    if (/invalid login credentials/i.test(m)) return 'Wrong email or password.';
+    if (/already registered|already exists/i.test(m)) return 'This email already has an account — log in instead.';
+    if (/password should be at least/i.test(m)) return 'Password needs at least 6 characters.';
+    if (/unable to validate email|invalid email|email address .* is invalid/i.test(m)) return 'Please enter a valid email address.';
+    if (/rate limit|too many/i.test(m)) return 'Too many tries — please wait a minute and try again.';
+    if (/account blocked/i.test(m)) return 'Your account has been blocked by the admin.';
+    if (/failed to fetch|network/i.test(m)) return 'No internet connection. Check your network and try again.';
+    return m || 'Something went wrong. Please try again.';
+  }
+
+  async function loadProfile() {
+    if (!sb || !session) { profile = null; return null; }
+    const { data, error } = await sb.from('profiles')
+      .select('id,email,display_name,role,banned,can_call,can_chat,games_played,games_won,rooms_created')
+      .eq('id', session.user.id).maybeSingle();
+    if (error) throw error;
+    profile = data || null;
+    return profile;
+  }
+
+  const Auth = {
+    ready: false,
+    available: !!sb,
+    client: sb,
+    get user() { return session ? session.user : null; },
+    get profile() { return profile; },
+    get isAdmin() { return !!(profile && profile.role === 'admin' && !profile.banned); },
+    niceError,
+    onChange(fn) { listeners.push(fn); },
+
+    async init() {
+      if (!sb) { Auth.ready = true; return null; }
+      try {
+        const { data } = await sb.auth.getSession();
+        session = data.session;
+        if (session) await loadProfile();
+      } catch (e) { console.warn('auth init', e); }
+      sb.auth.onAuthStateChange((ev, s) => {
+        session = s;
+        if (ev === 'SIGNED_OUT') { profile = null; emit(); }
+        if (ev === 'PASSWORD_RECOVERY' && Auth.onRecovery) Auth.onRecovery();
+      });
+      Auth.ready = true;
+      return profile;
+    },
+
+    async signUp(name, email, password) {
+      const { data, error } = await sb.auth.signUp({ email, password, options: { data: { display_name: name } } });
+      if (error) throw new Error(niceError(error));
+      if (!data.session) throw new Error('Account created — please check your email to confirm it, then log in.');
+      session = data.session;
+      await loadProfile();
+      Auth.log('login');
+      emit();
+      return profile;
+    },
+
+    async signIn(email, password) {
+      const { data, error } = await sb.auth.signInWithPassword({ email, password });
+      if (error) throw new Error(niceError(error));
+      session = data.session;
+      await loadProfile();
+      if (profile && profile.banned) { await sb.auth.signOut(); session = null; profile = null; throw new Error(niceError('account blocked')); }
+      Auth.log('login');
+      emit();
+      return profile;
+    },
+
+    async signOut() {
+      if (!sb) return;
+      await Auth.log('logout');
+      await sb.auth.signOut();
+      session = null; profile = null;
+      emit();
+    },
+
+    async resetPassword(email) {
+      const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: location.origin + '/' });
+      if (error) throw new Error(niceError(error));
+    },
+    async setNewPassword(password) {
+      const { error } = await sb.auth.updateUser({ password });
+      if (error) throw new Error(niceError(error));
+    },
+
+    async refresh() {
+      if (!sb || !session) return null;
+      try { await loadProfile(); emit(); } catch (e) {}
+      return profile;
+    },
+
+    async setName(name) {
+      if (!sb || !session || !profile || profile.display_name === name) return;
+      const { error } = await sb.rpc('set_display_name', { p_name: name });
+      if (!error) profile.display_name = name;
+    },
+
+    // fire-and-forget activity log (never blocks the game)
+    async log(kind, room, detail) {
+      if (!sb || !session) return;
+      try { await sb.rpc('log_activity', { p_kind: kind, p_room: room || null, p_detail: detail || {} }); } catch (e) {}
+    },
+    async touch() { if (sb && session) { try { await sb.rpc('touch_seen'); } catch (e) {} } },
+
+    // a one-time pass the player hands to the room host (valid 2 minutes, one room)
+    async joinPass(room) {
+      const { data, error } = await sb.rpc('make_join_proof', { p_room: room });
+      if (error) throw new Error(niceError(error));
+      return data;
+    },
+    // host: turn a pass into the verified player (null when the pass is fake, used or expired)
+    async checkPass(pass, room) {
+      if (!sb || !pass) return null;
+      const { data, error } = await sb.rpc('claim_join_proof', { p_nonce: pass, p_room: room });
+      if (error || !data || !data.length) return null;
+      return data[0];
+    },
+    // host: latest rights of the players in the room
+    async rightsOf(ids) {
+      if (!sb || !ids.length) return [];
+      const { data, error } = await sb.rpc('rights_for', { p_ids: ids });
+      return error ? null : data;
+    },
+  };
+  window.LYAuth = Auth;
+})();
+
+</script>
+<script>
+(() => {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const Auth = window.LYAuth, sb = Auth.client;
+  let users = [], events = [], filter = 'all', userFilter = null, busy = new Set();
+
+  function h(tag, attrs, ...kids) {
+    const el = document.createElement(tag);
+    Object.entries(attrs || {}).forEach(([k, v]) => {
+      if (v == null || v === false) return;
+      if (k === 'class') el.className = v;
+      else if (k.startsWith('on')) el.addEventListener(k.slice(2), v);
+      else el.setAttribute(k, v === true ? '' : v);
+    });
+    kids.flat().forEach(k => { if (k != null && k !== false) el.append(k.nodeType ? k : document.createTextNode(String(k))); });
+    return el;
+  }
+  let toastT;
+  function toast(t, err) {
+    const el = $('toast'); el.textContent = t; el.classList.toggle('err', !!err); el.classList.remove('hidden');
+    clearTimeout(toastT); toastT = setTimeout(() => el.classList.add('hidden'), 3200);
+  }
+  function ago(ts) {
+    if (!ts) return 'never';
+    const s = Math.max(0, (Date.now() - new Date(ts)) / 1000);
+    if (s < 60) return 'just now';
+    if (s < 3600) return Math.floor(s / 60) + ' min ago';
+    if (s < 86400) return Math.floor(s / 3600) + ' h ago';
+    if (s < 86400 * 30) return Math.floor(s / 86400) + ' d ago';
+    return new Date(ts).toLocaleDateString();
+  }
+  const isOnline = u => u.last_seen_at && Date.now() - new Date(u.last_seen_at) < 3 * 60 * 1000;
+  const nameOf = id => { const u = users.find(x => x.id === id); return u ? (u.display_name || u.email) : 'someone'; };
+
+  function gate(text) {
+    $('loading').classList.add('hidden'); $('app').classList.add('hidden');
+    $('gateText').textContent = text; $('gate').classList.remove('hidden');
+  }
+
+  async function load() {
+    const [u, a] = await Promise.all([
+      sb.from('profiles').select('*').order('created_at', { ascending: false }).limit(2000),
+      (() => {
+        let q = sb.from('activity').select('id,user_id,kind,room_code,detail,created_at').order('created_at', { ascending: false }).limit(200);
+        if (userFilter) q = q.eq('user_id', userFilter);
+        const k = $('kindFilter').value; if (k) q = q.eq('kind', k);
+        return q;
+      })(),
+    ]);
+    if (u.error) throw u.error;
+    if (a.error) throw a.error;
+    users = u.data; events = a.data;
+    $('updated').textContent = 'updated ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    renderStats(); renderUsers(); renderFeed();
+  }
+
+  function renderStats() {
+    const day = Date.now() - 86400000;
+    $('sTotal').textContent = users.length;
+    $('sOnline').textContent = users.filter(isOnline).length;
+    $('sToday').textContent = users.filter(u => u.last_seen_at && new Date(u.last_seen_at) > day).length;
+    $('sBlocked').textContent = users.filter(u => u.banned).length;
+    $('sGames').textContent = users.reduce((n, u) => n + (u.games_played || 0), 0);
+    $('sRooms').textContent = users.reduce((n, u) => n + (u.rooms_created || 0), 0);
+  }
+
+  function toggle(label, on, onClick, opts) {
+    return h('button', { class: 'tog' + (opts && opts.adm ? ' adm' : ''), role: 'switch', 'aria-checked': String(!!on), disabled: opts && opts.disabled, title: opts && opts.title, onclick: onClick },
+      h('span', { class: 'sw', 'aria-hidden': 'true' }), label);
+  }
+
+  function renderUsers() {
+    const q = $('search').value.trim().toLowerCase();
+    let list = users.filter(u => !q || (u.display_name || '').toLowerCase().includes(q) || (u.email || '').toLowerCase().includes(q));
+    if (filter === 'online') list = list.filter(isOnline);
+    if (filter === 'admin') list = list.filter(u => u.role === 'admin');
+    if (filter === 'blocked') list = list.filter(u => u.banned);
+    if (filter === 'limited') list = list.filter(u => !u.can_call || !u.can_chat);
+    const sort = $('sort').value;
+    const t = v => (v ? new Date(v).getTime() : 0);
+    list.sort(sort === 'new' ? (a, b) => t(b.created_at) - t(a.created_at)
+      : sort === 'games' ? (a, b) => (b.games_played || 0) - (a.games_played || 0)
+      : sort === 'name' ? (a, b) => (a.display_name || '').localeCompare(b.display_name || '')
+      : (a, b) => t(b.last_seen_at) - t(a.last_seen_at));
+    const box = $('users'); box.innerHTML = '';
+    if (!list.length) { box.append(h('div', { class: 'empty' }, users.length ? 'No players match.' : 'No players yet.')); return; }
+    const myId = Auth.user.id;
+    list.forEach(u => {
+      const me = u.id === myId, b = busy.has(u.id);
+      box.append(h('div', { class: 'user' + (u.banned ? ' blocked' : '') },
+        h('div', { class: 'av', 'aria-hidden': 'true' }, (u.display_name || u.email || '?').trim().charAt(0).toUpperCase(), isOnline(u) && h('span', { class: 'dot' })),
+        h('div', { class: 'uinfo' },
+          h('div', { class: 'uname' },
+            h('button', { title: 'Show this player\'s activity', onclick: () => showUserActivity(u) }, u.display_name || '(no name)'),
+            u.role === 'admin' && h('span', { class: 'badge admin' }, 'ADMIN'),
+            u.banned && h('span', { class: 'badge blocked' }, 'BLOCKED'),
+            me && h('span', { class: 'badge you' }, 'YOU')),
+          h('div', { class: 'umeta' }, `${u.email || ''} · joined ${ago(u.created_at)} · ${isOnline(u) ? 'online now' : 'seen ' + ago(u.last_seen_at)}`),
+          h('div', { class: 'ustats' },
+            h('span', null, h('b', null, u.games_played || 0), ' games'),
+            h('span', null, h('b', null, u.games_won || 0), ' wins'),
+            h('span', null, h('b', null, u.rooms_created || 0), ' rooms'))),
+        h('div', { class: 'uactions' },
+          toggle('Calls', u.can_call, () => setRight(u, 'can_call', !u.can_call), { disabled: b }),
+          toggle('Chat', u.can_chat, () => setRight(u, 'can_chat', !u.can_chat), { disabled: b }),
+          toggle('Admin', u.role === 'admin', () => askAdmin(u), { adm: true, disabled: b || me, title: me ? 'You cannot change your own admin role' : null }),
+          u.banned
+            ? h('button', { class: 'btn ok', disabled: b, onclick: () => setRight(u, 'banned', false) }, 'Unblock')
+            : h('button', { class: 'btn danger', disabled: b || me, title: me ? 'You cannot block yourself' : null, onclick: () => askBlock(u) }, 'Block'))));
+    });
+  }
+
+  const LABEL = {
+    signup: ['🆕', u => [h('b', null, u), ' signed up']],
+    login: ['🔑', u => [h('b', null, u), ' logged in']],
+    logout: ['👋', u => [h('b', null, u), ' logged out']],
+    room_create: ['🏠', (u, e) => [h('b', null, u), ' created room ', h('b', null, e.room_code || '')]],
+    room_join: ['➡️', (u, e) => [h('b', null, u), ' joined room ', h('b', null, e.room_code || '')]],
+    game_start: ['🎲', (u, e) => [h('b', null, u), ` started a game (${(e.detail && e.detail.players) || '?'} players) in `, h('b', null, e.room_code || '')]],
+    game_win: ['🏆', (u, e) => [h('b', null, u), ' won a game in ', h('b', null, e.room_code || '')]],
+    game_end: ['🏁', (u, e) => [h('b', null, u), ` finished a game${e.detail && e.detail.place > 0 ? ' #' + e.detail.place : ''} in `, h('b', null, e.room_code || '')]],
+    leave: ['🚪', (u, e) => [h('b', null, u), ' left room ', h('b', null, e.room_code || '')]],
+    admin_change: ['🛡️', (u, e) => {
+      const d = e.detail || {}, by = nameOf(d.by);
+      const what = d.field === 'banned' ? (d.value ? 'blocked' : 'unblocked')
+        : d.field === 'admin' ? (d.value ? 'made admin' : 'removed as admin')
+        : `${d.value ? 'turned on' : 'turned off'} ${d.field === 'can_call' ? 'calls' : 'chat'} for`;
+      return d.field === 'banned' || d.field === 'admin'
+        ? [h('b', null, by), ` ${what} `, h('b', null, u)]
+        : [h('b', null, by), ` ${what} `, h('b', null, u)];
+    }],
+  };
+  function renderFeed() {
+    const box = $('feed'); box.innerHTML = '';
+    if (!events.length) { box.append(h('div', { class: 'empty' }, 'No activity yet.')); return; }
+    events.forEach(e => {
+      const [ic, fn] = LABEL[e.kind] || ['•', u => [h('b', null, u), ' ' + e.kind]];
+      box.append(h('div', { class: 'ev' }, h('div', { class: 'ic', 'aria-hidden': 'true' }, ic),
+        h('div', null, h('div', null, fn(nameOf(e.user_id), e)), h('div', { class: 't' }, ago(e.created_at) + ' · ' + new Date(e.created_at).toLocaleString()))));
+    });
+  }
+
+  function showUserActivity(u) {
+    userFilter = u.id;
+    $('userFilterName').textContent = 'Showing: ' + (u.display_name || u.email);
+    $('userFilter').classList.remove('hidden');
+    refresh();
+    if (innerWidth < 980) $('feed').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  $('clearUser').onclick = () => { userFilter = null; $('userFilter').classList.add('hidden'); refresh(); };
+
+  let cfAction = null;
+  function confirmBox(title, text, yes, action) {
+    $('cfTitle').textContent = title; $('cfText').textContent = text; $('cfYes').textContent = yes;
+    cfAction = action; $('confirm').classList.remove('hidden'); $('cfNo').focus();
+  }
+  $('cfNo').onclick = () => { $('confirm').classList.add('hidden'); cfAction = null; };
+  $('cfYes').onclick = () => { $('confirm').classList.add('hidden'); const a = cfAction; cfAction = null; if (a) a(); };
+  $('confirm').addEventListener('click', e => { if (e.target.id === 'confirm') $('cfNo').click(); });
+  addEventListener('keydown', e => { if (e.key === 'Escape' && !$('confirm').classList.contains('hidden')) $('cfNo').click(); });
+
+  function askBlock(u) {
+    confirmBox(`Block ${u.display_name}?`, 'They will be logged out, removed from any game they are in, and will not be able to log in until you unblock them.', 'Block', () => setRight(u, 'banned', true));
+  }
+  function askAdmin(u) {
+    const make = u.role !== 'admin';
+    confirmBox(make ? `Make ${u.display_name} an admin?` : `Remove ${u.display_name} as admin?`,
+      make ? 'Admins can open this panel, block players and change everyone\'s permissions.' : 'They will lose access to this panel.',
+      make ? 'Make admin' : 'Remove admin', () => setRight(u, 'admin', make));
+  }
+
+  async function setRight(u, field, value) {
+    busy.add(u.id); renderUsers();
+    const { error } = await sb.rpc('admin_set_user', { p_id: u.id, p_field: field, p_value: value });
+    busy.delete(u.id);
+    if (error) { toast(Auth.niceError(error), true); renderUsers(); return; }
+    if (field === 'admin') u.role = value ? 'admin' : 'user'; else u[field] = value;
+    const msg = {
+      banned: value ? `${u.display_name} is blocked` : `${u.display_name} is unblocked`,
+      can_call: `Calls ${value ? 'on' : 'off'} for ${u.display_name}`,
+      can_chat: `Chat & emojis ${value ? 'on' : 'off'} for ${u.display_name}`,
+      admin: value ? `${u.display_name} is now an admin` : `${u.display_name} is no longer an admin`,
+    }[field];
+    toast(field === 'admin' ? msg : msg + ' — running games update within 30 seconds');
+    renderStats(); renderUsers(); refresh();
+  }
+
+  let loadingNow = false;
+  async function refresh() {
+    if (loadingNow) return;
+    loadingNow = true;
+    try { await load(); } catch (e) { toast(Auth.niceError(e), true); }
+    finally { loadingNow = false; }
+  }
+  $('refreshBtn').onclick = refresh;
+  $('search').addEventListener('input', renderUsers);
+  $('sort').addEventListener('change', renderUsers);
+  $('kindFilter').addEventListener('change', refresh);
+  $('filters').addEventListener('click', e => {
+    const b = e.target.closest('.chip'); if (!b) return;
+    filter = b.dataset.f;
+    [...$('filters').children].forEach(c => c.classList.toggle('on', c === b));
+    renderUsers();
+  });
+  $('logoutBtn').onclick = async () => { await Auth.signOut(); location.href = '/'; };
+
+  (async () => {
+    if (!Auth.available) return gate("Can't reach the login server. Check your internet and reload.");
+    await Auth.init();
+    if (!Auth.profile) return gate('Please log in to the game first, then open the admin panel again.');
+    if (!Auth.isAdmin) return gate('Only admins can open this page.');
+    $('meEmail').textContent = Auth.profile.email || Auth.profile.display_name;
+    try { await load(); } catch (e) { return gate(Auth.niceError(e)); }
+    $('loading').classList.add('hidden'); $('app').classList.remove('hidden');
+    setInterval(() => { if (!document.hidden) refresh(); }, 30000);
+    Auth.touch();
+  })();
+})();
+</script>
+</body>
+</html>
