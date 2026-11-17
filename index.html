@@ -672,7 +672,7 @@ html:not([data-love]) .love-sky{display:none}
 <div id="themeModal" class="modal hidden" role="dialog" aria-labelledby="themeTitle">
   <div class="modal-card">
     <h2 id="themeTitle">Choose a theme</h2>
-    <p class="theme-note">In a game, the theme changes for every player in the room.</p>
+    <p class="theme-note">In a game, the host's theme is used for every player.</p>
     <div id="themeGrid" class="theme-grid" role="radiogroup" aria-label="Themes"></div>
     <button id="themeClose" class="btn btn-play">Done</button>
   </div>
@@ -1772,7 +1772,7 @@ window.LY_EMOJI = {
       }
       case 'theme': {
         const t = THEMES.find(x => x.k === msg.k);
-        if (!t || room.theme === t.k) return;
+        if (from !== myId || !t || room.theme === t.k) return; // only the host sets the room theme
         const now = Date.now();
         if (now - (lastTheme.get(from) || 0) < 1500) return;
         lastTheme.set(from, now);
@@ -2070,13 +2070,13 @@ window.LY_EMOJI = {
   }
 
   const lastTheme = new Map();
-  let myThemeAt = 0;
+  let seenRoomTheme = '';
   function applyState(msg) {
     const prevPlayers = room ? room.players.length : 0;
     if (!isHost && Math.random() < 0.2) saveSession();
     room = msg.room;
     timerEnd = performance.now() + (msg.timeLeft || 0);
-    if (room && room.theme && room.theme !== document.documentElement.dataset.theme && Date.now() - myThemeAt > 2500) applyTheme(room.theme);
+    if (room && room.theme && room.theme !== seenRoomTheme) { seenRoomTheme = room.theme; if (room.theme !== document.documentElement.dataset.theme) applyTheme(room.theme); }
     timerTotal = msg.timerTotal || TURN_MS;
     if (!inGame) enterGame();
     else if (room.players.length > prevPlayers) Sfx.join();
@@ -2161,7 +2161,7 @@ window.LY_EMOJI = {
     Object.values(panelEls).forEach(el => { el.video.srcObject = null; });
     closeSpotlight(); closeEmoji(); closeLeave(); fxLayer.innerHTML = '';
     disarmBackTrap();
-    room = null; myId = null; isHost = false; inGame = false; rollPending = false;
+    room = null; myId = null; isHost = false; inGame = false; seenRoomTheme = ''; rollPending = false;
     lastRollId = -1; lastChatId = 0; wasMyTurn = false; lastWinners = 0; unread = 0;
     prevGame = null; prevGameNo = -1; animSeq++; animating = false; diceBusy = false;
     tokenEls.forEach(e => e.remove()); tokenEls.clear();
@@ -2910,7 +2910,7 @@ window.LY_EMOJI = {
     b.append(sw, nm);
     b.onclick = () => {
       applyTheme(t.k); Sfx.pop && Sfx.pop();
-      if (inGame && room) { myThemeAt = Date.now(); send({ t: 'theme', k: t.k }); } // everyone in the room gets the same theme
+      if (inGame && room && isHost) send({ t: 'theme', k: t.k }); // host's choice goes to everyone // everyone in the room gets the same theme
     };
     $('themeGrid').appendChild(b);
   });
