@@ -81,6 +81,17 @@ select{height:38px;border-radius:11px;border:1px solid var(--line);background:#1
 .ev b{font-weight:700}
 .filter-on{display:inline-flex;align-items:center;gap:6px;font-size:12px;background:var(--surface2);border-radius:999px;padding:4px 6px 4px 10px;margin-bottom:8px}
 .filter-on button{width:20px;height:20px;border-radius:50%;border:none;background:rgba(255,255,255,.2);cursor:pointer;line-height:1}
+.rooms{display:flex;flex-direction:column;gap:6px;max-height:46vh;overflow-y:auto;margin:0 -4px;padding:0 4px}
+.room{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07)}
+.room.gone{opacity:.55}
+.room .rcode{font-family:ui-monospace,Menlo,Consolas,monospace;font-weight:800;font-size:15px;letter-spacing:.12em}
+.room .rinfo{flex:1;min-width:0}
+.room .rmeta{font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:2px}
+.room .btn{height:32px;font-size:13px;padding:0 11px}
+.badge.live{background:#1E9A47;color:#fff}
+.badge.gone{background:var(--surface2);color:var(--muted)}
+.delform{display:flex;gap:8px;margin-bottom:10px}
+.delform .search{text-transform:uppercase;letter-spacing:.12em;font-weight:700}
 .empty{color:var(--muted);font-size:14px;text-align:center;padding:24px 8px}
 .gate{min-height:80vh;display:flex;align-items:center;justify-content:center}
 .gate .card{max-width:380px;text-align:center;padding:26px 22px}
@@ -191,6 +202,15 @@ body{background:radial-gradient(900px 600px at 15% -10%,rgba(155,60,220,.35),tra
       </section>
 
       <section class="card">
+        <h2>Rooms <span class="badge gone" style="font-family:inherit;letter-spacing:0">last 2 days</span></h2>
+        <form id="delForm" class="delform" autocomplete="off">
+          <input id="delCode" class="search" maxlength="8" placeholder="Room code" aria-label="Room code to delete">
+          <button class="btn danger" type="submit">Delete room</button>
+        </form>
+        <div id="rooms" class="rooms"></div>
+      </section>
+
+      <section class="card">
         <h2>Activity
           <select id="kindFilter" aria-label="Filter activity">
             <option value="">Everything</option>
@@ -201,6 +221,7 @@ body{background:radial-gradient(900px 600px at 15% -10%,rgba(155,60,220,.35),tra
             <option value="game_start">Games started</option>
             <option value="game_win">Wins</option>
             <option value="admin_change">Admin changes</option>
+            <option value="room_deleted">Rooms deleted</option>
           </select>
         </h2>
         <div id="userFilter" class="filter-on hidden"><span id="userFilterName"></span><button id="clearUser" aria-label="Show everyone">×</button></div>
@@ -360,6 +381,12 @@ body{background:radial-gradient(900px 600px at 15% -10%,rgba(155,60,220,.35),tra
       if (error || !data || !data.length) return null;
       return data[0];
     },
+    // host: has the admin deleted this room since it was made?
+    async roomClosed(code, since) {
+      if (!sb || !code) return false;
+      const { data, error } = await sb.rpc('room_closed', { p_room: code, p_since: new Date(since || 0).toISOString() });
+      return !error && data === true;
+    },
     // host: latest rights of the players in the room
     async rightsOf(ids) {
       if (!sb || !ids.length) return [];
@@ -424,9 +451,83 @@ body{background:radial-gradient(900px 600px at 15% -10%,rgba(155,60,220,.35),tra
     if (u.error) throw u.error;
     if (a.error) throw a.error;
     users = u.data; events = a.data;
+    await loadRooms();
     $('updated').textContent = 'updated ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     renderStats(); renderUsers(); renderFeed();
   }
+
+  // ---- rooms: built from the activity log (rooms live on the host's phone, not on the server) ----
+  let rooms = [];
+  const ROOM_KINDS = ['room_create', 'room_join', 'game_start', 'game_end', 'game_win', 'leave', 'room_deleted'];
+  async function loadRooms() {
+    const since = new Date(Date.now() - 2 * 86400000).toISOString();
+    const [r, c] = await Promise.all([
+      sb.from('activity').select('user_id,kind,room_code,created_at').in('kind', ROOM_KINDS).not('room_code', 'is', null)
+        .gte('created_at', since).order('created_at', { ascending: false }).limit(1500),
+      sb.from('closed_rooms').select('code,closed_at'),
+    ]);
+    if (r.error) throw r.error;
+    const closed = new Map(((c && c.data) || []).map(x => [x.code, new Date(x.closed_at).getTime()]));
+    const by = new Map();
+    r.data.forEach(e => {
+      const code = String(e.room_code).toUpperCase(), t = new Date(e.created_at).getTime();
+      let x = by.get(code);
+      if (!x) by.set(code, x = { code, host: null, start: t, last: 0, people: new Set(), games: 0 });
+      if (e.kind === 'room_deleted') return;
+      x.last = Math.max(x.last, t); x.start = Math.min(x.start, t);
+      if (e.kind === 'room_create') { x.host = e.user_id; x.start = t; }
+      if (e.kind === 'game_start') x.games++;
+      if (e.user_id && e.kind !== 'leave') x.people.add(e.user_id);
+    });
+    rooms = [...by.values()].filter(x => x.last).map(x => {
+      const ct = closed.get(x.code);
+      x.deleted = ct != null && ct >= x.start - 60000;
+      return x;
+    }).sort((a, b) => b.last - a.last).slice(0, 40);
+    renderRooms();
+  }
+  function renderRooms() {
+    const box = $('rooms'); box.innerHTML = '';
+    if (!rooms.length) { box.append(h('div', { class: 'empty' }, 'No rooms in the last 2 days.')); return; }
+    rooms.forEach(x => {
+      const live = !x.deleted && Date.now() - x.last < 3 * 3600000;
+      box.append(h('div', { class: 'room' + (x.deleted ? ' gone' : '') },
+        h('div', { class: 'rinfo' },
+          h('div', { class: 'uname' }, h('span', { class: 'rcode' }, x.code),
+            x.deleted ? h('span', { class: 'badge gone' }, 'DELETED') : live && h('span', { class: 'badge live' }, 'RECENT')),
+          h('div', { class: 'rmeta' }, `${x.host ? 'by ' + nameOf(x.host) + ' · ' : ''}${x.people.size} player${x.people.size === 1 ? '' : 's'} · ${x.games} game${x.games === 1 ? '' : 's'} · last activity ${ago(x.last)}`)),
+        !x.deleted && h('button', { class: 'btn danger', disabled: busy.has('room:' + x.code), onclick: () => askDeleteRoom(x.code) }, 'Delete')));
+    });
+  }
+  function askDeleteRoom(code) {
+    confirmBox(`Delete room ${code}?`,
+      'Everyone in this room is sent back to the lobby and the game in it ends. The room code stops working. This cannot be undone.',
+      'Delete room', () => deleteRoom(code));
+  }
+  async function deleteRoom(code) {
+    busy.add('room:' + code); renderRooms();
+    const { error } = await sb.rpc('admin_close_room', { p_room: code });
+    busy.delete('room:' + code);
+    if (error) { toast(Auth.niceError(error), true); renderRooms(); return; }
+    // tell the room's host straight away (the host also checks every 20 seconds)
+    try {
+      const ch = sb.channel('ly-room-' + code, { config: { broadcast: { self: false } } });
+      ch.subscribe(st => {
+        if (st !== 'SUBSCRIBED') return;
+        ch.send({ type: 'broadcast', event: 'adm', payload: { t: 'closed' } });
+        setTimeout(() => sb.removeChannel(ch), 2000);
+      });
+    } catch (e) {}
+    toast(`Room ${code} deleted — its players are sent back to the lobby`);
+    refresh();
+  }
+  $('delForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const code = $('delCode').value.trim().toUpperCase();
+    if (!/^[A-Z0-9]{4,8}$/.test(code)) { toast('Enter a valid room code', true); return; }
+    $('delCode').value = '';
+    askDeleteRoom(code);
+  });
 
   function renderStats() {
     const day = Date.now() - 86400000;
@@ -488,6 +589,7 @@ body{background:radial-gradient(900px 600px at 15% -10%,rgba(155,60,220,.35),tra
     signup: ['🆕', u => [h('b', null, u), ' signed up']],
     login: ['🔑', u => [h('b', null, u), ' logged in']],
     logout: ['👋', u => [h('b', null, u), ' logged out']],
+    room_deleted: ['🗑️', (u, e) => [h('b', null, u), ' deleted room ', h('b', null, e.room_code || '')]],
     room_create: ['🏠', (u, e) => [h('b', null, u), ' created room ', h('b', null, e.room_code || '')]],
     room_join: ['➡️', (u, e) => [h('b', null, u), ' joined room ', h('b', null, e.room_code || '')]],
     game_start: ['🎲', (u, e) => [h('b', null, u), ` started a game (${(e.detail && e.detail.players) || '?'} players) in `, h('b', null, e.room_code || '')]],
