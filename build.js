@@ -6,7 +6,7 @@ const zlib = require('zlib');
 const OUT = 'public';
 fs.rmSync(OUT, { recursive: true, force: true });
 fs.mkdirSync(path.join(OUT, 'icons'), { recursive: true });
-for (const f of ['index.html', 'manifest.webmanifest', 'sw.js']) fs.copyFileSync(f, path.join(OUT, f));
+for (const f of ['index.html', 'admin.html', 'manifest.webmanifest', 'sw.js']) fs.copyFileSync(f, path.join(OUT, f));
 
 // ---------- tiny PNG encoder ----------
 const CRC = new Uint32Array(256).map((_, n) => {
