@@ -1,5 +1,5 @@
 /* Ludo Yaari service worker – makes the app installable and quick to open */
-const VERSION = 'ly-v4';
+const VERSION = 'ly-v5';
 const SHELL = ['/', '/manifest.webmanifest', '/icons/icon-192.png', '/icons/icon-512.png'];
 const CDN = ['fonts.googleapis.com', 'fonts.gstatic.com', 'unpkg.com'];
 
@@ -24,8 +24,8 @@ self.addEventListener('fetch', e => {
   if (req.mode === 'navigate') {
     e.respondWith(
       fetch(req)
-        .then(res => { const copy = res.clone(); caches.open(VERSION).then(c => c.put('/', copy)); return res; })
-        .catch(() => caches.match('/'))
+        .then(res => { if (res.ok) { const copy = res.clone(); caches.open(VERSION).then(c => c.put(req, copy)); } return res; })
+        .catch(() => caches.match(req).then(hit => hit || caches.match('/')))
     );
     return;
   }
