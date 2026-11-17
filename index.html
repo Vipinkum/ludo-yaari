@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#14072A">
-<script>try{document.documentElement.dataset.theme=localStorage.getItem('ly_theme')||'royal'}catch(e){}</script>
+<script>try{var t=localStorage.getItem('ly_theme')||'royal';document.documentElement.dataset.theme=t;if(/^(love|rosegold|valentine|lavender|sweetheart)$/.test(t))document.documentElement.dataset.love='1'}catch(e){}</script>
 <title>Ludo Queen – Play Ludo with Friends + Video Call</title>
 <meta name="description" content="Play online Ludo with friends – private rooms, chat, voice and HD video call.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -413,21 +413,26 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.07;
 .badge{background:var(--rose);box-shadow:0 0 12px rgba(255,77,141,.6)}
 @media (prefers-reduced-motion:reduce){.logo span,.btn-play::after{animation:none}}
 
+html[data-theme="rosegold"]{--bg1:#3A1F24;--bg2:#140A0C;--text:#FFF4EF;--muted:#E8B9B0;--heart:#F7B7A3;--acc-rgb:247,183,163;--gold:#F7B7A3;--gold-1:#FFD9CC;--on-acc:#3D1A12;--acc-grad:linear-gradient(135deg,#FFE9E1 0%,#F4B6A1 30%,#C9786A 62%,#FAD0C2 100%);--alt-grad:linear-gradient(135deg,#E8838F,#B5485D 60%,#7A2A3E);--alt-glow:rgba(232,131,143,.38);--glass-1:rgba(78,40,46,.76);--glass-2:rgba(26,12,15,.88);--bar-bg:rgba(46,22,27,.78);--field-bg:rgba(22,10,12,.6);--vbox-bg:radial-gradient(circle at 50% 30%,#5A2E34,#1A0B0E);--pip:radial-gradient(circle at 35% 30%,#B5485D,#5E1F2C);--board-bg:#FFF7F3;--page-bg:radial-gradient(900px 600px at 15% -10%,rgba(247,183,163,.32),transparent 60%),radial-gradient(800px 600px at 110% 30%,rgba(232,131,143,.25),transparent 60%),linear-gradient(180deg,#43232A 0%,#22111A 55%,#140A0C 100%);--pattern:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cpath d='M24 38s-12-7.6-12-16a7 7 0 0 1 12-4.9A7 7 0 0 1 36 22c0 8.4-12 16-12 16z' fill='%23F7B7A3'/%3E%3C/svg%3E");--pattern-size:64px 64px}
+html[data-theme="valentine"]{--bg1:#4A0510;--bg2:#160105;--text:#FFF1F1;--muted:#F5A3A8;--heart:#FF3B5C;--acc-rgb:255,59,92;--gold:#FF3B5C;--gold-1:#FFC0C8;--on-acc:#FFFFFF;--acc-grad:linear-gradient(135deg,#FF8A9E 0%,#FF3B5C 35%,#B3001B 70%,#FF6F86 100%);--alt-grad:linear-gradient(135deg,#FFD166,#F4A100 60%,#B36B00);--alt-glow:rgba(255,209,102,.35);--glass-1:rgba(92,8,22,.76);--glass-2:rgba(30,2,8,.88);--bar-bg:rgba(56,4,14,.8);--field-bg:rgba(26,2,6,.6);--vbox-bg:radial-gradient(circle at 50% 30%,#6A0A1C,#1C0206);--pip:radial-gradient(circle at 35% 30%,#D10F33,#6E0013);--board-bg:#FFF5F6;--page-bg:radial-gradient(900px 600px at 50% -10%,rgba(255,59,92,.45),transparent 60%),radial-gradient(800px 600px at 0% 100%,rgba(179,0,27,.35),transparent 60%),linear-gradient(180deg,#4A0510 0%,#270309 55%,#160105 100%);--pattern:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cpath d='M24 38s-12-7.6-12-16a7 7 0 0 1 12-4.9A7 7 0 0 1 36 22c0 8.4-12 16-12 16z' fill='%23FF3B5C'/%3E%3C/svg%3E");--pattern-size:56px 56px}
+html[data-theme="lavender"]{--bg1:#2C1A4A;--bg2:#0E0818;--text:#F7F1FF;--muted:#C9B5EC;--heart:#E3A6FF;--acc-rgb:214,170,255;--gold:#D6AAFF;--gold-1:#EEDBFF;--on-acc:#2A0F45;--acc-grad:linear-gradient(135deg,#F7EDFF 0%,#D8B0FF 30%,#9B5DE5 62%,#F1C6FF 100%);--alt-grad:linear-gradient(135deg,#F15BB5,#9B5DE5 60%,#5A189A);--alt-glow:rgba(241,91,181,.35);--glass-1:rgba(62,38,102,.76);--glass-2:rgba(20,12,36,.88);--bar-bg:rgba(38,22,64,.78);--field-bg:rgba(16,9,30,.6);--vbox-bg:radial-gradient(circle at 50% 30%,#4B2C7A,#120A22);--pip:radial-gradient(circle at 35% 30%,#7B3FC4,#3C1A6B);--board-bg:#FCF8FF;--page-bg:radial-gradient(900px 600px at 15% -10%,rgba(155,93,229,.42),transparent 60%),radial-gradient(800px 600px at 110% 30%,rgba(241,91,181,.28),transparent 60%),linear-gradient(180deg,#30195A 0%,#1A0F33 55%,#0E0818 100%);--pattern:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cpath d='M24 38s-12-7.6-12-16a7 7 0 0 1 12-4.9A7 7 0 0 1 36 22c0 8.4-12 16-12 16z' fill='%23E3A6FF'/%3E%3C/svg%3E");--pattern-size:64px 64px}
+html[data-theme="sweetheart"]{--bg1:#4A1830;--bg2:#1A0812;--text:#FFF6F9;--muted:#FFC4D6;--heart:#FFB3C9;--acc-rgb:255,179,201;--gold:#FFB3C9;--gold-1:#FFE0EA;--on-acc:#5A1030;--acc-grad:linear-gradient(135deg,#FFF0F5 0%,#FFC2D4 30%,#FF8FB1 62%,#FFE1C7 100%);--alt-grad:linear-gradient(135deg,#FFB38A,#FF7B9C 60%,#D6336C);--alt-glow:rgba(255,123,156,.38);--glass-1:rgba(98,36,66,.74);--glass-2:rgba(34,10,22,.86);--bar-bg:rgba(60,20,40,.78);--field-bg:rgba(30,8,18,.6);--vbox-bg:radial-gradient(circle at 50% 30%,#6B2A4A,#1F0A15);--pip:radial-gradient(circle at 35% 30%,#E0577F,#8C1F45);--board-bg:#FFF8FB;--page-bg:radial-gradient(900px 600px at 15% -10%,rgba(255,143,177,.45),transparent 60%),radial-gradient(800px 600px at 110% 30%,rgba(255,179,138,.28),transparent 60%),linear-gradient(180deg,#56203A 0%,#2E0F20 55%,#1A0812 100%);--pattern:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cpath d='M24 38s-12-7.6-12-16a7 7 0 0 1 12-4.9A7 7 0 0 1 36 22c0 8.4-12 16-12 16z' fill='%23FFB3C9'/%3E%3C/svg%3E");--pattern-size:60px 60px}
 /* ---------- theme picker ---------- */
-.theme-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.theme-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;max-height:62vh;overflow-y:auto;padding:4px}
+.theme-group{grid-column:1/-1;margin:6px 0 -2px;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-1);font-weight:700}
 .theme-opt{border:2px solid transparent;border-radius:18px;padding:0;overflow:hidden;cursor:pointer;background:none;color:var(--text);text-align:left;transition:transform .15s,border-color .15s}
 .theme-opt:active{transform:scale(.97)}
 .theme-opt.on{border-color:var(--gold);box-shadow:0 0 0 4px rgba(var(--acc-rgb),.18)}
 .theme-sw{height:74px;position:relative;display:flex;align-items:flex-end;justify-content:center;padding-bottom:8px}
 .theme-sw i{width:34px;height:12px;border-radius:6px;display:block;box-shadow:0 4px 12px rgba(0,0,0,.4)}
 .theme-sw b{position:absolute;top:8px;left:50%;transform:translateX(-50%);font-size:22px;font-style:normal}
-.theme-name{display:block;padding:7px 8px 8px;font-size:12.5px;font-weight:700;background:rgba(0,0,0,.35);text-align:center;letter-spacing:.02em}
+.theme-name{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:7px 8px 8px;font-size:12.5px;font-weight:700;background:rgba(0,0,0,.35);text-align:center;letter-spacing:.02em}
 .theme-btn{display:inline-flex;align-items:center;gap:6px}
 /* floating hearts for the Love theme */
 .love-sky{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
-.love-sky span{position:absolute;bottom:-40px;color:#FF7AA2;opacity:0;animation:floatUp linear infinite;text-shadow:0 0 14px rgba(255,77,141,.6)}
+.love-sky span{position:absolute;bottom:-40px;color:var(--heart,#FF7AA2);opacity:0;animation:floatUp linear infinite;text-shadow:0 0 14px rgba(255,77,141,.6)}
 @keyframes floatUp{0%{transform:translateY(0) rotate(0);opacity:0}10%{opacity:.55}90%{opacity:.35}100%{transform:translateY(-110vh) rotate(25deg);opacity:0}}
-html:not([data-theme="love"]) .love-sky{display:none}
+html:not([data-love]) .love-sky{display:none}
 @media (prefers-reduced-motion:reduce){.love-sky{display:none}}
 
 @media (max-width:400px){.tb-right .icon-btn{width:38px;height:38px}.tb-right{gap:5px}}
@@ -1551,6 +1556,7 @@ window.LY_EMOJI = {
         players: [{ id, name, color: 'red', mic, cam, online: true, ...myRights() }] };
       sys(`${name} created the room`);
       Auth.log('room_create', code);
+      RelayHub.host(code, id, hostAccept);
       enterGame();
       broadcast();
     });
@@ -1579,6 +1585,7 @@ window.LY_EMOJI = {
       announced.clear();
       if (room.game) room.game.winners.forEach(c => announced.add(c));
       sys('Host is back — game resumed');
+      RelayHub.host(code, id, hostAccept);
       turnKey = '';
       enterGame();
       afterChange();
@@ -1824,20 +1831,123 @@ window.LY_EMOJI = {
   }
 
   // ================= networking: guest =================
+  // ================= relay line (Supabase Realtime) =================
+  // A plain secure websocket through the account server: works on every network (Jio/Airtel data,
+  // office Wi-Fi…). Game moves, chat and emojis use it whenever a direct WebRTC link can't be made.
+  const RelayHub = (() => {
+    let ch = null, role = null, myPid = null;
+    const links = new Map();
+    class RelayConn {
+      constructor(peerId, to) { this.peer = peerId; this.to = to; this.open = false; this.closed = false; this.relay = true; this.h = {}; }
+      on(ev, fn) { (this.h[ev] = this.h[ev] || []).push(fn); return this; }
+      emit(ev, a) { (this.h[ev] || []).forEach(f => { try { f(a); } catch (e) { console.error(e); } }); }
+      send(m) {
+        if (!ch || !this.open) return;
+        ch.send({ type: 'broadcast', event: role === 'host' ? 'h2g' : 'g2h', payload: { from: myPid, to: this.to, m } });
+      }
+      close() {
+        if (this.closed) return;
+        this.closed = true; this.open = false;
+        links.delete(role === 'host' ? this.peer : 'host');
+        this.emit('close');
+      }
+    }
+    function channel(code, key) {
+      return Auth.client.channel('ly-room-' + code, { config: { broadcast: { self: false }, presence: { key } } });
+    }
+    function stop() {
+      links.forEach(l => { l.closed = true; l.open = false; });
+      links.clear();
+      if (ch) { try { Auth.client.removeChannel(ch); } catch (e) {} }
+      ch = null; role = null;
+    }
+    // host: listen for players who come in over the relay line
+    function host(code, pid, onConn) {
+      if (!Auth.client) return;
+      stop(); role = 'host'; myPid = pid;
+      const c = ch = channel(code, 'host');
+      c.on('broadcast', { event: 'g2h' }, ({ payload }) => {
+        if (!payload || !payload.from || !payload.m || payload.to !== 'host') return;
+        let l = links.get(payload.from);
+        if (!l) {
+          if (payload.m.t !== 'hello') return;
+          l = new RelayConn(payload.from, payload.from); l.open = true;
+          links.set(payload.from, l);
+          onConn(l);
+        }
+        l.emit('data', payload.m);
+      });
+      c.on('presence', { event: 'leave' }, ({ key }) => { const l = links.get(key); if (l) l.close(); });
+      c.subscribe(st => { if (st === 'SUBSCRIBED' && ch === c) c.track({ at: Date.now() }); });
+    }
+    // guest: a link to the room's host over the relay line ('open' once the host is seen there)
+    function connect(code, pid) {
+      stop(); role = 'guest'; myPid = pid;
+      const l = new RelayConn('host:' + code, 'host');
+      links.set('host', l);
+      if (!Auth.client) return l;
+      const c = ch = channel(code, pid);
+      const check = () => {
+        if (ch !== c || l.closed) return;
+        const here = !!c.presenceState().host;
+        if (here && !l.open) { l.open = true; l.emit('open'); }
+        else if (!here && l.open) l.close();
+      };
+      c.on('presence', { event: 'sync' }, check);
+      c.on('broadcast', { event: 'h2g' }, ({ payload }) => { if (payload && payload.to === pid && l.open) l.emit('data', payload.m); });
+      c.subscribe(st => {
+        if (ch !== c) return;
+        if (st === 'SUBSCRIBED') c.track({ at: Date.now() });
+        else if ((st === 'CHANNEL_ERROR' || st === 'TIMED_OUT' || st === 'CLOSED') && l.open) l.close();
+      });
+      return l;
+    }
+    return { host, connect, stop };
+  })();
+
+  // Reach the host: try a direct link first (fastest); if it can't be made in a few seconds,
+  // or the host isn't on the direct server, switch to the relay line.
+  function connectToHost(code, onReady, onFail) {
+    let done = false, relayStarted = false, failTimer = null, direct = null;
+    const finish = c => {
+      if (done) { if (c.relay) RelayHub.stop(); else { try { c.close(); } catch (e) {} } return; }
+      done = true; clearTimeout(relayTimer); clearTimeout(failTimer);
+      if (c.relay) { if (direct) { try { direct.close(); } catch (e) {} } }
+      else if (relayStarted) RelayHub.stop();
+      onReady(c);
+    };
+    const goRelay = () => {
+      if (done || relayStarted) return;
+      relayStarted = true; clearTimeout(relayTimer);
+      const r = RelayHub.connect(code, myId);
+      r.on('open', () => finish(r));
+      failTimer = setTimeout(() => { if (!done) { done = true; RelayHub.stop(); if (direct) { try { direct.close(); } catch (e) {} } onFail(); } }, 12000);
+    };
+    if (peer && peer.open) {
+      try { direct = peer.connect(PREFIX + code, { reliable: true }); direct.on('open', () => finish(direct)); } catch (e) { direct = null; }
+    }
+    const relayTimer = setTimeout(goRelay, direct ? 4000 : 0);
+    return { relayNow: goRelay };
+  }
+
   function joinRoom(name, code) {
     peer = new Peer(peerOptions());
-    let opened = false;
-    peer.on('open', id => {
-      myId = id;
-      hostConn = peer.connect(PREFIX + code, { reliable: true });
-      const t = setTimeout(() => { if (!opened) failJoin('Room not found. Check the code.'); }, 15000);
-      hostConn.on('open', () => { opened = true; clearTimeout(t); sendHello(hostConn, name, code, true); });
-      hostConn.on('data', onHostMsg);
-      const hc = hostConn;
-      hostConn.on('close', () => { if (!leaving && inGame && hostConn === hc) startReconnect(); });
-    });
+    let linker = null;
+    const begin = () => {
+      if (linker || leaving) return;
+      linker = connectToHost(code, c => {
+        hostConn = c;
+        c.on('data', onHostMsg);
+        c.on('close', () => { if (!leaving && inGame && hostConn === c) startReconnect(); });
+        sendHello(c, name, code, true);
+      }, () => failJoin(`Room ${code} not found. Check the code, and ask your friend to keep the game open on their screen.`));
+    };
+    // if the direct server is slow or blocked, carry on with the relay line only
+    const noDirect = setTimeout(() => { if (!myId) { myId = 'lyr-' + Math.random().toString(36).slice(2, 12); begin(); } }, 6000);
+    peer.on('open', id => { clearTimeout(noDirect); if (!myId) myId = id; begin(); });
     peer.on('error', err => {
-      if (err.type === 'peer-unavailable' && !inGame) { failJoin('Room not found. Check the code.'); return; }
+      if (err.type === 'peer-unavailable' && !inGame) { if (linker) linker.relayNow(); return; }
+      if (!inGame && !linker) { clearTimeout(noDirect); if (!myId) myId = 'lyr-' + Math.random().toString(36).slice(2, 12); begin(); return; }
       onPeerError(err);
     });
     peer.on('call', answerCall);
@@ -1902,23 +2012,28 @@ window.LY_EMOJI = {
     const code = room.code, name = me() ? me().name : cleanName(nameInput.value);
     const attempt = () => {
       if (!reconnecting) return;
-      const c = peer.connect(PREFIX + code, { reliable: true });
-      hostConn = c;
-      c.on('open', () => sendHello(c, name, code, false));
-      c.on('data', onHostMsg);
-      c.on('close', () => { if (!leaving && inGame && hostConn === c) { if (reconnecting) { clearTimeout(reconTimer); reconTimer = setTimeout(tryReconnect, 1500); } else startReconnect(); } });
-      reconTimer = setTimeout(tryReconnect, 6000);
+      connectToHost(code, c => {
+        if (!reconnecting) { if (c.relay) RelayHub.stop(); else { try { c.close(); } catch (e) {} } return; }
+        hostConn = c;
+        c.on('data', onHostMsg);
+        c.on('close', () => { if (!leaving && inGame && hostConn === c) { if (reconnecting) { clearTimeout(reconTimer); reconTimer = setTimeout(tryReconnect, 1500); } else startReconnect(); } });
+        sendHello(c, name, code, false);
+      }, () => { if (reconnecting) { clearTimeout(reconTimer); reconTimer = setTimeout(tryReconnect, 1500); } });
+      clearTimeout(reconTimer);
+      reconTimer = setTimeout(tryReconnect, 25000);
     };
     if (!peer || peer.destroyed) {
       peer = new Peer(peerOptions());
-      peer.on('open', id => { myId = id; attempt(); });
+      let tried = false;
+      const go = () => { if (tried) return; tried = true; attempt(); };
+      peer.on('open', id => { myId = id; go(); });
       peer.on('call', answerCall);
       peer.on('error', () => {});
       peer.on('disconnected', () => { if (!leaving && peer && !peer.destroyed) peer.reconnect(); });
-      reconTimer = setTimeout(tryReconnect, 8000);
+      reconTimer = setTimeout(go, 6000); // direct server not reachable: go over the relay line
     } else if (peer.disconnected) {
       try { peer.reconnect(); } catch (e) {}
-      reconTimer = setTimeout(() => { if (peer && !peer.disconnected) attempt(); else tryReconnect(); }, 2500);
+      reconTimer = setTimeout(attempt, 2500);
     } else attempt();
   }
   $('reconLeave').onclick = () => { reconnecting = false; const code = room && room.code; endSession(); forgetSession(code); showRejoin(); };
@@ -2017,6 +2132,7 @@ window.LY_EMOJI = {
     calls.forEach((c, id) => dropCall(id));
     conns.forEach(c => { try { c.close(); } catch (e) {} }); conns.clear();
     if (hostConn) { try { hostConn.close(); } catch (e) {} hostConn = null; }
+    RelayHub.stop();
     if (peer) { try { peer.destroy(); } catch (e) {} peer = null; }
     stopMedia();
     flashOn = false; flashMode = null; $('screenLight').classList.add('hidden'); $('lightPanel').classList.add('hidden');
@@ -2714,7 +2830,11 @@ window.LY_EMOJI = {
   // ================= themes =================
   const THEMES = [
     { k: 'royal', n: 'Royal', e: '👑', bg: 'linear-gradient(160deg,#3B1766,#0B0518)', a: 'linear-gradient(90deg,#FFF1C1,#C9922F)', meta: '#14072A' },
-    { k: 'love', n: 'Love', e: '💖', bg: 'linear-gradient(160deg,#8A1347,#1E0512)', a: 'linear-gradient(90deg,#FFE3EC,#E0306A)', meta: '#3A0A22' },
+    { k: 'love', n: 'Love', e: '💖', bg: 'linear-gradient(160deg,#8A1347,#1E0512)', a: 'linear-gradient(90deg,#FFE3EC,#E0306A)', meta: '#3A0A22', love: true },
+    { k: 'rosegold', n: 'Rose Gold', e: '🌹', bg: 'linear-gradient(160deg,#7A3D45,#140A0C)', a: 'linear-gradient(90deg,#FFE9E1,#C9786A)', meta: '#43232A', love: true },
+    { k: 'valentine', n: 'Valentine', e: '❤️', bg: 'linear-gradient(160deg,#A3001C,#160105)', a: 'linear-gradient(90deg,#FF8A9E,#B3001B)', meta: '#4A0510', love: true },
+    { k: 'lavender', n: 'Lavender', e: '💜', bg: 'linear-gradient(160deg,#5A2E9A,#0E0818)', a: 'linear-gradient(90deg,#F7EDFF,#9B5DE5)', meta: '#30195A', love: true },
+    { k: 'sweetheart', n: 'Sweetheart', e: '🍬', bg: 'linear-gradient(160deg,#C2457A,#1A0812)', a: 'linear-gradient(90deg,#FFF0F5,#FF8FB1)', meta: '#56203A', love: true },
     { k: 'ocean', n: 'Ocean', e: '🌊', bg: 'linear-gradient(160deg,#0B5A7A,#020C14)', a: 'linear-gradient(90deg,#E0FFFA,#14B8A6)', meta: '#073047' },
     { k: 'emerald', n: 'Emerald', e: '💎', bg: 'linear-gradient(160deg,#0B6A47,#020D08)', a: 'linear-gradient(90deg,#FFF1C1,#C9922F)', meta: '#073322' },
     { k: 'sunset', n: 'Sunset', e: '🌅', bg: 'linear-gradient(160deg,#B4432E,#3B1020 60%,#120508)', a: 'linear-gradient(90deg,#FFE9C7,#F2643A)', meta: '#45122A' },
@@ -2736,13 +2856,19 @@ window.LY_EMOJI = {
   function applyTheme(k) {
     const t = THEMES.find(x => x.k === k) || THEMES[0];
     document.documentElement.dataset.theme = t.k;
+    if (t.love) document.documentElement.dataset.love = '1'; else delete document.documentElement.dataset.love;
     store.set('ly_theme', t.k);
     try { localStorage.setItem('ly_theme', t.k); } catch (e) {}
     const m = document.querySelector('meta[name="theme-color"]'); if (m) m.setAttribute('content', t.meta);
-    if (t.k === 'love') buildLoveSky();
-    [...$('themeGrid').children].forEach(b => { const on = b.dataset.k === t.k; b.classList.toggle('on', on); b.setAttribute('aria-checked', String(on)); });
+    if (t.love) buildLoveSky();
+    $('themeGrid').querySelectorAll('.theme-opt').forEach(b => { const on = b.dataset.k === t.k; b.classList.toggle('on', on); b.setAttribute('aria-checked', String(on)); });
   }
-  THEMES.forEach(t => {
+  THEMES.forEach((t, i) => {
+    if (i === 0 || t.love !== THEMES[i - 1].love) {
+      const g = document.createElement('div'); g.className = 'theme-group';
+      g.textContent = t.love ? '💕 Love themes' : (i === 0 ? 'Classic' : 'More themes');
+      $('themeGrid').appendChild(g);
+    }
     const b = document.createElement('button');
     b.type = 'button'; b.className = 'theme-opt'; b.dataset.k = t.k; b.setAttribute('role', 'radio');
     const sw = document.createElement('span'); sw.className = 'theme-sw'; sw.style.background = t.bg;
