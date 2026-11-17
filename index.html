@@ -443,6 +443,8 @@ html:not([data-love]) .love-sky{display:none}
 @media (max-width:400px){.tb-right .icon-btn{width:38px;height:38px}.tb-right{gap:5px}}
 .fld:-webkit-autofill,.fld:-webkit-autofill:hover,.fld:-webkit-autofill:focus{-webkit-text-fill-color:var(--text);caret-color:var(--text);-webkit-box-shadow:0 0 0 100px var(--bg2) inset;box-shadow:0 0 0 100px var(--bg2) inset;transition:background-color 9999s}
 
+.theme-note{margin:-4px 0 10px;font-size:12.5px;color:var(--muted);text-align:center}
+
 </style>
 </head>
 <body>
@@ -670,6 +672,7 @@ html:not([data-love]) .love-sky{display:none}
 <div id="themeModal" class="modal hidden" role="dialog" aria-labelledby="themeTitle">
   <div class="modal-card">
     <h2 id="themeTitle">Choose a theme</h2>
+    <p class="theme-note">In a game, the theme changes for every player in the room.</p>
     <div id="themeGrid" class="theme-grid" role="radiogroup" aria-label="Themes"></div>
     <button id="themeClose" class="btn btn-play">Done</button>
   </div>
@@ -1557,7 +1560,7 @@ window.LY_EMOJI = {
     peer = new Peer(PREFIX + code, peerOptions());
     peer.on('open', id => {
       myId = id; isHost = true;
-      room = { code, hostId: id, started: false, chat: [], chatSeq: 0, game: null, gameNo: 0,
+      room = { code, hostId: id, started: false, chat: [], chatSeq: 0, game: null, gameNo: 0, theme: document.documentElement.dataset.theme || 'royal',
         players: [{ id, name, color: 'red', mic, cam, online: true, ...myRights() }] };
       sys(`${name} created the room`);
       Auth.log('room_create', code);
@@ -1765,6 +1768,17 @@ window.LY_EMOJI = {
         const x = String(msg.text || '').trim().slice(0, 200);
         if (!x) return;
         room.chat.push({ id: ++room.chatSeq, n: p.name, c: p.color, x }); trimChat(); broadcast();
+        break;
+      }
+      case 'theme': {
+        const t = THEMES.find(x => x.k === msg.k);
+        if (!t || room.theme === t.k) return;
+        const now = Date.now();
+        if (now - (lastTheme.get(from) || 0) < 1500) return;
+        lastTheme.set(from, now);
+        room.theme = t.k;
+        sys(`${p.name} changed the theme to ${t.n} ${t.e}`);
+        broadcast();
         break;
       }
       case 'media': p.mic = !!msg.mic; p.cam = !!msg.cam; broadcast(); break;
@@ -2055,11 +2069,14 @@ window.LY_EMOJI = {
     else if (hostConn && hostConn.open) hostConn.send(msg);
   }
 
+  const lastTheme = new Map();
+  let myThemeAt = 0;
   function applyState(msg) {
     const prevPlayers = room ? room.players.length : 0;
     if (!isHost && Math.random() < 0.2) saveSession();
     room = msg.room;
     timerEnd = performance.now() + (msg.timeLeft || 0);
+    if (room && room.theme && room.theme !== document.documentElement.dataset.theme && Date.now() - myThemeAt > 2500) applyTheme(room.theme);
     timerTotal = msg.timerTotal || TURN_MS;
     if (!inGame) enterGame();
     else if (room.players.length > prevPlayers) Sfx.join();
@@ -2891,7 +2908,10 @@ window.LY_EMOJI = {
     const bar = document.createElement('i'); bar.style.background = t.a; sw.appendChild(bar);
     const nm = document.createElement('span'); nm.className = 'theme-name'; nm.textContent = t.n;
     b.append(sw, nm);
-    b.onclick = () => { applyTheme(t.k); Sfx.pop && Sfx.pop(); };
+    b.onclick = () => {
+      applyTheme(t.k); Sfx.pop && Sfx.pop();
+      if (inGame && room) { myThemeAt = Date.now(); send({ t: 'theme', k: t.k }); } // everyone in the room gets the same theme
+    };
     $('themeGrid').appendChild(b);
   });
   applyTheme(document.documentElement.dataset.theme || 'royal');
