@@ -859,6 +859,12 @@ window.LY_PEER_OPTS = {
       if (error || !data || !data.length) return null;
       return data[0];
     },
+    // host: has the admin deleted this room since it was made?
+    async roomClosed(code, since) {
+      if (!sb || !code) return false;
+      const { data, error } = await sb.rpc('room_closed', { p_room: code, p_since: new Date(since || 0).toISOString() });
+      return !error && data === true;
+    },
     // host: latest rights of the players in the room
     async rightsOf(ids) {
       if (!sb || !ids.length) return [];
@@ -2073,7 +2079,7 @@ window.LY_EMOJI = {
     peer = new Peer(PREFIX + code, peerOptions());
     peer.on('open', id => {
       myId = id; isHost = true;
-      room = { code, hostId: id, started: false, chat: [], chatSeq: 0, game: null, gameNo: 0, theme: document.documentElement.dataset.theme || 'royal',
+      room = { code, hostId: id, started: false, chat: [], chatSeq: 0, game: null, gameNo: 0, createdAt: Date.now(), theme: document.documentElement.dataset.theme || 'royal',
         players: [{ id, name, color: 'red', mic, cam, online: true, ...myRights() }] };
       sys(`${name} created the room`);
       Auth.log('room_create', code);
@@ -2107,6 +2113,7 @@ window.LY_EMOJI = {
       if (room.game) room.game.winners.forEach(c => announced.add(c));
       sys('Host is back — game resumed');
       RelayHub.host(code, id, hostAccept);
+      setTimeout(checkClosed, 1500);
       turnKey = '';
       enterGame();
       afterChange();
@@ -2199,6 +2206,24 @@ window.LY_EMOJI = {
     if (changed) { turnKey = ''; afterChange(); }
   }
   setInterval(refreshRights, 30000);
+
+  // ---- admin deleted this room: everyone goes back to the lobby ----
+  async function checkClosed() {
+    if (!isHost || !room || leaving) return;
+    const code = room.code;
+    const closed = await Auth.roomClosed(code, room.createdAt ? room.createdAt - 600000 : 0);
+    if (!closed || !isHost || !room || room.code !== code) return;
+    conns.forEach(c => { if (c.open) { try { c.send({ t: 'closed' }); } catch (e) {} } });
+    setTimeout(() => roomDeleted(code), 700);
+  }
+  function roomDeleted(code) {
+    if (!room || room.code !== code) return;
+    endSession();
+    forgetSession(code);
+    showRejoin();
+    lobbyMsg(`Room ${code} was deleted by the admin.`);
+  }
+  setInterval(checkClosed, 20000);
 
   function hostDrop(conn) {
     if (conns.get(conn.peer) !== conn) return;
@@ -2410,6 +2435,7 @@ window.LY_EMOJI = {
         l.emit('data', payload.m);
       });
       c.on('presence', { event: 'leave' }, ({ key }) => { const l = links.get(key); if (l) l.close(); });
+      c.on('broadcast', { event: 'adm' }, () => checkClosed()); // admin deleted a room: check the server
       c.subscribe(st => { if (st === 'SUBSCRIBED' && ch === c) c.track({ at: Date.now() }); });
     }
     // guest: a link to the room's host over the relay line ('open' once the host is seen there)
@@ -2516,6 +2542,7 @@ window.LY_EMOJI = {
       applyState(msg);
     }
     if (msg.t === 'fx') playFx(msg);
+    if (msg.t === 'closed' && room) roomDeleted(room.code);
   }
 
   function failJoin(text) { endSession(); lobbyMsg(text); }
