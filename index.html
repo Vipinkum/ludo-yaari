@@ -71,6 +71,29 @@ svg{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-lin
 .lobby-msg{min-height:20px;margin:2px 0 0;color:#FFB4B5;font-size:14px}
 .hint{margin:0;color:var(--muted);font-size:12px;line-height:1.5;text-align:center}
 
+/* ---------- account ---------- */
+#authScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px 16px}
+#authScreen.hidden,#lobby.hidden{display:none}
+.auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;border-radius:14px;background:rgba(5,10,40,.55)}
+.auth-tabs button{height:40px;border:none;border-radius:10px;background:transparent;color:var(--muted);font-weight:800;font-size:15px;cursor:pointer;font-family:inherit}
+.auth-tabs button.on{background:var(--surface2);color:#fff}
+.auth-form{display:flex;flex-direction:column;gap:10px}
+.auth-form>div{display:flex;flex-direction:column;gap:6px}
+.auth-form .hidden{display:none}
+.pass-wrap{position:relative}
+.pass-wrap .fld{padding-right:68px}
+.pass-eye{position:absolute;right:6px;top:6px;height:36px;padding:0 10px;border:none;border-radius:9px;background:var(--surface);color:var(--muted);font-weight:700;font-size:13px;cursor:pointer}
+.auth-ok{color:#9BE7A4}
+.account-bar{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:6px 6px 6px 12px;font-size:13px;color:var(--muted)}
+.acct-who{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.acct-who b{color:var(--text)}
+.acct-links{display:flex;align-items:center;gap:4px}
+.acct-admin{color:#4A2A00;background:linear-gradient(#FFD54F,#FFA000);font-weight:800;border-radius:9px;padding:6px 10px;text-decoration:none;font-size:13px}
+.acct-admin.hidden{display:none}
+.rights-note{margin:0;padding:8px 12px;border-radius:12px;background:rgba(255,152,0,.14);border:1px solid rgba(255,152,0,.4);color:#FFD9A3;font-size:13px;line-height:1.4}
+.rights-note.hidden{display:none}
+.boot{min-height:100vh;display:flex;align-items:center;justify-content:center}
+.boot.hidden{display:none}
 /* ---------- game layout ---------- */
 #game{min-height:100vh;display:flex;flex-direction:column;padding:10px 10px calc(84px + env(safe-area-inset-bottom))}
 .topbar{display:flex;align-items:center;justify-content:space-between;gap:8px;max-width:1180px;width:100%;margin:0 auto 8px}
@@ -168,6 +191,7 @@ svg{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-lin
 .chat-list .msg strong{margin-right:5px}
 .chat-list .sys{color:var(--muted);font-size:12px;font-style:italic}
 .quick{display:flex;gap:6px;overflow-x:auto;padding:6px 10px 0;scrollbar-width:none}
+.quick.locked{opacity:.4;pointer-events:none}
 .quick button{flex:none;border:1px solid var(--line);background:var(--surface);color:var(--text);border-radius:999px;padding:6px 11px;font-size:12px;font-weight:600;cursor:pointer}
 .chat-form{display:flex;gap:8px;padding:8px 10px 12px}
 .chat-form .fld{height:42px;font-size:15px}
@@ -261,7 +285,47 @@ svg{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-lin
 <body>
 
 <!-- ================= LOBBY ================= -->
-<main id="lobby" class="screen">
+<div id="bootScreen" class="boot" aria-label="Loading"><div class="spinner"></div></div>
+
+<!-- ================= ACCOUNT (log in / sign up) ================= -->
+<main id="authScreen" class="screen hidden">
+  <div class="lobby-card">
+    <div class="brand">
+      <div class="brand-pawns" aria-hidden="true">
+        <span class="mini-pawn red"></span><span class="mini-pawn green"></span><span class="mini-pawn yellow"></span><span class="mini-pawn blue"></span>
+      </div>
+      <h1 class="logo">LUDO <span>YAARI</span></h1>
+      <p class="tag">Log in to play with friends</p>
+    </div>
+    <div class="auth-tabs" role="tablist">
+      <button id="tabLogin" class="on" role="tab" aria-selected="true">Log in</button>
+      <button id="tabSignup" role="tab" aria-selected="false">Sign up</button>
+    </div>
+    <form id="authForm" class="auth-form" novalidate>
+      <div id="nameRow" class="hidden">
+        <label class="fld-label" for="authName">Your name</label>
+        <input id="authName" class="fld" maxlength="14" placeholder="e.g. Vipin" autocomplete="nickname">
+      </div>
+      <div id="emailRow">
+        <label class="fld-label" for="authEmail">Email</label>
+        <input id="authEmail" class="fld" type="email" placeholder="you@example.com" autocomplete="email" inputmode="email">
+      </div>
+      <div id="passRow">
+        <label class="fld-label" for="authPass">Password</label>
+        <div class="pass-wrap">
+          <input id="authPass" class="fld" type="password" minlength="6" placeholder="At least 6 characters" autocomplete="current-password">
+          <button type="button" id="passEye" class="pass-eye" aria-label="Show password">Show</button>
+        </div>
+      </div>
+      <button id="authSubmit" class="btn btn-play" type="submit">Log in</button>
+    </form>
+    <p id="authMsg" class="lobby-msg" role="status"></p>
+    <button id="forgotBtn" class="link-btn">Forgot password?</button>
+    <p class="hint">Allow microphone &amp; camera when asked. 2 to 4 players.</p>
+  </div>
+</main>
+
+<main id="lobby" class="screen hidden">
   <div class="lobby-card">
     <div class="brand">
       <div class="brand-pawns" aria-hidden="true">
@@ -270,6 +334,15 @@ svg{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-lin
       <h1 class="logo">LUDO <span>YAARI</span></h1>
       <p class="tag">Play Ludo with friends — with chat, voice &amp; HD video call</p>
     </div>
+
+    <div id="accountBar" class="account-bar">
+      <span class="acct-who">Signed in as <b id="acctEmail"></b></span>
+      <span class="acct-links">
+        <a id="adminLink" class="acct-admin hidden" href="/admin.html">Admin panel</a>
+        <button id="logoutBtn" class="link-btn">Log out</button>
+      </span>
+    </div>
+    <p id="rightsNote" class="rights-note hidden"></p>
 
     <label class="fld-label" for="nameInput">Your name</label>
     <input id="nameInput" class="fld" maxlength="14" placeholder="e.g. Vipin" autocomplete="nickname">
@@ -467,6 +540,154 @@ window.LY_PEER_OPTS = {
   ] }
 };
 */
+
+</script>
+<script src="https://unpkg.com/@supabase/supabase-js@2.119.0/dist/umd/supabase.js"></script>
+<script>
+/* Ludo Yaari – accounts (Supabase): sign up / log in, the player's rights, activity log, join passes */
+(function () {
+  'use strict';
+  const CFG = window.LY_SUPABASE || {
+    url: 'https://eiqzfillulivvfsjxiaw.supabase.co',
+    key: 'sb_publishable_lNDzhh_4n8akw43h560Pzw_-lJSJuBO',
+  };
+  const lib = window.supabase;
+  const sb = lib && lib.createClient ? lib.createClient(CFG.url, CFG.key, {
+    auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
+  }) : null;
+
+  let session = null, profile = null;
+  const listeners = [];
+  const emit = () => listeners.forEach(fn => { try { fn(profile); } catch (e) { console.error(e); } });
+
+  function niceError(err) {
+    const m = String((err && (err.message || err.error_description)) || err || '');
+    if (/invalid login credentials/i.test(m)) return 'Wrong email or password.';
+    if (/already registered|already exists/i.test(m)) return 'This email already has an account — log in instead.';
+    if (/password should be at least/i.test(m)) return 'Password needs at least 6 characters.';
+    if (/unable to validate email|invalid email|email address .* is invalid/i.test(m)) return 'Please enter a valid email address.';
+    if (/rate limit|too many/i.test(m)) return 'Too many tries — please wait a minute and try again.';
+    if (/account blocked/i.test(m)) return 'Your account has been blocked by the admin.';
+    if (/failed to fetch|network/i.test(m)) return 'No internet connection. Check your network and try again.';
+    return m || 'Something went wrong. Please try again.';
+  }
+
+  async function loadProfile() {
+    if (!sb || !session) { profile = null; return null; }
+    const { data, error } = await sb.from('profiles')
+      .select('id,email,display_name,role,banned,can_call,can_chat,games_played,games_won,rooms_created')
+      .eq('id', session.user.id).maybeSingle();
+    if (error) throw error;
+    profile = data || null;
+    return profile;
+  }
+
+  const Auth = {
+    ready: false,
+    available: !!sb,
+    client: sb,
+    get user() { return session ? session.user : null; },
+    get profile() { return profile; },
+    get isAdmin() { return !!(profile && profile.role === 'admin' && !profile.banned); },
+    niceError,
+    onChange(fn) { listeners.push(fn); },
+
+    async init() {
+      if (!sb) { Auth.ready = true; return null; }
+      try {
+        const { data } = await sb.auth.getSession();
+        session = data.session;
+        if (session) await loadProfile();
+      } catch (e) { console.warn('auth init', e); }
+      sb.auth.onAuthStateChange((ev, s) => {
+        session = s;
+        if (ev === 'SIGNED_OUT') { profile = null; emit(); }
+        if (ev === 'PASSWORD_RECOVERY' && Auth.onRecovery) Auth.onRecovery();
+      });
+      Auth.ready = true;
+      return profile;
+    },
+
+    async signUp(name, email, password) {
+      const { data, error } = await sb.auth.signUp({ email, password, options: { data: { display_name: name } } });
+      if (error) throw new Error(niceError(error));
+      if (!data.session) throw new Error('Account created — please check your email to confirm it, then log in.');
+      session = data.session;
+      await loadProfile();
+      Auth.log('login');
+      emit();
+      return profile;
+    },
+
+    async signIn(email, password) {
+      const { data, error } = await sb.auth.signInWithPassword({ email, password });
+      if (error) throw new Error(niceError(error));
+      session = data.session;
+      await loadProfile();
+      if (profile && profile.banned) { await sb.auth.signOut(); session = null; profile = null; throw new Error(niceError('account blocked')); }
+      Auth.log('login');
+      emit();
+      return profile;
+    },
+
+    async signOut() {
+      if (!sb) return;
+      await Auth.log('logout');
+      await sb.auth.signOut();
+      session = null; profile = null;
+      emit();
+    },
+
+    async resetPassword(email) {
+      const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: location.origin + '/' });
+      if (error) throw new Error(niceError(error));
+    },
+    async setNewPassword(password) {
+      const { error } = await sb.auth.updateUser({ password });
+      if (error) throw new Error(niceError(error));
+    },
+
+    async refresh() {
+      if (!sb || !session) return null;
+      try { await loadProfile(); emit(); } catch (e) {}
+      return profile;
+    },
+
+    async setName(name) {
+      if (!sb || !session || !profile || profile.display_name === name) return;
+      const { error } = await sb.rpc('set_display_name', { p_name: name });
+      if (!error) profile.display_name = name;
+    },
+
+    // fire-and-forget activity log (never blocks the game)
+    async log(kind, room, detail) {
+      if (!sb || !session) return;
+      try { await sb.rpc('log_activity', { p_kind: kind, p_room: room || null, p_detail: detail || {} }); } catch (e) {}
+    },
+    async touch() { if (sb && session) { try { await sb.rpc('touch_seen'); } catch (e) {} } },
+
+    // a one-time pass the player hands to the room host (valid 2 minutes, one room)
+    async joinPass(room) {
+      const { data, error } = await sb.rpc('make_join_proof', { p_room: room });
+      if (error) throw new Error(niceError(error));
+      return data;
+    },
+    // host: turn a pass into the verified player (null when the pass is fake, used or expired)
+    async checkPass(pass, room) {
+      if (!sb || !pass) return null;
+      const { data, error } = await sb.rpc('claim_join_proof', { p_nonce: pass, p_room: room });
+      if (error || !data || !data.length) return null;
+      return data[0];
+    },
+    // host: latest rights of the players in the room
+    async rightsOf(ids) {
+      if (!sb || !ids.length) return [];
+      const { data, error } = await sb.rpc('rights_for', { p_ids: ids });
+      return error ? null : data;
+    },
+  };
+  window.LYAuth = Auth;
+})();
 
 </script>
 <script>
@@ -890,11 +1111,102 @@ window.LY_EMOJI = {
     if (s) btn.textContent = `Rejoin game ${s.code}`;
   }
   function readName() {
+    if (!Auth.profile) { showAuth('login'); return null; }
     if (!nameInput.value.trim()) { lobbyMsg('Please enter your name first.'); nameInput.focus(); return null; }
     const n = cleanName(nameInput.value);
     try { localStorage.setItem('ly_name', n); } catch (e) {}
+    Auth.setName(n);
     return n;
   }
+
+  // ================= account: log in / sign up (playing needs an account) =================
+  const Auth = window.LYAuth;
+  let authMode = 'login', recovering = false;
+  function showScreen(which) {
+    $('bootScreen').classList.add('hidden');
+    $('authScreen').classList.toggle('hidden', which !== 'auth');
+    $('lobby').classList.toggle('hidden', which !== 'lobby');
+  }
+  function authMsg(t, ok) { const m = $('authMsg'); m.textContent = t || ''; m.classList.toggle('auth-ok', !!ok); }
+  function setAuthMode(mode) {
+    authMode = mode;
+    const tabbed = mode === 'login' || mode === 'signup';
+    $('tabLogin').classList.toggle('on', mode === 'login'); $('tabLogin').setAttribute('aria-selected', String(mode === 'login'));
+    $('tabSignup').classList.toggle('on', mode === 'signup'); $('tabSignup').setAttribute('aria-selected', String(mode === 'signup'));
+    $('nameRow').classList.toggle('hidden', mode !== 'signup');
+    $('emailRow').classList.toggle('hidden', mode === 'newpass');
+    $('passRow').classList.toggle('hidden', mode === 'forgot');
+    $('authSubmit').textContent = { login: 'Log in', signup: 'Create account', forgot: 'Send reset link', newpass: 'Save new password' }[mode];
+    $('authPass').setAttribute('autocomplete', mode === 'login' ? 'current-password' : 'new-password');
+    $('forgotBtn').textContent = tabbed ? 'Forgot password?' : 'Back to log in';
+    $('forgotBtn').classList.toggle('hidden', mode === 'signup');
+    authMsg('');
+  }
+  function showAuth(mode, msg) { setAuthMode(mode); showScreen('auth'); if (msg) authMsg(msg); }
+  $('tabLogin').onclick = () => setAuthMode('login');
+  $('tabSignup').onclick = () => setAuthMode('signup');
+  $('forgotBtn').onclick = () => setAuthMode(authMode === 'login' || authMode === 'signup' ? 'forgot' : 'login');
+  $('passEye').onclick = () => {
+    const f = $('authPass'), show = f.type === 'password';
+    f.type = show ? 'text' : 'password';
+    $('passEye').textContent = show ? 'Hide' : 'Show';
+    $('passEye').setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+  };
+  $('authForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    if (!Auth.available) return authMsg("Can't reach the login server. Check your internet and reload.");
+    const email = $('authEmail').value.trim(), pass = $('authPass').value;
+    if (authMode !== 'newpass' && !/^\S+@\S+\.\S+$/.test(email)) { $('authEmail').focus(); return authMsg('Please enter a valid email address.'); }
+    if (authMode === 'signup' && !$('authName').value.trim()) { $('authName').focus(); return authMsg('Please enter your name.'); }
+    if (authMode !== 'forgot' && pass.length < 6) { $('authPass').focus(); return authMsg('Password needs at least 6 characters.'); }
+    const btn = $('authSubmit');
+    btn.disabled = true; authMsg('Please wait…', true);
+    try {
+      if (authMode === 'login') await Auth.signIn(email, pass);
+      else if (authMode === 'signup') await Auth.signUp(cleanName($('authName').value), email, pass);
+      else if (authMode === 'forgot') { await Auth.resetPassword(email); authMsg('Reset link sent — check your email inbox (and spam).', true); return; }
+      else { await Auth.setNewPassword(pass); recovering = false; toast('Password changed'); }
+      $('authPass').value = '';
+      enterLobby();
+    } catch (err) { authMsg(err.message || Auth.niceError(err)); }
+    finally { btn.disabled = false; }
+  });
+  $('logoutBtn').onclick = async () => { await Auth.signOut(); showAuth('login'); };
+  Auth.onRecovery = () => { recovering = true; showAuth('newpass'); authMsg('Choose a new password for your account.', true); };
+  Auth.onChange(p => { if (!p && !inGame && !recovering) showAuth('login'); });
+
+  function rightsText(p) {
+    const off = [p.can_call === false && 'video/voice calls', p.can_chat === false && 'chat & emojis'].filter(Boolean);
+    return off.length ? `The admin has turned off ${off.join(' and ')} for your account.` : '';
+  }
+  function enterLobby() {
+    const p = Auth.profile;
+    if (!p) return showAuth('login');
+    if (p.banned) { Auth.signOut(); return showAuth('login', 'Your account has been blocked by the admin.'); }
+    $('acctEmail').textContent = p.email || p.display_name;
+    $('adminLink').classList.toggle('hidden', !Auth.isAdmin);
+    nameInput.value = p.display_name || nameInput.value;
+    const note = rightsText(p);
+    $('rightsNote').textContent = note;
+    $('rightsNote').classList.toggle('hidden', !note);
+    showScreen('lobby');
+    showRejoin();
+  }
+  // every client re-checks its own account now and then: a blocked player is sent out of the game
+  async function checkMyAccount() {
+    if (!Auth.user) return;
+    const p = await Auth.refresh();
+    if (!p) return;
+    if (p.banned) {
+      const code = room && room.code;
+      if (inGame) { endSession(); forgetSession(code); }
+      await Auth.signOut();
+      showAuth('login', 'Your account has been blocked by the admin.');
+    } else if (!inGame) enterLobby();
+  }
+  setInterval(checkMyAccount, 60000);
+  setInterval(() => Auth.touch(), 120000);
+
   $('createBtn').onclick = async () => {
     const name = readName(); if (!name) return;
     Sfx.unlock();
@@ -925,10 +1237,19 @@ window.LY_EMOJI = {
     else { lobbyMsg('Rejoining…'); joinRoom(name, s.code); }
   };
   showRejoin();
-  // Reload / reopen: go straight back into the unfinished game (until the player taps Leave)
-  (() => {
+  // Start: check the account first, then (reload / reopen) go straight back into the unfinished game
+  (async () => {
+    await Auth.init();
+    if (recovering) return;
+    if (!Auth.available) return showAuth('login', "Can't reach the login server. Check your internet and reload.");
+    if (!Auth.profile) return showAuth('login');
+    enterLobby();
+    Auth.touch();
     const s = lastSession();
-    if (s && nameInput.value.trim()) { lobbyMsg(`Taking you back to game ${s.code}…`); setTimeout(() => $('rejoinBtn').click(), 250); }
+    if (s && nameInput.value.trim() && Auth.profile && !Auth.profile.banned) {
+      lobbyMsg(`Taking you back to game ${s.code}…`);
+      setTimeout(() => $('rejoinBtn').click(), 250);
+    }
   })();
   // Browsers only allow sound after a tap: unlock everything on the first touch
   document.addEventListener('pointerdown', () => {
@@ -1060,8 +1381,9 @@ window.LY_EMOJI = {
     peer.on('open', id => {
       myId = id; isHost = true;
       room = { code, hostId: id, started: false, chat: [], chatSeq: 0, game: null, gameNo: 0,
-        players: [{ id, name, color: 'red', mic, cam, online: true }] };
+        players: [{ id, name, color: 'red', mic, cam, online: true, ...myRights() }] };
       sys(`${name} created the room`);
+      Auth.log('room_create', code);
       enterGame();
       broadcast();
     });
@@ -1085,7 +1407,7 @@ window.LY_EMOJI = {
       Object.assign(seatTokens, saved.seatTokens || {});
       const mine = room.players.find(p => p.color === saved.hostColor) || room.players[0];
       room.players.forEach(p => { if (p !== mine && p.online) { p.online = false; p.offAt = Date.now(); } });
-      if (mine) { mine.id = id; mine.online = true; mine.offAt = 0; mine.mic = mic; mine.cam = cam; }
+      if (mine) { mine.id = id; mine.online = true; mine.offAt = 0; mine.mic = mic; mine.cam = cam; Object.assign(mine, myRights()); }
       room.hostId = id;
       announced.clear();
       if (room.game) room.game.winners.forEach(c => announced.add(c));
@@ -1109,40 +1431,79 @@ window.LY_EMOJI = {
   function hostAccept(conn) {
     conn.on('data', msg => {
       if (!msg || typeof msg !== 'object') return;
-      if (msg.t === 'hello') {
-        const tok = String(msg.token || '');
-        const seat = tok && Object.keys(seatTokens).find(c => seatTokens[c] === tok);
-        const back = seat && room.players.find(p => p.color === seat);
-        if (back) {
-          // same person coming back (dropped connection / reloaded page): give them their seat again
-          const oldId = back.id, oldConn = conns.get(oldId);
-          if (oldId !== conn.peer) { conns.delete(oldId); dropCall(oldId); }
-          if (oldConn && oldConn !== conn) { try { oldConn.close(); } catch (e) {} }
-          back.id = conn.peer; back.online = true; back.offAt = 0;
-          back.name = cleanName(msg.name || back.name); back.mic = !!msg.mic; back.cam = !!msg.cam;
-          conns.set(conn.peer, conn);
-          sys(`${back.name} is back`);
-          turnKey = '';
-          afterChange();
-          return;
-        }
-        if (room.started) { conn.send({ t: 'started' }); setTimeout(() => conn.close(), 500); return; }
-        if (room.players.length >= 4) { conn.send({ t: 'full' }); setTimeout(() => conn.close(), 500); return; }
-        const used = room.players.map(p => p.color);
-        const color = ASSIGN.find(c => !used.includes(c));
-        const name = cleanName(msg.name);
-        room.players.push({ id: conn.peer, name, color, mic: !!msg.mic, cam: !!msg.cam, online: true });
-        if (tok) seatTokens[color] = tok;
-        conns.set(conn.peer, conn);
-        sys(`${name} joined`);
-        broadcast();
-        return;
-      }
+      if (msg.t === 'hello') { verifyHello(conn, msg); return; }
       if (conns.get(conn.peer) === conn) hostAction(conn.peer, msg);
     });
     conn.on('close', () => hostDrop(conn));
     conn.on('error', () => hostDrop(conn));
   }
+
+  // The player's one-time pass is checked with the account server: who they are and what they may do
+  async function verifyHello(conn, msg) {
+    const who = await Auth.checkPass(msg.pass, room.code);
+    if (!room || leaving || !isHost) return;
+    const deny = why => { try { conn.send({ t: 'denied', why }); } catch (e) {} setTimeout(() => { try { conn.close(); } catch (e) {} }, 600); };
+    if (!who) return deny('login');
+    if (who.is_banned) return deny('banned');
+    const rights = { uid: who.uid, call: who.call_ok, chat: who.chat_ok };
+    const tok = String(msg.token || '');
+    const seat = tok && Object.keys(seatTokens).find(c => seatTokens[c] === tok);
+    const back = seat && room.players.find(p => p.color === seat && (!p.uid || p.uid === who.uid));
+    if (back) {
+      // same person coming back (dropped connection / reloaded page): give them their seat again
+      const oldId = back.id, oldConn = conns.get(oldId);
+      if (oldId !== conn.peer) { conns.delete(oldId); dropCall(oldId); }
+      if (oldConn && oldConn !== conn) { try { oldConn.close(); } catch (e) {} }
+      back.id = conn.peer; back.online = true; back.offAt = 0;
+      back.name = cleanName(msg.name || back.name); back.mic = !!msg.mic; back.cam = !!msg.cam;
+      Object.assign(back, rights); back.banned = false;
+      conns.set(conn.peer, conn);
+      sys(`${back.name} is back`);
+      turnKey = '';
+      afterChange();
+      return;
+    }
+    if (room.started) { conn.send({ t: 'started' }); setTimeout(() => conn.close(), 500); return; }
+    if (room.players.length >= 4) { conn.send({ t: 'full' }); setTimeout(() => conn.close(), 500); return; }
+    const used = room.players.map(p => p.color);
+    const color = ASSIGN.find(c => !used.includes(c));
+    const name = cleanName(msg.name);
+    room.players.push({ id: conn.peer, name, color, mic: !!msg.mic, cam: !!msg.cam, online: true, ...rights });
+    if (tok) seatTokens[color] = tok;
+    conns.set(conn.peer, conn);
+    sys(`${name} joined`);
+    broadcast();
+  }
+
+  function myRights() {
+    const p = Auth.profile || {};
+    return { uid: Auth.user ? Auth.user.id : null, call: p.can_call !== false, chat: p.can_chat !== false };
+  }
+  // Host: pick up rights the admin changed while the game is on (and remove blocked players)
+  async function refreshRights() {
+    if (!isHost || !room || leaving) return;
+    const ids = [...new Set(room.players.map(p => p.uid).filter(Boolean))];
+    const rows = await Auth.rightsOf(ids);
+    if (!rows || !room || !isHost) return;
+    let changed = false;
+    rows.forEach(r => room.players.filter(p => p.uid === r.uid).forEach(p => {
+      if (p.call !== r.call_ok || p.chat !== r.chat_ok) {
+        p.call = r.call_ok; p.chat = r.chat_ok; changed = true;
+        if (p.id !== myId) sys(`Admin changed ${p.name}'s permissions`);
+      }
+      if (r.is_banned && !p.banned && p.id !== myId) {
+        p.banned = true; changed = true;
+        const c = conns.get(p.id);
+        if (c) { try { c.send({ t: 'denied', why: 'banned' }); } catch (e) {} setTimeout(() => { try { c.close(); } catch (e) {} }, 600); }
+        sys(`${p.name} was removed by the admin`);
+        if (!room.started) { room.players = room.players.filter(x => x !== p); delete seatTokens[p.color]; }
+        else { p.online = false; p.offAt = 0; }
+        dropCall(p.id);
+      }
+    }));
+    if (changed) { turnKey = ''; afterChange(); }
+  }
+  setInterval(refreshRights, 30000);
 
   function hostDrop(conn) {
     if (conns.get(conn.peer) !== conn) return;
@@ -1151,7 +1512,7 @@ window.LY_EMOJI = {
     if (p) {
       if (!room.started) { room.players = room.players.filter(x => x !== p); delete seatTokens[p.color]; }
       else { p.online = false; p.offAt = Date.now(); }
-      sys(room.started ? `${p.name} disconnected — they can rejoin` : `${p.name} left`);
+      if (!p.banned) sys(room.started ? `${p.name} disconnected — they can rejoin` : `${p.name} left`);
     }
     dropCall(conn.peer);
     turnKey = ''; // re-arm the timer (offline players are auto-played quickly)
@@ -1221,6 +1582,7 @@ window.LY_EMOJI = {
     const g = room.game;
     switch (msg.t) {
       case 'chat': {
+        if (p.chat === false) return;
         const x = String(msg.text || '').trim().slice(0, 200);
         if (!x) return;
         room.chat.push({ id: ++room.chatSeq, n: p.name, c: p.color, x }); trimChat(); broadcast();
@@ -1244,6 +1606,7 @@ window.LY_EMOJI = {
       }
       case 'move': doMove(p, Number(msg.i)); break;
       case 'emoji': {
+        if (p.chat === false) return;
         const e = String(msg.e || '');
         const throwing = msg.to != null;
         if (throwing ? !EMO.kind.has(e) : !REACT.includes(e)) return;
@@ -1301,7 +1664,7 @@ window.LY_EMOJI = {
       myId = id;
       hostConn = peer.connect(PREFIX + code, { reliable: true });
       const t = setTimeout(() => { if (!opened) failJoin('Room not found. Check the code.'); }, 15000);
-      hostConn.on('open', () => { opened = true; clearTimeout(t); hostConn.send({ t: 'hello', name, mic, cam, token: seatToken(code) }); });
+      hostConn.on('open', () => { opened = true; clearTimeout(t); sendHello(hostConn, name, code, true); });
       hostConn.on('data', onHostMsg);
       const hc = hostConn;
       hostConn.on('close', () => { if (!leaving && inGame && hostConn === hc) startReconnect(); });
@@ -1314,11 +1677,32 @@ window.LY_EMOJI = {
     peer.on('disconnected', () => { if (!leaving && peer && !peer.destroyed) peer.reconnect(); });
   }
 
+  // hello = name + seat token + a fresh one-time pass from the account server (proves who we are)
+  async function sendHello(c, name, code, firstTime) {
+    let pass = null;
+    try { pass = await Auth.joinPass(code); }
+    catch (err) {
+      if (/blocked/i.test(err.message)) return denied('banned');
+      if (firstTime) return failJoin(err.message);
+    }
+    if (c.open) c.send({ t: 'hello', name, mic, cam, token: seatToken(code), pass });
+  }
+  function denied(why) {
+    const code = room && room.code;
+    endSession();
+    if (why === 'banned') {
+      forgetSession(code);
+      Auth.signOut().then(() => showAuth('login', 'Your account has been blocked by the admin.'));
+    } else lobbyMsg('Could not check your account. Please log out, log in again and retry.');
+  }
+
   function onHostMsg(msg) {
     if (!msg || typeof msg !== 'object') return;
+    if (msg.t === 'denied') return denied(msg.why);
     if (msg.t === 'full') return failJoin('This room is full (4 players).');
     if (msg.t === 'started') return failJoin('The game in this room has already started.');
     if (msg.t === 'state') {
+      if (!inGame && msg.room) Auth.log('room_join', msg.room.code);
       if (reconnecting) { reconnecting = false; clearTimeout(reconTimer); $('reconCard').classList.add('hidden'); toast('Reconnected — welcome back!'); }
       applyState(msg);
     }
@@ -1353,7 +1737,7 @@ window.LY_EMOJI = {
       if (!reconnecting) return;
       const c = peer.connect(PREFIX + code, { reliable: true });
       hostConn = c;
-      c.on('open', () => c.send({ t: 'hello', name, mic, cam, token: seatToken(code) }));
+      c.on('open', () => sendHello(c, name, code, false));
       c.on('data', onHostMsg);
       c.on('close', () => { if (!leaving && inGame && hostConn === c) { if (reconnecting) { clearTimeout(reconTimer); reconTimer = setTimeout(tryReconnect, 1500); } else startReconnect(); } });
       reconTimer = setTimeout(tryReconnect, 6000);
@@ -1399,7 +1783,8 @@ window.LY_EMOJI = {
   // ================= calls (audio/video mesh) =================
   function syncCalls() {
     if (!room || !peer || !localStream) return;
-    const ids = new Set(room.players.filter(p => p.online && p.id !== myId).map(p => p.id));
+    const noCall = callBlocked();
+    const ids = new Set(noCall ? [] : room.players.filter(p => p.online && p.id !== myId && p.call !== false).map(p => p.id));
     calls.forEach((c, id) => { if (!ids.has(id)) dropCall(id); });
     ids.forEach(id => { if (!calls.has(id) && myId < id) callPeer(id); });
   }
@@ -1412,6 +1797,8 @@ window.LY_EMOJI = {
     }, 15000);
   }
   function answerCall(call) {
+    const caller = room && room.players.find(p => p.id === call.peer);
+    if (callBlocked() || (caller && caller.call === false)) { try { call.close(); } catch (e) {} return; }
     call.answer(localStream || undefined);
     setupCall(call);
   }
@@ -1942,6 +2329,7 @@ window.LY_EMOJI = {
   $('chatForm').addEventListener('submit', e => {
     e.preventDefault();
     const inp = $('chatInput'); const text = inp.value.trim();
+    if (chatBlocked()) return toast(CHAT_OFF);
     if (!text) return;
     send({ t: 'chat', text }); inp.value = '';
   });
@@ -1960,11 +2348,34 @@ window.LY_EMOJI = {
     $('sfxBtn').classList.toggle('off', !Sfx.on);
   }
   function pushMedia() { send({ t: 'media', mic, cam }); }
+  const CALL_OFF = 'The admin has turned off video/voice calls for your account.';
+  const CHAT_OFF = 'The admin has turned off chat & emojis for your account.';
+  const callBlocked = () => { const m = me(); return !!(m && m.call === false); };
+  const chatBlocked = () => { const m = me(); return !!(m && m.chat === false); };
+  // apply the admin's switches on this device: no calls → mic/camera off and no video links; no chat → input locked
+  let rightsShown = '';
+  function applyMyRights() {
+    const noCall = callBlocked(), noChat = chatBlocked();
+    if (noCall && (mic || cam)) { mic = false; cam = false; applyLocalTracks(); pushMedia(); renderControls(); }
+    if (noCall && calls.size) calls.forEach((c, id) => dropCall(id));
+    const inp = $('chatInput');
+    inp.disabled = noChat;
+    inp.placeholder = noChat ? 'Chat is turned off for your account' : 'Type a message…';
+    $('quickRow').classList.toggle('locked', noChat);
+    $('emojiBtn').classList.toggle('off', noChat);
+    const key = `${noCall}|${noChat}`;
+    if (rightsShown && key !== rightsShown) {
+      if (noCall) toast(CALL_OFF); else if (noChat) toast(CHAT_OFF); else toast('The admin turned your permissions back on');
+    } else if (!rightsShown && (noCall || noChat)) toast(noCall ? CALL_OFF : CHAT_OFF);
+    rightsShown = key;
+  }
   $('micBtn').onclick = () => {
+    if (callBlocked()) return toast(CALL_OFF);
     if (!realAudio) return toast('Microphone permission was not given. Allow it in browser settings and reload.');
     mic = !mic; applyLocalTracks(); pushMedia();
   };
   $('camBtn').onclick = () => {
+    if (callBlocked()) return toast(CALL_OFF);
     if (!realVideo) return toast('Camera permission was not given. Allow it in browser settings and reload.');
     cam = !cam; applyLocalTracks(); pushMedia(); renderPanels();
     if (flashOn) applyFlash();
@@ -2056,6 +2467,7 @@ window.LY_EMOJI = {
   function leaveNow() {
     closeLeave();
     const code = room && room.code;
+    Auth.log('leave', code);
     endSession();
     forgetSession(code);
     showRejoin();
@@ -2114,6 +2526,21 @@ window.LY_EMOJI = {
   $('rulesClose').onclick = () => $('rulesModal').classList.add('hidden');
 
   // ================= main render =================
+  let loggedStart = store.get('ly_log_start') || '', loggedEnd = store.get('ly_log_end') || '';
+  function logGameEvents() {
+    const g = room.game, mine = me();
+    if (!g || !room.started || !mine) return;
+    const key = room.code + '#' + room.gameNo;
+    if (loggedStart !== key && !g.over && mine.online) {
+      loggedStart = key; store.set('ly_log_start', key);
+      Auth.log('game_start', room.code, { players: room.players.length });
+    }
+    if (g.over && loggedEnd !== key && loggedStart === key) {
+      loggedEnd = key; store.set('ly_log_end', key);
+      const place = g.winners.indexOf(mine.color);
+      Auth.log(place === 0 ? 'game_win' : 'game_end', room.code, { place: place + 1, players: room.players.length });
+    }
+  }
   function render() {
     if (!room || !inGame) return;
     rollPending = false;
@@ -2128,6 +2555,8 @@ window.LY_EMOJI = {
       lastWinners = g.winners.length;
     }
     if (!g || !g.winners.length) lastWinners = g ? g.winners.length : 0;
+    logGameEvents();
+    applyMyRights();
     syncTokens();
     placeDice();
     if (g && !g.rolled && !diceBusy) showDice(g.dice || (g.last && g.last.dice) || 6);
@@ -2215,7 +2644,7 @@ window.LY_EMOJI = {
     $('targetRow').classList.remove('hidden');
     $('targetRow').scrollIntoView({ block: 'nearest' });
   });
-  $('emojiBtn').onclick = () => { Sfx.unlock(); $('emojiSheet').classList.remove('hidden'); };
+  $('emojiBtn').onclick = () => { if (chatBlocked()) return toast(CHAT_OFF); Sfx.unlock(); $('emojiSheet').classList.remove('hidden'); };
   $('emojiClose').onclick = closeEmoji;
   $('emojiSheet').addEventListener('click', e => { if (e.target.id === 'emojiSheet') closeEmoji(); });
 
