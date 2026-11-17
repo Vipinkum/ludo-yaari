@@ -3,12 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#14205A">
+<meta name="theme-color" content="#14072A">
+<script>try{document.documentElement.dataset.theme=localStorage.getItem('ly_theme')||'royal'}catch(e){}</script>
 <title>Ludo Queen – Play Ludo with Friends + Video Call</title>
 <meta name="description" content="Play online Ludo with friends – private rooms, chat, voice and HD video call.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="icon" type="image/png" href="/favicon.png">
 <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
@@ -284,9 +285,157 @@ svg{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-lin
 .light-panel input{flex:1;accent-color:#FFC93C;height:28px}
 .light-pct{font-size:13px;font-weight:700;min-width:38px;text-align:right}
 
+/* ================= Ludo Queen premium themes (Royal Night default; switch with <html data-theme>) ================= */
+:root{
+  --surface:rgba(255,255,255,.06); --surface2:rgba(255,255,255,.11); --line:rgba(var(--acc-rgb),.22);
+  --rose:#FF4D8D; --danger:#E5384F;
+  --glass:linear-gradient(160deg,var(--glass-1),var(--glass-2));
+  --shadow-lg:0 30px 80px rgba(0,0,0,.55),0 0 0 1px rgba(var(--acc-rgb),.14);
+  --pattern-size:38px 38px;
+}
+:root,html[data-theme="royal"]{--bg1:#1A0B2E;--bg2:#07040F;--text:#F8F2E4;--muted:#B9A8D2;--acc-rgb:233,196,106;--gold:#E9C46A;--gold-1:#FBE7A8;--on-acc:#2B1700;--acc-grad:linear-gradient(135deg,#FFF1C1 0%,#F2CE6E 28%,#C9922F 60%,#F6D98A 100%);--gold-grad:var(--acc-grad);--alt-grad:linear-gradient(135deg,#C2187C,#7B1FA2 60%,#4A148C);--alt-glow:rgba(194,24,124,.35);--glass-1:rgba(48,22,82,.78);--glass-2:rgba(16,8,34,.86);--bar-bg:rgba(20,9,40,.72);--field-bg:rgba(8,4,20,.6);--vbox-bg:radial-gradient(circle at 50% 30%,#2A1450,#0B0518);--pip:radial-gradient(circle at 35% 30%,#4A2A6A,#1A0B2E);--board-bg:#FFFBF0;--page-bg:radial-gradient(900px 600px at 15% -10%,rgba(155,60,220,.35),transparent 60%),radial-gradient(800px 600px at 110% 20%,rgba(255,77,141,.18),transparent 60%),radial-gradient(1000px 700px at 50% 120%,rgba(233,196,106,.10),transparent 60%),linear-gradient(180deg,#14072A 0%,#0B0518 55%,#07040F 100%);--pattern:linear-gradient(45deg,rgba(var(--acc-rgb),.9) 1px,transparent 1px),linear-gradient(-45deg,rgba(var(--acc-rgb),.9) 1px,transparent 1px)}
+html[data-theme="love"]{--bg1:#3A0A22;--bg2:#14030C;--text:#FFF0F5;--muted:#F2A9C4;--acc-rgb:255,122,162;--gold:#FF7AA2;--gold-1:#FFC2D4;--on-acc:#4A0020;--acc-grad:linear-gradient(135deg,#FFE3EC 0%,#FF9EBB 30%,#E0306A 62%,#FFB8CC 100%);--alt-grad:linear-gradient(135deg,#FF4D6D,#C9184A 60%,#800F2F);--alt-glow:rgba(255,77,109,.4);--glass-1:rgba(92,16,52,.74);--glass-2:rgba(32,4,18,.86);--bar-bg:rgba(50,8,28,.75);--field-bg:rgba(28,3,14,.6);--vbox-bg:radial-gradient(circle at 50% 30%,#5A1236,#1A0410);--pip:radial-gradient(circle at 35% 30%,#E0306A,#800F2F);--board-bg:#FFF5F8;--page-bg:radial-gradient(900px 600px at 10% -10%,rgba(255,77,141,.42),transparent 60%),radial-gradient(800px 600px at 110% 30%,rgba(201,24,74,.35),transparent 60%),radial-gradient(1000px 700px at 50% 120%,rgba(255,179,199,.16),transparent 60%),linear-gradient(180deg,#3A0A22 0%,#1E0512 55%,#14030C 100%);--pattern:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cpath d='M24 38s-12-7.6-12-16a7 7 0 0 1 12-4.9A7 7 0 0 1 36 22c0 8.4-12 16-12 16z' fill='%23FF7AA2'/%3E%3C/svg%3E");--pattern-size:64px 64px}
+html[data-theme="ocean"]{--bg1:#062A3A;--bg2:#020C14;--text:#EAFBFF;--muted:#93C8D8;--acc-rgb:94,234,212;--gold:#5EEAD4;--gold-1:#B5FFF1;--on-acc:#00302A;--acc-grad:linear-gradient(135deg,#E0FFFA 0%,#7CF3E0 30%,#14B8A6 62%,#A7F7EA 100%);--alt-grad:linear-gradient(135deg,#38BDF8,#2563EB 60%,#1E3A8A);--alt-glow:rgba(56,189,248,.35);--glass-1:rgba(8,52,72,.76);--glass-2:rgba(2,16,26,.88);--bar-bg:rgba(4,30,44,.75);--field-bg:rgba(2,14,22,.6);--vbox-bg:radial-gradient(circle at 50% 30%,#0B4A63,#03141E);--pip:radial-gradient(circle at 35% 30%,#0E7490,#082F49);--board-bg:#F5FFFE;--page-bg:radial-gradient(900px 600px at 15% -10%,rgba(56,189,248,.35),transparent 60%),radial-gradient(800px 600px at 110% 30%,rgba(20,184,166,.25),transparent 60%),linear-gradient(180deg,#073047 0%,#03182A 55%,#020C14 100%);--pattern:radial-gradient(rgba(var(--acc-rgb),.9) 1.2px,transparent 1.6px);--pattern-size:26px 26px}
+html[data-theme="emerald"]{--bg1:#06291C;--bg2:#020D08;--text:#F3FBF4;--muted:#A5CDB5;--acc-rgb:233,196,106;--gold:#E9C46A;--gold-1:#FBE7A8;--on-acc:#2B1700;--acc-grad:linear-gradient(135deg,#FFF1C1 0%,#F2CE6E 28%,#C9922F 60%,#F6D98A 100%);--alt-grad:linear-gradient(135deg,#10B981,#047857 60%,#064E3B);--alt-glow:rgba(16,185,129,.35);--glass-1:rgba(8,58,40,.76);--glass-2:rgba(2,20,13,.88);--bar-bg:rgba(4,34,23,.75);--field-bg:rgba(2,16,10,.6);--vbox-bg:radial-gradient(circle at 50% 30%,#0B5238,#03160E);--pip:radial-gradient(circle at 35% 30%,#065F46,#022C22);--board-bg:#FBFFF8;--page-bg:radial-gradient(900px 600px at 15% -10%,rgba(16,185,129,.32),transparent 60%),radial-gradient(1000px 700px at 50% 120%,rgba(233,196,106,.14),transparent 60%),linear-gradient(180deg,#073322 0%,#041A11 55%,#020D08 100%);--pattern:linear-gradient(45deg,rgba(var(--acc-rgb),.9) 1px,transparent 1px),linear-gradient(-45deg,rgba(var(--acc-rgb),.9) 1px,transparent 1px)}
+html[data-theme="sunset"]{--bg1:#3B1020;--bg2:#120508;--text:#FFF6EE;--muted:#F3B8A0;--acc-rgb:255,170,90;--gold:#FFAA5A;--gold-1:#FFD8B0;--on-acc:#3A1400;--acc-grad:linear-gradient(135deg,#FFE9C7 0%,#FFB86B 30%,#F2643A 62%,#FFC98A 100%);--alt-grad:linear-gradient(135deg,#F472B6,#A21CAF 60%,#6B21A8);--alt-glow:rgba(244,114,182,.35);--glass-1:rgba(84,24,42,.76);--glass-2:rgba(28,8,14,.88);--bar-bg:rgba(48,14,24,.75);--field-bg:rgba(24,6,10,.6);--vbox-bg:radial-gradient(circle at 50% 30%,#5A1A30,#1A0609);--pip:radial-gradient(circle at 35% 30%,#C2410C,#7C2D12);--board-bg:#FFF9F2;--page-bg:radial-gradient(900px 600px at 10% -10%,rgba(255,138,76,.38),transparent 60%),radial-gradient(800px 600px at 110% 25%,rgba(217,70,239,.28),transparent 60%),linear-gradient(180deg,#45122A 0%,#220913 55%,#120508 100%);--pattern:radial-gradient(rgba(var(--acc-rgb),.9) 1.2px,transparent 1.6px);--pattern-size:26px 26px}
+html[data-theme="midnight"]{--bg1:#16181D;--bg2:#050607;--text:#F4F5F7;--muted:#A3A8B3;--acc-rgb:214,220,230;--gold:#D6DCE6;--gold-1:#F1F4F8;--on-acc:#14161A;--acc-grad:linear-gradient(135deg,#FFFFFF 0%,#D9DEE6 30%,#8D96A5 62%,#EEF1F5 100%);--alt-grad:linear-gradient(135deg,#475569,#1E293B 60%,#0F172A);--alt-glow:rgba(148,163,184,.3);--glass-1:rgba(36,40,48,.78);--glass-2:rgba(10,11,14,.9);--bar-bg:rgba(22,24,29,.78);--field-bg:rgba(6,7,9,.6);--vbox-bg:radial-gradient(circle at 50% 30%,#2A2E36,#08090B);--pip:radial-gradient(circle at 35% 30%,#334155,#0F172A);--board-bg:#FAFAFB;--page-bg:radial-gradient(900px 600px at 15% -10%,rgba(148,163,184,.22),transparent 60%),linear-gradient(180deg,#191C22 0%,#0B0C0F 55%,#050607 100%);--pattern:linear-gradient(45deg,rgba(var(--acc-rgb),.9) 1px,transparent 1px),linear-gradient(-45deg,rgba(var(--acc-rgb),.9) 1px,transparent 1px)}
+
+html,body{font-family:'Plus Jakarta Sans',Inter,system-ui,sans-serif}
+body{background:var(--page-bg) fixed;background-color:var(--bg2)}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.07;
+  background-image:var(--pattern);background-size:var(--pattern-size);z-index:-1;mask-image:radial-gradient(ellipse at 50% 30%,#000 10%,transparent 75%);-webkit-mask-image:radial-gradient(ellipse at 50% 30%,#000 10%,transparent 75%)}
+
+/* ---------- brand ---------- */
+.crown{display:block;width:64px;height:44px;margin:0 auto 4px;filter:drop-shadow(0 6px 18px rgba(var(--acc-rgb),.45))}
+.crown.small{display:inline-block;width:26px;height:18px;margin:0 6px 0 0;vertical-align:-2px;filter:none}
+.brand-pawns{gap:8px;margin:2px 0 10px}
+.mini-pawn{width:14px;height:19px;box-shadow:inset -2px -3px 0 rgba(0,0,0,.25),0 0 12px currentColor}
+.mini-pawn::after{left:3px;top:3px;width:4px;height:4px}
+.mini-pawn.red{color:#ff4d5e}.mini-pawn.green{color:#38d47a}.mini-pawn.yellow{color:#ffd23f}.mini-pawn.blue{color:#3aa0ff}
+.logo{font-family:'Cinzel',serif;font-weight:800;font-size:40px;letter-spacing:.06em;color:var(--text);text-shadow:0 2px 0 rgba(0,0,0,.35),0 0 30px rgba(var(--acc-rgb),.15)}
+.logo span{background:var(--acc-grad);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:none;animation:goldShine 6s ease-in-out infinite;filter:drop-shadow(0 2px 0 rgba(0,0,0,.4))}
+@keyframes goldShine{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.logo.small{font-size:19px;letter-spacing:.05em;display:flex;align-items:center}
+.logo.small span{margin-left:.32em}
+.tag{color:var(--muted);font-size:13.5px;letter-spacing:.01em}
+
+/* ---------- cards ---------- */
+.lobby-card,.modal-card,.sheet-card,.overlay-card{background:var(--glass);border:1px solid var(--line);box-shadow:var(--shadow-lg),inset 0 1px 0 rgba(255,255,255,.08);backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%)}
+.lobby-card{border-radius:28px;padding:30px 24px 22px;position:relative;overflow:hidden}
+.lobby-card::before{content:"";position:absolute;left:12%;right:12%;top:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.lobby-card::after{content:"";position:absolute;width:260px;height:260px;right:-120px;top:-140px;border-radius:50%;background:radial-gradient(circle,rgba(var(--acc-rgb),.16),transparent 70%);pointer-events:none}
+.overlay-card{background:linear-gradient(160deg,var(--glass-1),var(--glass-2));background-color:var(--bg2)}
+
+/* ---------- buttons ---------- */
+.btn{font-family:'Plus Jakarta Sans',Inter,sans-serif;font-weight:800;letter-spacing:.03em;border-radius:16px;height:52px;position:relative;overflow:hidden;transition:transform .15s,box-shadow .2s,filter .2s}
+.btn:active{transform:translateY(1px) scale(.99)}
+.btn-play{background:var(--acc-grad);background-size:160% 100%;color:var(--on-acc);text-transform:uppercase;font-size:15px;letter-spacing:.12em;box-shadow:0 10px 30px rgba(226,182,86,.35),inset 0 1px 0 rgba(255,255,255,.7),inset 0 -2px 0 rgba(120,75,10,.35)}
+.btn-play::after{content:"";position:absolute;top:0;bottom:0;width:40%;left:-60%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.65),transparent);transform:skewX(-20deg);animation:sweep 3.6s ease-in-out infinite}
+@keyframes sweep{0%,60%{left:-60%}100%{left:130%}}
+.btn-play:active{box-shadow:0 4px 14px rgba(226,182,86,.3),inset 0 1px 0 rgba(255,255,255,.6)}
+.btn-join{background:var(--alt-grad);box-shadow:0 10px 26px var(--alt-glow),inset 0 1px 0 rgba(255,255,255,.25);color:#fff}
+.btn-ghost{background:rgba(255,255,255,.06);border:1px solid var(--line);color:var(--text)}
+.btn-install{background:linear-gradient(135deg,rgba(255,255,255,.08),rgba(255,255,255,.03));border:1px solid var(--line);box-shadow:none;color:var(--gold-1)}
+.btn-rejoin{background:linear-gradient(135deg,#2EC27E,#0E7A4B);box-shadow:0 10px 26px rgba(46,194,126,.3)}
+.btn-danger{background:linear-gradient(135deg,#FF5A7A,#C2183B);box-shadow:0 10px 26px rgba(229,56,79,.35)}
+.link-btn{color:var(--gold-1)}
+.icon-btn{background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:14px;color:var(--gold-1)}
+.icon-btn:hover{background:rgba(var(--acc-rgb),.12)}
+
+/* ---------- fields ---------- */
+.fld{height:50px;border-radius:14px;border:1px solid rgba(var(--acc-rgb),.18);background:var(--field-bg);box-shadow:inset 0 2px 8px rgba(0,0,0,.35);transition:border-color .2s,box-shadow .2s}
+.fld:focus{border-color:var(--gold);box-shadow:inset 0 2px 8px rgba(0,0,0,.35),0 0 0 4px rgba(var(--acc-rgb),.14)}
+.fld::placeholder{color:rgba(185,168,210,.55)}
+.fld-label{color:var(--gold-1);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:700}
+.or{color:var(--muted);font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+.or::before,.or::after{background:linear-gradient(90deg,transparent,rgba(var(--acc-rgb),.35),transparent)!important}
+.auth-tabs{background:var(--field-bg);border:1px solid rgba(var(--acc-rgb),.15);border-radius:16px}
+.auth-tabs button{border-radius:12px;letter-spacing:.04em}
+.auth-tabs button.on{background:var(--acc-grad);color:var(--on-acc);box-shadow:0 6px 18px rgba(226,182,86,.3)}
+.pass-eye{background:rgba(var(--acc-rgb),.12);color:var(--gold-1)}
+.account-bar{background:rgba(var(--acc-rgb),.07);border:1px solid rgba(var(--acc-rgb),.2);border-radius:14px}
+.acct-admin{background:var(--acc-grad);color:var(--on-acc);letter-spacing:.04em}
+.love-footer{color:rgba(248,242,228,.7);font-family:'Cinzel',serif;letter-spacing:.08em;font-size:12.5px;margin-top:10px}
+.love-heart{color:var(--rose);text-shadow:0 0 12px rgba(255,77,141,.7)}
+
+/* ---------- game ---------- */
+.topbar{background:var(--bar-bg);border:1px solid rgba(var(--acc-rgb),.14);border-radius:18px;padding:8px 10px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.room-chip{background:rgba(var(--acc-rgb),.1);border:1px solid rgba(var(--acc-rgb),.3);color:var(--gold-1)}
+.room-chip strong{color:#fff;letter-spacing:.12em}
+.panel{background:linear-gradient(160deg,rgba(255,255,255,.07),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.08);border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.panel.turn{background:linear-gradient(160deg,rgba(var(--acc-rgb),.16),rgba(var(--acc-rgb),.04));border-color:rgba(var(--acc-rgb),.55);box-shadow:0 0 0 1px rgba(var(--acc-rgb),.25),0 12px 34px rgba(var(--acc-rgb),.18)}
+.avatar{background:conic-gradient(from 210deg,var(--c,#E9C46A),rgba(255,255,255,.15),var(--c,#E9C46A));padding:3px;border-radius:20px}
+.vbox{border:none;border-radius:17px;background:var(--vbox-bg)}
+.pname{font-size:13.5px;letter-spacing:.01em}
+.pstat{color:var(--muted)}
+.board-box{padding:12px;border-radius:26px;background:
+  linear-gradient(#FFFBF0,#FFFBF0) padding-box,
+  var(--acc-grad) border-box;border:4px solid transparent;
+  box-shadow:0 30px 70px rgba(0,0,0,.6),0 0 60px rgba(var(--acc-rgb),.18),inset 0 0 0 1px rgba(168,116,31,.35)}
+#board{border-radius:14px;filter:saturate(1.08) contrast(1.02)}
+.dice{background:linear-gradient(145deg,#FFFDF6,#EFE4CC);box-shadow:0 6px 0 #B8924A,0 10px 22px rgba(0,0,0,.4),inset 0 1px 0 #fff;border-radius:14px}
+.dice i.on{background:var(--pip)}
+.dice.six i.on{background:radial-gradient(circle at 35% 30%,#FF5A7A,#9C0F33)}
+.dice.ready::after{border-top-color:var(--gold)}
+.status-line{font-family:'Cinzel',serif;letter-spacing:.06em;font-size:14px;color:var(--gold-1)}
+.status-line .hl{color:#fff}
+.banner{font-family:'Cinzel',serif;background:var(--acc-grad);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-stroke:0;text-shadow:none;filter:drop-shadow(0 6px 0 rgba(26,11,46,.9)) drop-shadow(0 0 30px rgba(var(--acc-rgb),.6));letter-spacing:.06em}
+.big-code{color:var(--gold-1);letter-spacing:.2em}
+
+/* chat */
+.chat{background:linear-gradient(170deg,var(--glass-1),var(--glass-2));background-color:var(--bg2);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow-lg);backdrop-filter:blur(18px)}
+.chat-head{border-bottom:1px solid rgba(var(--acc-rgb),.15);font-family:'Cinzel',serif;letter-spacing:.08em;color:var(--gold-1)}
+.quick button{background:rgba(var(--acc-rgb),.08);border-color:rgba(var(--acc-rgb),.25);color:var(--gold-1)}
+.send{background:var(--acc-grad);color:var(--on-acc);border-radius:14px;box-shadow:0 6px 16px rgba(226,182,86,.3)}
+.bubble{background:#FFFBF0;color:var(--on-acc)}
+
+/* controls dock */
+.controls{left:50%;right:auto;bottom:calc(10px + env(safe-area-inset-bottom));transform:translateX(-50%);width:max-content;max-width:calc(100% - 20px);padding:9px 12px;border-radius:26px;background:var(--bar-bg);border:1px solid rgba(var(--acc-rgb),.22);box-shadow:0 18px 50px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.06);backdrop-filter:blur(18px) saturate(150%);-webkit-backdrop-filter:blur(18px) saturate(150%)}
+.ctl{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.08);color:var(--gold-1);transition:background .2s,transform .15s}
+.ctl:active{transform:scale(.94)}
+.ctl.off{background:linear-gradient(135deg,#FF5A7A,#C2183B);color:#fff;border-color:transparent}
+.ctl.lit{background:var(--acc-grad);color:var(--on-acc)}
+.ctl-end{background:linear-gradient(135deg,#FF5A7A,#C2183B);color:#fff;border:none;box-shadow:0 8px 20px rgba(229,56,79,.4)}
+#game{padding-bottom:calc(96px + env(safe-area-inset-bottom))}
+
+/* sheets, modals, toast */
+.sheet-card{border-radius:28px 28px 0 0;border-bottom:none}
+.sheet-card::before{content:"";display:block;width:44px;height:4px;border-radius:2px;background:rgba(var(--acc-rgb),.45);margin:0 auto 6px}
+.sheet-label{color:var(--gold-1);letter-spacing:.14em}
+.emoji-tabs button.on{background:rgba(var(--acc-rgb),.16);border-color:rgba(var(--acc-rgb),.45)}
+.emoji-grid.big{background:var(--field-bg)}
+.modal{background:rgba(5,2,12,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.modal-card{border-radius:26px}
+.modal-card h2,.overlay-card h2{font-family:'Cinzel',serif;letter-spacing:.05em;color:var(--gold-1)}
+.toast{background:var(--bar-bg);color:var(--text);border:1px solid rgba(var(--acc-rgb),.4);box-shadow:0 14px 40px rgba(0,0,0,.5);backdrop-filter:blur(14px)}
+.spinner{border-color:rgba(var(--acc-rgb),.18);border-top-color:var(--gold)}
+.light-panel{background:var(--bar-bg);border-color:rgba(var(--acc-rgb),.3)}
+.badge{background:var(--rose);box-shadow:0 0 12px rgba(255,77,141,.6)}
+@media (prefers-reduced-motion:reduce){.logo span,.btn-play::after{animation:none}}
+
+/* ---------- theme picker ---------- */
+.theme-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.theme-opt{border:2px solid transparent;border-radius:18px;padding:0;overflow:hidden;cursor:pointer;background:none;color:var(--text);text-align:left;transition:transform .15s,border-color .15s}
+.theme-opt:active{transform:scale(.97)}
+.theme-opt.on{border-color:var(--gold);box-shadow:0 0 0 4px rgba(var(--acc-rgb),.18)}
+.theme-sw{height:74px;position:relative;display:flex;align-items:flex-end;justify-content:center;padding-bottom:8px}
+.theme-sw i{width:34px;height:12px;border-radius:6px;display:block;box-shadow:0 4px 12px rgba(0,0,0,.4)}
+.theme-sw b{position:absolute;top:8px;left:50%;transform:translateX(-50%);font-size:22px;font-style:normal}
+.theme-name{display:block;padding:7px 8px 8px;font-size:12.5px;font-weight:700;background:rgba(0,0,0,.35);text-align:center;letter-spacing:.02em}
+.theme-btn{display:inline-flex;align-items:center;gap:6px}
+/* floating hearts for the Love theme */
+.love-sky{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.love-sky span{position:absolute;bottom:-40px;color:#FF7AA2;opacity:0;animation:floatUp linear infinite;text-shadow:0 0 14px rgba(255,77,141,.6)}
+@keyframes floatUp{0%{transform:translateY(0) rotate(0);opacity:0}10%{opacity:.55}90%{opacity:.35}100%{transform:translateY(-110vh) rotate(25deg);opacity:0}}
+html:not([data-theme="love"]) .love-sky{display:none}
+@media (prefers-reduced-motion:reduce){.love-sky{display:none}}
+
+@media (max-width:400px){.tb-right .icon-btn{width:38px;height:38px}.tb-right{gap:5px}}
+
 </style>
 </head>
 <body>
+<div class="love-sky" id="loveSky" aria-hidden="true"></div>
 
 <!-- ================= LOBBY ================= -->
 <div id="bootScreen" class="boot" aria-label="Loading"><div class="spinner"></div></div>
@@ -295,6 +444,7 @@ svg{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-lin
 <main id="authScreen" class="screen hidden">
   <div class="lobby-card">
     <div class="brand">
+      <svg class="crown" viewBox="0 0 64 44" aria-hidden="true"><defs><linearGradient id="cgA" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFF1C1"/><stop offset=".45" stop-color="#E2B656"/><stop offset="1" stop-color="#A8741F"/></linearGradient></defs><path d="M4 14 L18 26 L32 4 L46 26 L60 14 L54 37 H10 Z" fill="url(#cgA)" stroke="#7A4E0E" stroke-width="1.5" stroke-linejoin="round"/><rect x="9" y="36" width="46" height="6" rx="2" fill="url(#cgA)" stroke="#7A4E0E" stroke-width="1.5"/><circle cx="4" cy="13" r="3.2" fill="#FF4D8D" stroke="none"/><circle cx="32" cy="4" r="3.6" fill="#FF4D8D" stroke="none"/><circle cx="60" cy="13" r="3.2" fill="#FF4D8D" stroke="none"/><circle cx="22" cy="30" r="2.2" fill="#3aa0ff" stroke="none"/><circle cx="32" cy="30" r="2.6" fill="#38d47a" stroke="none"/><circle cx="42" cy="30" r="2.2" fill="#3aa0ff" stroke="none"/></svg>
       <div class="brand-pawns" aria-hidden="true">
         <span class="mini-pawn red"></span><span class="mini-pawn green"></span><span class="mini-pawn yellow"></span><span class="mini-pawn blue"></span>
       </div>
@@ -333,6 +483,7 @@ svg{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-lin
 <main id="lobby" class="screen hidden">
   <div class="lobby-card">
     <div class="brand">
+      <svg class="crown" viewBox="0 0 64 44" aria-hidden="true"><defs><linearGradient id="cgB" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFF1C1"/><stop offset=".45" stop-color="#E2B656"/><stop offset="1" stop-color="#A8741F"/></linearGradient></defs><path d="M4 14 L18 26 L32 4 L46 26 L60 14 L54 37 H10 Z" fill="url(#cgB)" stroke="#7A4E0E" stroke-width="1.5" stroke-linejoin="round"/><rect x="9" y="36" width="46" height="6" rx="2" fill="url(#cgB)" stroke="#7A4E0E" stroke-width="1.5"/><circle cx="4" cy="13" r="3.2" fill="#FF4D8D" stroke="none"/><circle cx="32" cy="4" r="3.6" fill="#FF4D8D" stroke="none"/><circle cx="60" cy="13" r="3.2" fill="#FF4D8D" stroke="none"/><circle cx="22" cy="30" r="2.2" fill="#3aa0ff" stroke="none"/><circle cx="32" cy="30" r="2.6" fill="#38d47a" stroke="none"/><circle cx="42" cy="30" r="2.2" fill="#3aa0ff" stroke="none"/></svg>
       <div class="brand-pawns" aria-hidden="true">
         <span class="mini-pawn red"></span><span class="mini-pawn green"></span><span class="mini-pawn yellow"></span><span class="mini-pawn blue"></span>
       </div>
@@ -365,7 +516,7 @@ svg{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-lin
 
     <p id="lobbyMsg" class="lobby-msg" role="status"></p>
     <button id="installBtn" class="btn btn-install hidden"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 4v11"/><path d="M7 10l5 5 5-5"/><path d="M5 20h14"/></svg>Install App</button>
-    <button id="rulesBtn" class="link-btn">How to play</button>
+    <div class="row center" style="gap:18px"><button id="rulesBtn" class="link-btn">How to play</button><button id="themeBtn" class="link-btn theme-btn">🎨 Change theme</button></div>
     <p class="hint">Allow microphone &amp; camera when asked. 2 to 4 players.</p>
     <p class="love-footer">made for my love h<span class="love-heart" aria-label="love">❤</span>j</p>
   </div>
@@ -375,13 +526,14 @@ svg{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-lin
 <div id="game" class="screen hidden">
   <header class="topbar">
     <div class="tb-left">
-      <div class="logo small">LUDO <span>QUEEN</span></div>
+      <div class="logo small"><svg class="crown small" viewBox="0 0 64 44" aria-hidden="true"><defs><linearGradient id="cgC" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFF1C1"/><stop offset=".45" stop-color="#E2B656"/><stop offset="1" stop-color="#A8741F"/></linearGradient></defs><path d="M4 14 L18 26 L32 4 L46 26 L60 14 L54 37 H10 Z" fill="url(#cgC)" stroke="#7A4E0E" stroke-width="1.5" stroke-linejoin="round"/><rect x="9" y="36" width="46" height="6" rx="2" fill="url(#cgC)" stroke="#7A4E0E" stroke-width="1.5"/><circle cx="4" cy="13" r="3.2" fill="#FF4D8D" stroke="none"/><circle cx="32" cy="4" r="3.6" fill="#FF4D8D" stroke="none"/><circle cx="60" cy="13" r="3.2" fill="#FF4D8D" stroke="none"/><circle cx="22" cy="30" r="2.2" fill="#3aa0ff" stroke="none"/><circle cx="32" cy="30" r="2.6" fill="#38d47a" stroke="none"/><circle cx="42" cy="30" r="2.2" fill="#3aa0ff" stroke="none"/></svg>LUDO <span>QUEEN</span></div>
       <button id="copyBtn" class="room-chip" aria-label="Copy room link">Room <strong id="roomCode">------</strong>
         <svg aria-hidden="true" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></svg>
       </button>
     </div>
     <div class="tb-right">
       <button id="rulesBtn2" class="icon-btn" aria-label="Rules"><svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14"/><path d="M12 17.5v.01"/></svg></button>
+      <button id="themeBtn2" class="icon-btn" aria-label="Change theme"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.7-.9 1.4-1.8l-.4-1.1c-.4-1.1.4-2.1 1.5-2.1H17a4 4 0 0 0 4-4c0-5-4-9-9-9z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10" cy="7" r="1"/><circle cx="14.5" cy="7" r="1"/></svg></button>
       <button id="sfxBtn" class="icon-btn" aria-label="Game sounds on/off"></button>
       <button id="emojiBtn" class="icon-btn" aria-label="Send emoji"><svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8.5 14.5a4.5 4.5 0 0 0 7 0"/><path d="M9 10h.01M15 10h.01"/></svg></button>
       <button id="chatBtn" class="icon-btn" aria-label="Open chat"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1.1-4.6A8 8 0 1 1 21 12z"/></svg><span id="chatBadge" class="badge hidden">0</span></button>
@@ -504,6 +656,14 @@ svg{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-lin
 </div>
 
 <!-- rules -->
+<div id="themeModal" class="modal hidden" role="dialog" aria-labelledby="themeTitle">
+  <div class="modal-card">
+    <h2 id="themeTitle">Choose a theme</h2>
+    <div id="themeGrid" class="theme-grid" role="radiogroup" aria-label="Themes"></div>
+    <button id="themeClose" class="btn btn-play">Done</button>
+  </div>
+</div>
+
 <div id="rulesModal" class="modal hidden" role="dialog" aria-label="How to play">
   <div class="modal-card">
     <h2>How to play</h2>
@@ -1897,11 +2057,24 @@ window.LY_EMOJI = {
     const b = $('board');
     b.innerHTML = '';
     const defs = el('defs', {}, b);
+    const sf = el('filter', { id: 'pawnShadow', x: '-50%', y: '-50%', width: '200%', height: '200%' }, defs);
+    el('feGaussianBlur', { stdDeviation: 0.05 }, sf);
     L.COLORS.forEach(c => {
       const pg = el('radialGradient', { id: 'pg-' + c, cx: '35%', cy: '30%', r: '75%' }, defs);
       el('stop', { offset: '0%', 'stop-color': LIGHT[c] }, pg);
       el('stop', { offset: '55%', 'stop-color': HEX[c] }, pg);
       el('stop', { offset: '100%', 'stop-color': DARK[c] }, pg);
+      // 3D pawn shading: a lit sphere for the head, a turned (cylindrical) body
+      const sph = el('radialGradient', { id: 'sph-' + c, cx: '36%', cy: '30%', r: '72%', fx: '32%', fy: '26%' }, defs);
+      el('stop', { offset: '0%', 'stop-color': '#FFFFFF' }, sph);
+      el('stop', { offset: '18%', 'stop-color': LIGHT[c] }, sph);
+      el('stop', { offset: '62%', 'stop-color': HEX[c] }, sph);
+      el('stop', { offset: '100%', 'stop-color': DARK[c] }, sph);
+      const cyl = el('linearGradient', { id: 'cyl-' + c, x1: 0, y1: 0, x2: 1, y2: 0 }, defs);
+      el('stop', { offset: '0%', 'stop-color': DARK[c] }, cyl);
+      el('stop', { offset: '26%', 'stop-color': LIGHT[c] }, cyl);
+      el('stop', { offset: '48%', 'stop-color': HEX[c] }, cyl);
+      el('stop', { offset: '100%', 'stop-color': DARK[c] }, cyl);
       const hg = el('linearGradient', { id: 'hg-' + c, x1: 0, y1: 0, x2: 1, y2: 1 }, defs);
       el('stop', { offset: '0%', 'stop-color': LIGHT[c] }, hg);
       el('stop', { offset: '45%', 'stop-color': HEX[c] }, hg);
@@ -1955,14 +2128,23 @@ window.LY_EMOJI = {
     const key = color + i;
     if (tokenEls.has(key)) return tokenEls.get(key);
     const g = el('g', { class: 'token' }, $('tokens'));
-    el('ellipse', { class: 'halo', cx: 0, cy: 0.3, rx: 0.5, ry: 0.24, fill: 'rgba(255,179,0,0.35)', stroke: '#FF9800', 'stroke-width': 0.12, opacity: 0 }, g);
-    el('ellipse', { cx: 0, cy: 0.3, rx: 0.3, ry: 0.11, fill: '#000', opacity: 0.3, stroke: 'none' }, g);
+    el('ellipse', { class: 'halo', cx: 0, cy: 0.24, rx: 0.48, ry: 0.22, fill: 'rgba(255,179,0,0.35)', stroke: '#FF9800', 'stroke-width': 0.1, opacity: 0 }, g);
+    el('ellipse', { cx: 0.05, cy: 0.3, rx: 0.38, ry: 0.13, fill: '#000', opacity: 0.38, stroke: 'none', filter: 'url(#pawnShadow)' }, g);
     const pawn = el('g', { class: 'pawn' }, g);
-    el('path', { d: 'M0 0.3 C -0.1 0.12 -0.33 -0.02 -0.33 -0.28 A 0.33 0.33 0 1 1 0.33 -0.28 C 0.33 -0.02 0.1 0.12 0 0.3 Z',
-      fill: `url(#pg-${color})`, stroke: '#FFFFFF', 'stroke-width': 0.07 }, pawn);
-    el('circle', { cx: 0, cy: -0.28, r: 0.14, fill: '#FFFFFF', opacity: 0.92, stroke: 'none' }, pawn);
-    el('circle', { cx: 0, cy: -0.28, r: 0.085, fill: HEX[color], stroke: 'none' }, pawn);
-    el('ellipse', { cx: -0.13, cy: -0.43, rx: 0.07, ry: 0.045, fill: '#FFFFFF', opacity: 0.65, stroke: 'none' }, pawn);
+    const body = el('g', { transform: 'translate(0 0.04) scale(1.2)' }, pawn);
+    const edge = { stroke: DARK[color], 'stroke-width': 0.028 };
+    // base: a thick disc
+    el('ellipse', { cx: 0, cy: 0.215, rx: 0.29, ry: 0.105, fill: DARK[color], ...edge }, body);
+    el('ellipse', { cx: 0, cy: 0.17, rx: 0.29, ry: 0.105, fill: `url(#cyl-${color})`, ...edge }, body);
+    // body: flared skirt narrowing to the neck
+    el('path', { d: 'M -0.25 0.17 C -0.2 0.02 -0.1 -0.08 -0.085 -0.2 L 0.085 -0.2 C 0.1 -0.08 0.2 0.02 0.25 0.17 A 0.25 0.09 0 0 1 -0.25 0.17 Z',
+      fill: `url(#cyl-${color})`, ...edge }, body);
+    // collar ring under the head
+    el('ellipse', { cx: 0, cy: -0.2, rx: 0.14, ry: 0.05, fill: `url(#cyl-${color})`, ...edge }, body);
+    // head: shaded sphere with a glossy highlight
+    el('circle', { cx: 0, cy: -0.38, r: 0.19, fill: `url(#sph-${color})`, ...edge }, body);
+    el('ellipse', { cx: -0.065, cy: -0.455, rx: 0.06, ry: 0.04, fill: '#FFFFFF', opacity: 0.9, stroke: 'none', transform: 'rotate(-25 -0.065 -0.455)' }, body);
+    el('path', { d: 'M -0.16 0.12 C -0.13 0.02 -0.08 -0.07 -0.065 -0.16', fill: 'none', stroke: '#FFFFFF', 'stroke-width': 0.035, opacity: 0.45, 'stroke-linecap': 'round' }, body);
     el('circle', { cx: 0, cy: -0.1, r: 0.62, fill: 'transparent', stroke: 'none' }, g); // bigger tap area
     g.addEventListener('click', () => {
       if (g.classList.contains('can')) {
@@ -2500,6 +2682,7 @@ window.LY_EMOJI = {
     if (!$('spotlight').classList.contains('hidden')) { closeSpotlight(); return true; }
     if (!$('emojiSheet').classList.contains('hidden')) { closeEmoji(); return true; }
     if (!$('rulesModal').classList.contains('hidden')) { $('rulesModal').classList.add('hidden'); return true; }
+    if (!$('themeModal').classList.contains('hidden')) { $('themeModal').classList.add('hidden'); return true; }
     if (window.innerWidth < 1100 && chatPanel.classList.contains('open')) { chatPanel.classList.remove('open'); return true; }
     return false;
   }
@@ -2527,6 +2710,55 @@ window.LY_EMOJI = {
     const text = `Let's play Ludo! Room code: ${room.code}\n${roomLink()}`;
     window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank', 'noopener');
   };
+  // ================= themes =================
+  const THEMES = [
+    { k: 'royal', n: 'Royal', e: '👑', bg: 'linear-gradient(160deg,#3B1766,#0B0518)', a: 'linear-gradient(90deg,#FFF1C1,#C9922F)', meta: '#14072A' },
+    { k: 'love', n: 'Love', e: '💖', bg: 'linear-gradient(160deg,#8A1347,#1E0512)', a: 'linear-gradient(90deg,#FFE3EC,#E0306A)', meta: '#3A0A22' },
+    { k: 'ocean', n: 'Ocean', e: '🌊', bg: 'linear-gradient(160deg,#0B5A7A,#020C14)', a: 'linear-gradient(90deg,#E0FFFA,#14B8A6)', meta: '#073047' },
+    { k: 'emerald', n: 'Emerald', e: '💎', bg: 'linear-gradient(160deg,#0B6A47,#020D08)', a: 'linear-gradient(90deg,#FFF1C1,#C9922F)', meta: '#073322' },
+    { k: 'sunset', n: 'Sunset', e: '🌅', bg: 'linear-gradient(160deg,#B4432E,#3B1020 60%,#120508)', a: 'linear-gradient(90deg,#FFE9C7,#F2643A)', meta: '#45122A' },
+    { k: 'midnight', n: 'Midnight', e: '🌙', bg: 'linear-gradient(160deg,#2A2E36,#050607)', a: 'linear-gradient(90deg,#FFFFFF,#8D96A5)', meta: '#191C22' },
+  ];
+  function buildLoveSky() {
+    const sky = $('loveSky');
+    if (!sky || sky.childElementCount) return;
+    for (let i = 0; i < 14; i++) {
+      const h = document.createElement('span');
+      h.textContent = ['❤', '💕', '💗', '❣'][i % 4];
+      h.style.left = (Math.random() * 100).toFixed(1) + '%';
+      h.style.fontSize = (12 + Math.random() * 18).toFixed(0) + 'px';
+      h.style.animationDuration = (9 + Math.random() * 10).toFixed(1) + 's';
+      h.style.animationDelay = (-Math.random() * 18).toFixed(1) + 's';
+      sky.appendChild(h);
+    }
+  }
+  function applyTheme(k) {
+    const t = THEMES.find(x => x.k === k) || THEMES[0];
+    document.documentElement.dataset.theme = t.k;
+    store.set('ly_theme', t.k);
+    try { localStorage.setItem('ly_theme', t.k); } catch (e) {}
+    const m = document.querySelector('meta[name="theme-color"]'); if (m) m.setAttribute('content', t.meta);
+    if (t.k === 'love') buildLoveSky();
+    [...$('themeGrid').children].forEach(b => { const on = b.dataset.k === t.k; b.classList.toggle('on', on); b.setAttribute('aria-checked', String(on)); });
+  }
+  THEMES.forEach(t => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'theme-opt'; b.dataset.k = t.k; b.setAttribute('role', 'radio');
+    const sw = document.createElement('span'); sw.className = 'theme-sw'; sw.style.background = t.bg;
+    const em = document.createElement('b'); em.textContent = t.e; sw.appendChild(em);
+    const bar = document.createElement('i'); bar.style.background = t.a; sw.appendChild(bar);
+    const nm = document.createElement('span'); nm.className = 'theme-name'; nm.textContent = t.n;
+    b.append(sw, nm);
+    b.onclick = () => { applyTheme(t.k); Sfx.pop && Sfx.pop(); };
+    $('themeGrid').appendChild(b);
+  });
+  applyTheme(document.documentElement.dataset.theme || 'royal');
+  const openTheme = () => $('themeModal').classList.remove('hidden');
+  $('themeBtn').onclick = openTheme;
+  $('themeBtn2').onclick = openTheme;
+  $('themeClose').onclick = () => $('themeModal').classList.add('hidden');
+  $('themeModal').addEventListener('click', e => { if (e.target.id === 'themeModal') $('themeModal').classList.add('hidden'); });
+
   const openRules = () => $('rulesModal').classList.remove('hidden');
   $('rulesBtn').onclick = openRules; $('rulesBtn2').onclick = openRules;
   $('rulesClose').onclick = () => $('rulesModal').classList.add('hidden');
