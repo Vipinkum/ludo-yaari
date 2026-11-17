@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#14205A">
-<title>Ludo Yaari – Play Ludo with Friends + Video Call</title>
+<title>Ludo Queen – Play Ludo with Friends + Video Call</title>
 <meta name="description" content="Play online Ludo with friends – private rooms, chat, voice and HD video call.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,7 +15,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Ludo Yaari">
+<meta name="apple-mobile-web-app-title" content="Ludo Queen">
 <style>
 :root{
   --bg1:#1B2A7A; --bg2:#0B1238; --surface:rgba(255,255,255,.08); --surface2:rgba(255,255,255,.14); --line:rgba(255,255,255,.18);
@@ -69,6 +69,10 @@ svg{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-lin
 .or{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:13px;margin:8px 0 0}
 .or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
 .lobby-msg{min-height:20px;margin:2px 0 0;color:#FFB4B5;font-size:14px}
+.love-footer{margin:6px 0 0;text-align:center;font-size:13px;color:var(--muted);letter-spacing:.02em}
+.love-heart{color:#FF4D6D;display:inline-block;margin:0 1px;animation:beat 1.4s ease-in-out infinite}
+@keyframes beat{0%,100%{transform:scale(1)}15%{transform:scale(1.25)}30%{transform:scale(1)}45%{transform:scale(1.18)}}
+@media (prefers-reduced-motion:reduce){.love-heart{animation:none}}
 .hint{margin:0;color:var(--muted);font-size:12px;line-height:1.5;text-align:center}
 
 /* ---------- account ---------- */
@@ -294,7 +298,7 @@ svg{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-lin
       <div class="brand-pawns" aria-hidden="true">
         <span class="mini-pawn red"></span><span class="mini-pawn green"></span><span class="mini-pawn yellow"></span><span class="mini-pawn blue"></span>
       </div>
-      <h1 class="logo">LUDO <span>YAARI</span></h1>
+      <h1 class="logo">LUDO <span>QUEEN</span></h1>
       <p class="tag">Log in to play with friends</p>
     </div>
     <div class="auth-tabs" role="tablist">
@@ -322,6 +326,7 @@ svg{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-lin
     <p id="authMsg" class="lobby-msg" role="status"></p>
     <button id="forgotBtn" class="link-btn">Forgot password?</button>
     <p class="hint">Allow microphone &amp; camera when asked. 2 to 4 players.</p>
+    <p class="love-footer">made for my love h<span class="love-heart" aria-label="love">❤</span>j</p>
   </div>
 </main>
 
@@ -331,7 +336,7 @@ svg{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-lin
       <div class="brand-pawns" aria-hidden="true">
         <span class="mini-pawn red"></span><span class="mini-pawn green"></span><span class="mini-pawn yellow"></span><span class="mini-pawn blue"></span>
       </div>
-      <h1 class="logo">LUDO <span>YAARI</span></h1>
+      <h1 class="logo">LUDO <span>QUEEN</span></h1>
       <p class="tag">Play Ludo with friends — with chat, voice &amp; HD video call</p>
     </div>
 
@@ -362,6 +367,7 @@ svg{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-lin
     <button id="installBtn" class="btn btn-install hidden"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 4v11"/><path d="M7 10l5 5 5-5"/><path d="M5 20h14"/></svg>Install App</button>
     <button id="rulesBtn" class="link-btn">How to play</button>
     <p class="hint">Allow microphone &amp; camera when asked. 2 to 4 players.</p>
+    <p class="love-footer">made for my love h<span class="love-heart" aria-label="love">❤</span>j</p>
   </div>
 </main>
 
@@ -369,7 +375,7 @@ svg{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-lin
 <div id="game" class="screen hidden">
   <header class="topbar">
     <div class="tb-left">
-      <div class="logo small">LUDO <span>YAARI</span></div>
+      <div class="logo small">LUDO <span>QUEEN</span></div>
       <button id="copyBtn" class="room-chip" aria-label="Copy room link">Room <strong id="roomCode">------</strong>
         <svg aria-hidden="true" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></svg>
       </button>
@@ -544,7 +550,7 @@ window.LY_PEER_OPTS = {
 </script>
 <script src="https://unpkg.com/@supabase/supabase-js@2.119.0/dist/umd/supabase.js"></script>
 <script>
-/* Ludo Yaari – accounts (Supabase): sign up / log in, the player's rights, activity log, join passes */
+/* Ludo Queen – accounts (Supabase): sign up / log in, the player's rights, activity log, join passes */
 (function () {
   'use strict';
   const CFG = window.LY_SUPABASE || {
@@ -691,7 +697,7 @@ window.LY_PEER_OPTS = {
 
 </script>
 <script>
-/* Ludo Yaari - game rules (pure functions, no DOM) */
+/* Ludo Queen - game rules (pure functions, no DOM) */
 (function (root) {
   const COLORS = ['red', 'green', 'yellow', 'blue'];
   const START = { red: 0, green: 13, yellow: 26, blue: 39 };
@@ -882,7 +888,7 @@ window.LY_PEER_OPTS = {
 
 </script>
 <script>
-/* Ludo Yaari - all standard emojis (Emoji 13.0 and older, so they show on most phones), grouped for the Throw picker.
+/* Ludo Queen - all standard emojis (Emoji 13.0 and older, so they show on most phones), grouped for the Throw picker.
    groups: [key, tab icon, name, default throw effect, emojis]; kinds: emojis whose effect differs from their group default. */
 window.LY_EMOJI = {
   groups: [
@@ -906,7 +912,7 @@ window.LY_EMOJI = {
 };
 </script>
 <script>
-/* Ludo Yaari – UI, sounds, animations, online rooms (PeerJS/WebRTC), chat, voice & HD video */
+/* Ludo Queen – UI, sounds, animations, online rooms (PeerJS/WebRTC), chat, voice & HD video */
 (() => {
   'use strict';
   const L = window.Ludo;
@@ -2790,7 +2796,7 @@ window.LY_EMOJI = {
     e.preventDefault(); installEvt = e;
     $('installBtn').classList.remove('hidden');
   });
-  window.addEventListener('appinstalled', () => { installEvt = null; $('installBtn').classList.add('hidden'); toast('Ludo Yaari installed! Open it from your home screen.'); });
+  window.addEventListener('appinstalled', () => { installEvt = null; $('installBtn').classList.add('hidden'); toast('Ludo Queen installed! Open it from your home screen.'); });
   if (isIOS && !standalone()) $('installBtn').classList.remove('hidden');
   $('installBtn').onclick = async () => {
     if (installEvt) {
